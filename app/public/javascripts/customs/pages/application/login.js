@@ -75,7 +75,6 @@ $(document).ready(function () {
                 data: $("#signinForm").serialize(),
                 error: function (data) {
                     var msg = JSON.parse(data.responseText)
-                    console.log(msg);
                     $('#formInfoBox').find(".modal-body").html(msg.msg);
                     $('#formInfoBox').modal();
                     $('#formInfoBox').on('hidden.bs.modal', function (e) {
@@ -83,13 +82,7 @@ $(document).ready(function () {
                     })
                 },
                 success: function (result) {
-
-                    console.log(result);
-                    $('#formInfoBox').find(".modal-body").html(result.msg);
-                    $('#formInfoBox').modal();
-                    $('#formInfoBox').on('hidden.bs.modal', function (e) {
-                        window.location.href="/menu"
-                    })
+                    window.location.href="/menu"
                 }
             });
             return false;//阻止表单提交

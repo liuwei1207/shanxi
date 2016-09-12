@@ -50,7 +50,7 @@
     <![endif]-->
 </head>
 
-<body class="no-skin">
+<body class="skin-hn">
 <% include ../includes/topNav.html %>
 
 <div class="main-container ace-save-state" id="main-container">
@@ -73,10 +73,10 @@
 
                 <div class="page-header">
                     <h1>
-                        <%= mainDatas[0].projName %>
+                        <%= mainDatas[0].ProjName %>
                         <small>
                             <i class="ace-icon fa fa-angle-double-right"></i>
-                            <%= mainDatas[0].sites[0].siteName %>
+                            <%= mainDatas[0].sites[0].SiteName %>
                         </small>
                     </h1>
                 </div><!-- /.page-header -->
@@ -286,9 +286,6 @@
 <script src="/javascripts/Ace_template_js/jquery.ui.touch-punch.min.js"></script>
 <script src="/bower_components/jPlayer/dist/jplayer/jquery.jplayer.min.js"></script>
 <script src="/bower_components/jPlayer/dist/add-on/jplayer.playlist.min.js"></script>
-<script src="/bower_components/segment/segment.js"></script>
-<script src="/javascripts/customs/pages/index/meter.js"></script>
-<script src="/javascripts/customs/pages/index/audioPlayerBox.js"></script>
 
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>
@@ -297,8 +294,6 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     jQuery(function ($) {
-        //segment
-        $(".segment-select").Segment();
         //tooltip
         $('[data-rel=tooltip]').tooltip();
         $('[data-rel=popover]').popover({html: true});
@@ -315,7 +310,7 @@
         $('.scrollable').each(function () {
             var $this = $(this);
             $(this).ace_scroll({
-                size: $this.attr('data-size') || 100,
+                size: $this.attr('data-size') || 100
                 //styleClass: 'scroll-left scroll-margin scroll-thin scroll-dark scroll-light no-track scroll-visible'
             });
         });

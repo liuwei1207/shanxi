@@ -6,6 +6,45 @@
         }
     </script>
 
+    <ul class="nav nav-list">
+
+        <% leftNavDatas.forEach(function(b){ %>
+        <li class="<%if(b.ProjNum==currentProjectID){%>active open<%}%>">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-map-marker"></i>
+							<span class="menu-text">
+                                <%= b.ProjName %>
+							</span>
+                <b class="arrow fa animated fa-angle-double-down "></b>
+            </a>
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="<%if(b.ProjNum==currentProjectID && currentSiteID == 'all'){%>active<%}%>">
+                    <a href='/user/monitor/<%= b.ProjNum %>/all'>
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        全部
+                    </a>
+
+                    <b class="arrow site_complex_status" data-alert="1"></b>
+                </li>
+                <% b.sites.forEach(function(c){ %>
+                <li class="<%if(c.ID==currentSiteID){%>active<%}%>">
+                    <a href='/user/monitor/<%= b.ProjNum %>/<%= c.ID %>'>
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        <%= c.SiteName %>
+                    </a>
+
+                    <b class="arrow site_complex_status" data-alert="1"></b>
+                </li>
+                <% }) %>
+            </ul>
+        </li>
+        <% }) %>
+
+
+    </ul><!-- /.nav-list -->
+
     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
         <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
             <button class="btn btn-success">
@@ -36,41 +75,10 @@
         </div>
     </div><!-- /.sidebar-shortcuts -->
 
-    <ul class="nav nav-list">
-
-        <% leftNavDatas.forEach(function(b){ %>
-        <li class="<%if(b.projID==currentProjectID){%>active open<%}%>">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-map-marker"></i>
-							<span class="menu-text">
-                                <%= b.projName %>
-							</span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-                <% b.sites.forEach(function(c){ %>
-                <li class="<%if(c.siteID==currentSiteID){%>active<%}%>">
-                    <a href='/user/monitor/<%= b.projID %>/<%= c.siteID %>'>
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        <%= c.siteName %>
-                    </a>
-
-                    <b class="arrow"></b>
-                </li>
-                <% }) %>
-            </ul>
-        </li>
-        <% }) %>
-
-
-    </ul><!-- /.nav-list -->
-
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" titiel="展开/收起" class="ace-icon fa fa-angle-double-left ace-save-state"
            data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
     </div>
+
+
 </div>

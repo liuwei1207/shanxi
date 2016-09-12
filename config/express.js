@@ -29,8 +29,8 @@ module.exports = function() {
     app.use(cookieParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(require('stylus').middleware({ src: './app/public' }));
     app.use(express.static('./app/public'));
+    app.use('/GISMap', express.static('./app/public/GISMap'));
     // mongoDB database
     var dbURL = 'mongodb://'+config.mongodb.dbHost+':'+config.mongodb.dbPort+'/'+config.mongodb.dbName;
     app.use(session({
