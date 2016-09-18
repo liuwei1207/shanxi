@@ -2,16 +2,17 @@
  * Created by Liuwei on 2016/9/8.
  */
 
-$(document).ready(function () {
-    $("#map").height($(window).height() - 75 + 'px');
-});
-$(window).resize(function () {
-    $("#map").height($(window).height() - 75 + 'px');
-});
-
 (function () {
 
-    var map = new BMap.Map("map", {minZoom: 8, maxZoom: 13});    // 创建Map实例
+
+    $("#baiduMap").height($(window).height() - 75 - 220);
+
+    $(window).resize(function () {
+        $("#baiduMap").height($(window).height() - 75 - 220);
+    });
+
+
+    var map = new BMap.Map("baiduMap", {minZoom: 6, maxZoom: 13});    // 创建Map实例
 
 
     /* ********************************************** 百度地图初始化设置 **************************************** */
@@ -19,36 +20,46 @@ $(window).resize(function () {
      * 地图数据设置
      * 参数说明: 无
      */
-    var center = [112.569005, 37.880063];     // 设置中心点坐标
-    var Zoom = 8;      // 和地图级别
+    var center = [112.458621, 36.109298];     // 设置中心点坐标
+    var Zoom = 6;      // 和地图级别
     var CurrentProvincial = "山西省";     // 设置行政区域
     var enableScrollWheelZoom = true;       //开启鼠标滚轮缩放
-    var crStr = "<span class='copyright'>shanxiMap | <a href='#''>© 智和云</a></span>";   //版权信息
-    var fillColor = "rgba(57,69,87,0.75)";  // 地图遮罩层填充颜色
+    var fillColor = "rgba(226,239,238,0.75)";  // 地图遮罩层填充颜色
     var strokeColor = "#B0C4DE";            // 行政边界颜色
     var strokeWeight = 5;   // 行政边界线段粗细
-    var sContent =
-        "<h4 style='margin:0 0 5px 0;padding:0.2em 0'>天安门</h4>" +
-        "<img style='float:right;margin:4px' id='imgDemo' src='http://app.baidu.com/map/images/tiananmen.jpg' width='139' height='104' title='天安门'/>" +
-        "<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>天安门坐落在中国北京市中心,故宫的南侧,与天安门广场隔长安街相望,是清朝皇城的大门...</p>" +
-        "</div>";
-    var markerCache = new Array();
-    /**
-     * 后台接口设置
-     * 参数说明: 无
-     */
-    var url = "/api/maps/getAllSiteInfo";
+    var polygonFillOpacity = .15;   // 行政边界线段粗细
+    var polygonFillOpacityAfterSelected = .75;   // 行政边界线段粗细
+
+
+    //地图数据缓存
+    var markerCache = [];
+    var markerPointCache = [];
+    var labelCache = [];
+    var polygonCache = [];
+
+    var allSiteDataCache = [];
+    var currentSiteDataCache = "";
+    var currentPolygonCache = "";
+    var currentMarkerCache = "";
+
+    var Crtindex = "";    //当前点击的marker、polygon、label 的下标
 
     /* ********************************************** 百度地图启动 ********************************************** */
 
 
-    var wait = function(){
+    var wait = function () {
 
-        var dtd = $.Deferred(); //在函数内部，新建一个Deferred对象
+        var dfd = $.Deferred(); //在函数内部，新建一个Deferred对象
+        init();
+        var task = function () {
+            // 发布内容
+            dfd.resolve("loadBoundary");
+        };
 
-        init(function() {
-            return dtd.promise(); // 返回promise对象
-        });
+        setTimeout(task, 1000);
+
+        return dfd.promise();
+
 
     };
 
@@ -57,7 +68,6 @@ $(window).resize(function () {
         mapSetting();//添加地图设置信息
         addCtrl();//添加版权信息
         addBoundary(); //添加行政边界和行政边界以外的遮罩层
-        callback();
     }
 
     /* ********************************************** 加载数据 ****************************************************** */
@@ -65,34 +75,236 @@ $(window).resize(function () {
 
     $.when(wait())
 
-        .done(function(){ loadMapData();})
+        .done(function () {
+            loadMapData();
+        })
 
-        .fail(function(){ console.log("地图初始化失败"); });
+        .fail(function () {
+            console.log("地图初始化失败");
+        });
 
     /**
-     * 功能说明： ajax请求后台数据
+     * 功能说明： 初始化ajax请求加载数据
+     * 参数说明: 无
+     */
+    function loadMapData() {
+
+        //第一次打开地图页面, 初始化加载数据
+
+        ajax_load_mapMarker(function () {
+            ajax_load_ctrlBox();
+            ajax_load_siteInfoWindow(allSiteDataCache[0]);
+            ajax_load_deviceInfoBox(allSiteDataCache[0]);
+            addSiteSelected(polygonCache[0], polygonCache);
+            map.setViewport(markerPointCache);
+            panTo_currentMarkerPoint(allSiteDataCache[0]);
+        });
+
+
+        //地图切换按钮控制加载数据
+        setTimeout(function () {
+            ctrlBox();
+        }, 100)
+
+    }
+
+
+    /**
+     * 功能说明： 地图切换按钮控制加载数据
+     * 参数说明: 无
+     */
+    function ctrlBox() {
+
+        var mapSwitchBox = $("#mapSwitchBox");
+
+        $('input[name="siteSwitch').change(function () {
+            jqchk();
+        });
+
+        function jqchk() { //jquery获取复选框值
+            var chk_value = [];
+            $('input[name="siteSwitch"]:checked').each(function () {
+                chk_value.push($(this).data("projnum"));
+            });
+
+            console.log(chk_value);
+
+            $.ajax({
+                url: "/api/maps/getSiteInfoByProjNumArr",// 后台接口
+                data: {
+                    "selectProjNumArr": chk_value
+                },
+                type: 'post',
+                dataType: 'json',
+                success: function (Data) {
+                    // 清除所有地图覆盖物（不包括行政区域）
+                    remove_overlay_markers();
+                    var len = Data.length;
+                    //console.log(len)
+                    clearCache();
+                    for (var i = 0; i < len; i++) {
+                        allSiteDataCache.push(Data[i]);
+                        addCovering(Data[i], i);     // 根据数据添加地图覆盖物
+                    }
+                    ajax_load_siteInfoWindow(allSiteDataCache[0]);
+                    ajax_load_deviceInfoBox(allSiteDataCache[0]);
+                    addSiteSelected(polygonCache[0], polygonCache);
+                    panTo_currentMarkerPoint(allSiteDataCache[0]);
+                },
+                error: function (e) {
+                    console.log(e)
+                }
+            });
+        }
+    }
+
+    /**
+     * 功能说明： 清除所有地图缓存!
+     * 参数说明: 无
+     */
+    function clearCache() {
+        markerCache = [];
+        markerPointCache = [];
+        labelCache = [];
+        polygonCache = [];
+        allSiteDataCache = [];
+    }
+
+    /**
+     * 功能说明： ajax请求后台数据,加载所有站点信息
      * 参数说明: 无
      * method: POST
      */
-    function loadMapData() {
+    function ajax_load_mapMarker(callback) {
+        //初始化加载地图数据
         $.ajax({
-            url: url,// 后台接口
+            url: "/api/maps/getAllSiteInfo",// 后台接口
             data: {},
             type: 'post',
             dataType: 'json',
             success: function (Data) {
                 var len = Data.length;
                 //console.log(len)
+                allSiteDataCache = [];
                 for (var i = 0; i < len; i++) {
-                    var _data = Data[i];
-                    addCovering(_data);     // 根据数据添加地图覆盖物
+                    allSiteDataCache.push(Data[i]);
+                    addCovering(Data[i], i);     // 根据数据添加地图覆盖物
                 }
+                callback();
             },
-            error: function () {
-
+            error: function (e) {
+                console.log(e)
             }
         });
     }
+
+    /**
+     * 功能说明： ajax请求后台数据, 加载地图控制面板数据
+     * 参数说明: 无
+     * method: POST
+     */
+    function ajax_load_ctrlBox(callback) {
+        //初始化加载控制面板数据
+        var mapSwitchBox = $("#mapSwitchBox");
+        $.ajax({
+            url: "/api/maps/getAllProjInfo",// 后台接口
+            data: {},
+            type: 'post',
+            dataType: 'json',
+            success: function (Data) {
+                mapSwitchBox.html("");
+                var len = Data.length;
+                //console.log(len)
+                for (var i = 0; i < len; i++) {
+                    mapSwitchBox.append('<div class="checkbox"><label class="block"><input name="siteSwitch" type="checkbox" class="ace input-lg" data-ProjNum=' + Data[i].ProjNum + ' checked><span class="lbl bigger-120"> ' + Data[i].ProjName + '</span> </label></div>')
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    }
+
+    /**
+     * 功能说明： ajax请求后台数据，加载站点详细数据
+     * 参数说明: 无
+     * method: POST
+     */
+    function ajax_load_siteInfoWindow(_Data, callback) {
+
+        var siteInfoWindow = $("#siteInfoWindow");
+        var siteID = _Data.ID;
+
+        //初始化加载站点详细信息窗口数据
+        $.ajax({
+            url: "/api/maps/getSiteInfoBySiteID",// 后台接口
+            data: {
+                "siteID": siteID
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (Data) {
+                siteInfoWindow.html(Data[0].SiteName);
+                //已经获得了所有数据， 暂时不知道要怎么展示， 先显示一条站点名称；
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    }
+
+    /**
+     * 功能说明： ajax请求后台数据， 获取选中站点的所有设备数据
+     * 参数说明: 无
+     * method: POST
+     */
+    function ajax_load_deviceInfoBox(_Data, callback) {
+
+        var deviceInfoBox = $("#deviceInfoBox");
+        var siteID = _Data.ID;
+        var siteName = _Data.SiteName;
+
+        //初始化加载站点详细信息窗口数据
+        $.ajax({
+            url: "/api/maps/getAllDevicesInfoBySiteID",// 后台接口
+            data: {
+                "siteID": siteID
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (Data) {
+
+                var _h3_HTML = deviceInfoBox.find("h3");
+                var _ul_HTML = deviceInfoBox.find("ul");
+
+                _h3_HTML.html("");
+                _ul_HTML.html("");
+
+                var len = Data.length;
+                _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
+
+                for (var i = 0; i < len; i++) {
+                    _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    }
+
+
+    /**
+     * 功能说明： 加载该站点的数据， 包括详细站点面板和设备列表面板
+     * 参数说明: 无
+     */
+    function loadSiteData(_data) {
+        var siteInfoWindow = $("#siteInfoWindow");
+        siteInfoWindow.html("正在加载数据, 请稍后..");
+        ajax_load_siteInfoWindow(_data);
+        ajax_load_deviceInfoBox(_data);
+    }
+
 
     /* ********************************************** 百度地图代码封装 ****************************************** */
 
@@ -264,15 +476,11 @@ $(window).resize(function () {
                 var ply = new BMap.Polygon(rs.boundaries[i], {
                     strokeWeight: strokeWeight,
                     strokeColor: strokeColor,
+                    StrokeStyle: "dashed",
                     fillColor: ""
                 }); //建立多边形覆盖物
 
-                ply1.addEventListener("click", function () {
-                    map.closeInfoWindow();
-                });
-
                 map.addOverlay(ply);  //添加覆盖物
-                pointArray = pointArray.concat(ply.getPath());
             }
             //            map.setViewport(pointArray, { zoomFactor: 1 });    //调整视野，偏移1个单位
         });
@@ -282,49 +490,79 @@ $(window).resize(function () {
      * 功能说明： 创建标注点
      * 参数说明: [_data: 某个站点的全部数据]
      */
-    function addCovering(_data) {
-        addMarker(_data);   // 添加站点图标
-        addLabel(_data);    // 添加站点文字标签
-        addPolygon(_data);       // 添加覆盖范围
+    function addCovering(_data, Cindex) {
+        addMarker(_data, Cindex);   // 添加站点图标
+        addLabel(_data, Cindex);    // 添加站点文字标签
+        addPolygon(_data, Cindex);       // 添加覆盖范围
     }
-
 
     /**
      * 功能说明： 创建标注点
      * 参数说明: [_data: 某个站点的全部数据]
      */
-    function addMarker(_data) {
+    function addMarker(_data, Cindex) {
         // 添加站点
         var OHLongitude = _data.OHLongitude;
         var OHLatitude = _data.OHLatitude;
-        if (isNull(OHLongitude) && isNull(OHLatitude)) {
+        if (notNull(OHLongitude) && notNull(OHLatitude)) {
             var point = new BMap.Point(OHLongitude, OHLatitude);
             // 添加文字标签
             //自定义图标
             //var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(50, 50));
             //var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
             var marker = new BMap.Marker(point);  // 创建标注
+
+
+            marker.addEventListener('click', function (e) {
+                stopBubble(e);
+                Crtindex = Cindex;
+                currentSiteDataCache = allSiteDataCache[Crtindex];
+                currentPolygonCache = polygonCache[Crtindex];
+                currentMarkerCache = markerCache[Crtindex];
+                reloadCurrentSiteInfo(currentSiteDataCache);
+                addSiteSelected(currentPolygonCache, polygonCache);
+                panTo_currentMarkerPoint(currentSiteDataCache);
+            });
+
+
+            markerPointCache.push(point);
+            markerCache.push(marker);
             map.addOverlay(marker);              // 将标注添加到地图中
         }
     }
+
 
     /**
      * 功能说明： 场强覆盖范围
      * 参数说明: [_data: 某个站点的全部数据]
      */
-    function addPolygon(_data) {
-        if (isNull(_data.OHDetail)) {
+    function addPolygon(_data, Cindex) {
+
+        if (notNull(_data.OHDetail)) {
             var OHDetail = _data.OHDetail.split("&");
             for (var j = 0; j < OHDetail.length; j++) {
-                var point = OHDetail[j].split(",");
-                OHDetail[j] = new BMap.Point(parseFloat(point[0]), parseFloat(point[1]))
+                var OHDetailPoint = OHDetail[j].split(",");
+                OHDetail[j] = new BMap.Point(parseFloat(OHDetailPoint[0]), parseFloat(OHDetailPoint[1]))
             }
             var polygon = new BMap.Polygon(OHDetail, {
-                strokeColor: "#FFCC33",
+                strokeColor: "#4299de",
                 strokeWeight: 2,
-                fillColor: "#FFCC33",
-                fillOpacity: 0.2
+                fillColor: "#80f9f5",
+                fillOpacity: polygonFillOpacity
             });  //创建多边形
+
+            polygonCache.push(polygon);
+
+            polygon.addEventListener('click', function (e) {
+                stopBubble(e);
+                Crtindex = Cindex;
+                currentSiteDataCache = allSiteDataCache[Crtindex];
+                currentPolygonCache = this;
+                currentMarkerCache = markerCache[Crtindex];
+                reloadCurrentSiteInfo(currentSiteDataCache);
+                addSiteSelected(currentPolygonCache, polygonCache);
+                panTo_currentMarkerPoint(currentSiteDataCache);
+            });
             map.addOverlay(polygon);   //增加多边形到地图
         }
     }
@@ -333,17 +571,17 @@ $(window).resize(function () {
      * 功能说明： 创建标label标签
      * 参数说明: [_data: 某个站点的全部数据]
      */
-    function addLabel(_data) {
+    function addLabel(_data, Cindex) {
         var OHLongitude = _data.OHLongitude;
         var OHLatitude = _data.OHLatitude;
-        if (isNull(OHLongitude) && isNull(OHLatitude)) {
+        if (notNull(OHLongitude) && notNull(OHLatitude)) {
             var SiteName = _data.SiteName;
             var point = new BMap.Point(OHLongitude, OHLatitude);
             var opts = {
                 position: point,    // 指定文本标注所在的地理位置
                 offset: new BMap.Size(15, -30)    //设置文本偏移量
             };
-            var label = new BMap.Label(SiteName, opts);  // 创建文本标注对象
+            var label = new BMap.Label('<a href="#" class="m-mapLabel" data-alert="1">' + SiteName + '</a>', opts);  // 创建文本标注对象
             label.setStyle({
                 color: "#1291a9",
                 fontSize: "16px",
@@ -353,7 +591,43 @@ $(window).resize(function () {
                 border: "none",
                 fontFamily: "微软雅黑"
             });
+            labelCache.push(label);
             map.addOverlay(label);
+        }
+    }
+
+
+    /**
+     * 功能说明： 重新加载选中的站点数据
+     * 参数说明: [currentSiteDataCache: 当前选中站点的全部数据]
+     */
+    function reloadCurrentSiteInfo(currentSiteDataCache) {
+        loadSiteData(currentSiteDataCache);
+    }
+
+
+    /**
+     * 功能说明： 添加站点选中效果
+     * 参数说明: [CP: currentPolygonCache, 当前选中多边形缓存]
+     * 参数说明: [PC: polygonCache, 全部多边形缓存]
+     */
+    function addSiteSelected(CP, PC) {
+        var len = PC.length;
+        for (var i = 0; i < len; i++) {
+            try {
+                PC[i].setFillOpacity(polygonFillOpacity);
+            }
+            catch (err) {
+                //跳过没有设置场强的站点, 以防止错误
+            }
+        }
+        if (CP) {
+            try {
+                CP.setFillOpacity(polygonFillOpacityAfterSelected);
+            }
+            catch (err) {
+                console.log("该站点没有配置场强覆盖！")
+            }
         }
     }
 
@@ -362,24 +636,40 @@ $(window).resize(function () {
      * 参数说明: 无
      */
     function remove_overlay_markers() {
-        map.removeOverlay(markerCache);
+        for (var i = 0; i < markerCache.length; i++) {
+            try {
+                markerCache[i].remove();
+                labelCache[i].remove();
+                polygonCache[i].remove();
+            } catch (err) {
+                // 跳过可能的错误
+            }
+        }
+    }
+
+    function panTo_currentMarkerPoint(_Data) {
+        var OHLongitude = _Data.OHLongitude;
+        var OHLatitude = _Data.OHLatitude;
+        var point = new BMap.Point(OHLongitude, OHLatitude);
+        map.panTo(point);
     }
 
     /**
      * 功能说明： 单击获取点击的经纬度
      * 参数说明: [ppArr: 存储所选坐标点]
      */
-    var ppArr = "";
-    map.addEventListener("click", function (e) {
-        ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
-        console.log(ppArr)
-    });
+    //var ppArr = "";
+    //map.addEventListener("click", function (e) {
+    //    ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
+    //    console.log(ppArr)
+    //});
 
 
     /* ********************************************** 基础javascript工具 ****************************************** */
-    function isNull(data){
+    function notNull(data) {
         return (data == "" || data == undefined || data == null) ? false : data;
     }
+
     //阻止事件冒泡
     function stopBubble(e) {
 

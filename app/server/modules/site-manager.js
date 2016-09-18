@@ -10,23 +10,26 @@ var config = require("../../../config/config");
 var dbName = config.mongodb.dbName;
 var dbHost = config.mongodb.dbHost;
 var dbPort = config.mongodb.dbPort;
+var DB_USER = config.mongodb.DB_USER;
+var DB_PASS = config.mongodb.DB_PASS;
+var NODE_ENV = config.NODE_ENV;
 
 var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
 db.open(function (e, d) {
     if (e) {
         console.log(e);
     } else {
-        if (process.env.NODE_ENV == 'live') {
-            db.authenticate(process.env.DB_USER, process.env.DB_PASS, function (e, res) {
+        if (NODE_ENV == 'live') {
+            db.authenticate(DB_USER, DB_PASS, function (e, res) {
                 if (e) {
                     console.log('mongo :: error: not authenticated', e);
                 }
                 else {
-                    console.log('mongo :: authenticated and connected to database :: "' + dbName + '"');
+                    console.log('mongo :: authenticated and connected to database - SM :: "' + dbName + '"');
                 }
             });
         } else {
-            //console.log('mongo :: connected to database :: "'+dbName+'"');
+            console.log('mongo :: connected to database  without authenticated - SM :: "' + dbName + '"');
         }
     }
 });
@@ -84,8 +87,65 @@ exports.updateMajorDatas = function (newData, callback) {
     })
 };
 
+exports.getAllProjInfoName = function (callback) {
+    NsOHBasicProject.find({}, {"_id": 0, ProjName: 1, ProjNum: 1}).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(err, o);
+        }
+    })
+};
+
+exports.getSiteInfoByProjNumArr = function (NumArr, callback) {
+
+    var orQuery = [];
+
+    if (typeof NumArr === 'undefined') {
+        orQuery.push({
+            "ProjectID": "none"
+        })
+    } else {
+        for (var i = 0; i < NumArr.length; i++) {
+            orQuery.push({
+                "ProjectID": NumArr[i]
+            })
+        }
+    }
+
+    NsOHBasicSite.find({
+        "$or": orQuery
+    }, {_id: 0}).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(err, o);
+        }
+    })
+};
+
 exports.getAllSiteInfo = function (callback) {
     NsOHBasicSite.find({}, {_id: 0}).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(err, o);
+        }
+    })
+};
+
+exports.getSiteInfoBySiteID = function (siteID, callback) {
+    NsOHBasicSite.find({"ID": siteID}, {_id: 0}).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(err, o);
+        }
+    })
+};
+
+exports.getAllDevicesInfoBySiteID = function (siteID, callback) {
+    NsOHBasicDevice.find({"SiteID": siteID}, {_id: 0}).toArray(function (err, o) {
         if (err) {
             callback(err, null);
         } else {
@@ -132,7 +192,7 @@ exports.findDataByProIdAndSiteId = function (ProjNum, siteID, callback) {
         majorDatas.find({"ProjNum": ProjNum}, {
             _id: 0,
             "ProjNum": 1,
-            "ProjName": 1,
+            "ProjName": 1
         }).toArray(function (err, o) {
             if (o) {
                 callback(o)
@@ -142,3 +202,4 @@ exports.findDataByProIdAndSiteId = function (ProjNum, siteID, callback) {
         })
     }
 };
+
