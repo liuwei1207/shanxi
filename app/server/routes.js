@@ -3,6 +3,8 @@ var RP = require('./modules/role-pemission');
 var LM = require('./modules/log-manager');
 var SM = require('./modules/site-manager');
 
+var socket = require("../../config/socket");
+
 var _ = require("underscore")._;
 var svgCaptcha = require('svg-captcha');
 var fs = require('fs');
@@ -689,6 +691,19 @@ module.exports = function (app) {
         })
     });
 
+    app.post('/api/maps/getAllProjInfo', auth, function (req, res) {
+        SM.getAllProjInfoName(function (err, result) {
+            if (err) {
+                res.json("false");
+                res.end()
+            } else {
+                res.json(result);
+                res.end()
+            }
+        })
+    });
+
+
     /**
      * 路由说明： 地图主页 - 获得所有项目资源
      * 鉴权说明： 登陆校验
@@ -826,26 +841,29 @@ module.exports = function (app) {
      */
     app.get('/user/monitor/:ProjectID/:SiteID', auth, pageAuthority, function (req, res, next) {
 
-        var pathname = URL.parse(req.url).pathname.replace("/user/", "").replace( /\/.*/g, "");
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "").replace(/\/.*/g, "");
         pathname = "/user/" + pathname;
         //console.log(pathname)
 
         //查询初始化信息
-        SM.findLeftNavDatas(function (e) {
-            var leftNavDatas = e;
+        SM.findLeftNavDatas(function (leftNavDatas) {
             var currentProjectID = req.params.ProjectID;
             var currentSiteID = req.params.SiteID;
-            SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (o) {
-                res.render('./application/index.html', {
-                    title: '山西-吉兆 -- 监控主页',
-                    currentProjectID: currentProjectID,
-                    currentSiteID: currentSiteID,
-                    leftNavDatas: leftNavDatas,
-                    topNavSelected: pathname,
-                    mainDatas: o,
-                    topNavData: topNavData,
-                    udata: req.session.user
-                });
+            SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (mainDatas) {
+                SM.getAllDeviceInfoByProjIDandSiteID(currentProjectID, currentSiteID, function (deviceData) {
+                    console.log(deviceData);
+                    res.render('./application/index.html', {
+                        title: '山西-吉兆 -- 监控主页',
+                        currentProjectID: currentProjectID,
+                        currentSiteID: currentSiteID,
+                        leftNavDatas: leftNavDatas,
+                        topNavSelected: pathname,
+                        mainDatas: mainDatas,
+                        topNavData: topNavData,
+                        deviceData: deviceData,
+                        udata: req.session.user
+                    });
+                })
             });
         });
 

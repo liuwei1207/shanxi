@@ -54,7 +54,7 @@ body, html,#baiduMap {width: 100%;height: 100%;overflow: hidden;margin:0;font-fa
 .m-ctrlBox {
     position: absolute;
     right: 10px;
-    top: 175px;
+    top: 85px;
     width: auto;
 }
 
@@ -107,6 +107,10 @@ body, html,#baiduMap {width: 100%;height: 100%;overflow: hidden;margin:0;font-fa
 }
 
 /*这是卫星图与普通地图切换模块*/
+.BMap_noprint.anchorTR{
+    bottom: 10px!important;
+    top: auto!important;
+}
 .BMap_noprint.anchorTR > div > div {
     display: inline-block;
     padding-right: 3px !important;
@@ -123,9 +127,6 @@ body, html,#baiduMap {width: 100%;height: 100%;overflow: hidden;margin:0;font-fa
     border: 2px solid rgb(139, 164, 220);
 }
 
-.BMap_noprint.anchorTR > div > div {
-
-}
 
 .BMap_noprint.anchorTR > div:first-child > div {
     background-image: url(/images/customs/application/map1.png) !important;
@@ -136,4 +137,19 @@ body, html,#baiduMap {width: 100%;height: 100%;overflow: hidden;margin:0;font-fa
 .BMap_noprint.anchorTR > div:last-child > div {
     background-image: url(/images/customs/application/map2.png) !important;
     background-size: 100%;
+}
+/*地图页面警告图标*/
+.map-sidebar{
+    position: absolute;
+    padding: 4px 6px;
+    bottom: 230px;
+    left: 8px;
+    background: rgba(139, 164, 220,0.4);
+}
+.map-sidebar span{
+    font-size: 16px;
+    font-weight: 700;
+}
+.map-sidebar .btn{
+    padding: 4px 7px;
 }

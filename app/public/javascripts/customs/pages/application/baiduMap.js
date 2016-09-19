@@ -138,6 +138,7 @@
                 dataType: 'json',
                 success: function (Data) {
                     // 清除所有地图覆盖物（不包括行政区域）
+
                     remove_overlay_markers();
                     var len = Data.length;
                     //console.log(len)
@@ -206,18 +207,22 @@
     function ajax_load_ctrlBox(callback) {
         //初始化加载控制面板数据
         var mapSwitchBox = $("#mapSwitchBox");
+        var controlGroup = mapSwitchBox.find(".control-group");
+        var widgetMain = mapSwitchBox.find("widget-main");
         $.ajax({
+
             url: "/api/maps/getAllProjInfo",// 后台接口
             data: {},
             type: 'post',
             dataType: 'json',
             success: function (Data) {
-                mapSwitchBox.html("");
+                controlGroup.html("");
                 var len = Data.length;
                 //console.log(len)
                 for (var i = 0; i < len; i++) {
-                    mapSwitchBox.append('<div class="checkbox"><label class="block"><input name="siteSwitch" type="checkbox" class="ace input-lg" data-ProjNum=' + Data[i].ProjNum + ' checked><span class="lbl bigger-120"> ' + Data[i].ProjName + '</span> </label></div>')
+                    controlGroup.append('<div class="checkbox"><label class="block"><input name="siteSwitch" type="checkbox" class="ace input-lg" data-ProjNum=' + Data[i].ProjNum + ' checked><span class="lbl bigger-120"> ' + Data[i].ProjName + '</span> </label></div>')
                 }
+
             },
             error: function (e) {
                 console.log(e)
@@ -243,8 +248,8 @@
             },
             type: 'post',
             dataType: 'json',
-            beforeSend: function () {
-                "static" == siteInfoWindow.css("position") && (siteInfoWindow.addClass("position-relative")),
+            beforeSend: function(){
+                "static"==siteInfoWindow.css("position")&&(siteInfoWindow.addClass("position-relative")),
                     siteInfoWindow.append('<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>');
             },
             success: function (Data) {
@@ -277,8 +282,8 @@
             },
             type: 'post',
             dataType: 'json',
-            beforeSend: function () {
-                "static" == deviceInfoBox.css("position") && (deviceInfoBox.addClass("position-relative")),
+            beforeSend: function(){
+                "static"==deviceInfoBox.css("position")&&(deviceInfoBox.addClass("position-relative")),
                     deviceInfoBox.append('<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>');
             },
             success: function (Data) {
@@ -507,7 +512,7 @@
     function addCovering(_data, Cindex) {
         addMarker(_data, Cindex);   // 添加站点图标
         addLabel(_data, Cindex);    // 添加站点文字标签
-        addElectricField(_data, Cindex);       // 添加覆盖范围
+        addPolygon(_data, Cindex);       // 添加覆盖范围
     }
 
     /**
@@ -522,9 +527,10 @@
             var point = new BMap.Point(OHLongitude, OHLatitude);
             // 添加文字标签
             //自定义图标
-            //var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(50, 50));
-            //var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
-            var marker = new BMap.Marker(point);  // 创建标注
+            var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(40, 40));
+            var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+            //var marker = new BMap.Marker(point);  // 创建标注
+
 
             marker.addEventListener('click', function (e) {
                 stopBubble(e);
@@ -549,7 +555,7 @@
      * 功能说明： 场强覆盖范围
      * 参数说明: [_data: 某个站点的全部数据]
      */
-    function addElectricField(_data, Cindex) {
+    function addPolygon(_data, Cindex) {
 
         if (notNull(_data.OHDetail)) {
             var OHDetail = _data.OHDetail.split("&");
@@ -604,7 +610,6 @@
                 border: "none",
                 fontFamily: "微软雅黑"
             });
-
 
             label.addEventListener('click', function (e) {
                 stopBubble(e);
@@ -684,11 +689,11 @@
      * 功能说明： 单击获取点击的经纬度
      * 参数说明: [ppArr: 存储所选坐标点]
      */
-    var ppArr = "";
-    map.addEventListener("click", function (e) {
-        ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
-        console.log(ppArr)
-    });
+    //var ppArr = "";
+    //map.addEventListener("click", function (e) {
+    //    ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
+    //    console.log(ppArr)
+    //});
 
 
     /* ********************************************** 基础javascript工具 ****************************************** */

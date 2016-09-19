@@ -197,13 +197,47 @@ exports.findDataByProIdAndSiteId = function (ProjNum, siteID, callback) {
             if (o) {
                 var sites = o[0].sites = [];
                 sites.push({
-                    "SiteName":"显示全部"
+                    "SiteName": "显示全部"
                 });
                 callback(o)
             } else {
                 callback(null)
             }
         })
+    }
+};
+
+//传入当前选中站点的项目ID 和 站点 ID 用来查出对应的所有设备数据
+exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) {
+
+    if (siteID === "all") {
+        var devicesInfo = [];
+        NsOHBasicSite.find({"ProjectID": ProjID}, {"_id": 0, "SiteNum": 1}).toArray(function (err, sitesNumArry) {
+            if (err) {
+                callback(err)
+            } else {
+                var len = sitesNumArry.length;
+                sitesNumArry.forEach(function (item, index) {
+                    NsOHBasicDevice.find({"SiteID": item.SiteNum}, {"_id": 0}).toArray(function (err, deviceInfo) {
+
+                        console.log(deviceInfo);
+                        devicesInfo.concat(deviceInfo);
+                        console.log(devicesInfo);
+
+                        if (index == len - 1) {
+                            callback(devicesInfo);
+                        }
+                    });
+                });
+            }
+        })
+    } else {
+        NsOHBasicDevice.find({"SiteID": siteID}, {"_id": 0}).toArray(function (err, deviceInfo) {
+            if (err) {
+                callback(err)
+            }
+            callback(deviceInfo);
+        });
     }
 };
 
