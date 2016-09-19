@@ -195,6 +195,10 @@ exports.findDataByProIdAndSiteId = function (ProjNum, siteID, callback) {
             "ProjName": 1
         }).toArray(function (err, o) {
             if (o) {
+                var sites = o[0].sites = [];
+                sites.push({
+                    "SiteName":"显示全部"
+                });
                 callback(o)
             } else {
                 callback(null)

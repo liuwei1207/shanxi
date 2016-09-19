@@ -182,6 +182,14 @@ exports.getAllRecords = function (callback) {
         });
 }
 
+exports.getAllRecordsCount = function (callback) {
+    accounts.find().count(
+        function (e, res) {
+            if (e) callback(e);
+            else callback(null, res);
+        });
+}
+
 exports.delAllRecords = function (callback) {
     accounts.remove({}, callback); // reset accounts collection for testing //
 }

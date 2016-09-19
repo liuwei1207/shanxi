@@ -493,7 +493,7 @@
     function addCovering(_data, Cindex) {
         addMarker(_data, Cindex);   // 添加站点图标
         addLabel(_data, Cindex);    // 添加站点文字标签
-        addPolygon(_data, Cindex);       // 添加覆盖范围
+        addElectricField(_data, Cindex);       // 添加覆盖范围
     }
 
     /**
@@ -511,7 +511,6 @@
             //var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(50, 50));
             //var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
             var marker = new BMap.Marker(point);  // 创建标注
-
 
             marker.addEventListener('click', function (e) {
                 stopBubble(e);
@@ -536,7 +535,7 @@
      * 功能说明： 场强覆盖范围
      * 参数说明: [_data: 某个站点的全部数据]
      */
-    function addPolygon(_data, Cindex) {
+    function addElectricField(_data, Cindex) {
 
         if (notNull(_data.OHDetail)) {
             var OHDetail = _data.OHDetail.split("&");
@@ -581,7 +580,7 @@
                 position: point,    // 指定文本标注所在的地理位置
                 offset: new BMap.Size(15, -30)    //设置文本偏移量
             };
-            var label = new BMap.Label('<a href="#" class="m-mapLabel" data-alert="1">' + SiteName + '</a>', opts);  // 创建文本标注对象
+            var label = new BMap.Label('<a class="m-mapLabel" data-alert="1">' + SiteName + '</a>', opts);  // 创建文本标注对象
             label.setStyle({
                 color: "#1291a9",
                 fontSize: "16px",
@@ -591,6 +590,19 @@
                 border: "none",
                 fontFamily: "微软雅黑"
             });
+
+
+            label.addEventListener('click', function (e) {
+                stopBubble(e);
+                Crtindex = Cindex;
+                currentSiteDataCache = allSiteDataCache[Crtindex];
+                currentPolygonCache = polygonCache[Crtindex];
+                currentMarkerCache = markerCache[Crtindex];
+                reloadCurrentSiteInfo(currentSiteDataCache);
+                addSiteSelected(currentPolygonCache, polygonCache);
+                panTo_currentMarkerPoint(currentSiteDataCache);
+            });
+
             labelCache.push(label);
             map.addOverlay(label);
         }
@@ -658,11 +670,11 @@
      * 功能说明： 单击获取点击的经纬度
      * 参数说明: [ppArr: 存储所选坐标点]
      */
-    //var ppArr = "";
-    //map.addEventListener("click", function (e) {
-    //    ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
-    //    console.log(ppArr)
-    //});
+    var ppArr = "";
+    map.addEventListener("click", function (e) {
+        ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
+        console.log(ppArr)
+    });
 
 
     /* ********************************************** 基础javascript工具 ****************************************** */

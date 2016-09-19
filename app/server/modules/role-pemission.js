@@ -122,6 +122,14 @@ exports.getAllRecords = function (callback) {
     });
 };
 
+exports.getAllRecordsCount = function (callback) {
+    Role.find().count(function (e, res) {
+        if (e) callback(e);
+        else callback(null, res);
+    });
+};
+
+
 exports.getAllRecordsName = function (callback) {
     Role.find({}, {name: 1}).toArray(function (e, res) {
         if (e) callback(e);

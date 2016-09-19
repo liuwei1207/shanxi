@@ -8,6 +8,7 @@ var svgCaptcha = require('svg-captcha');
 var fs = require('fs');
 var parser = require('ua-parser-js');
 var path = require('path');
+var URL = require('url');
 var moment = require('moment');
 moment.locale('zh-cn');
 
@@ -16,17 +17,17 @@ var leftNavDatas = {};
 
 var topNavData = [
     {
-        "NavName": "音频监听",
-        "link": "/user/monitor/"
+        "NavName": "监控主页",
+        "link": "/user/monitor"
     },
     {
         "NavName": "地图主页",
         "link": "/user/map"
     },
-    {
-        "NavName": "报警列表",
-        "link": "/user/alert"
-    },
+    //{
+    //    "NavName": "报警列表",
+    //    "link": "/user/alert"
+    //},
     {
         "NavName": "音频测试",
         "link": "/user/audioTest"
@@ -777,6 +778,11 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/monitor/', auth, function (req, res) {
+
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "").replace("/", "");
+        pathname = "/user/" + pathname;
+        //console.log(pathname)
+
         SM.findLeftNavDatas(function (e) {
             leftNavDatas = e;
             res.redirect('/user/monitor/' + leftNavDatas[0].ProjNum + '/all');
@@ -814,65 +820,35 @@ module.exports = function (app) {
     });
 
     /**
-     * 路由说明： 监控主页 - 站点总览
-     * 鉴权说明： 登陆校验, 页面访问权限校验
-     * method: GET
-     */
-    app.get('/user/monitor/:ProjectID/all', auth, pageAuthority, function (req, res, next) {
-        //查询初始化信息
-        SM.findLeftNavDatas(function (e) {
-            var leftNavDatas = e;
-            if (!req.session.user) {
-                // if user is not logged-in redirect back to login page //
-                res.redirect('/login');
-            } else {
-                var currentProjectID = req.params.ProjectID;
-                var currentSiteID = "all";
-                SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (o) {
-                    res.render('./application/index-siteView.html', {
-                        title: '山西-吉兆 -- 监控主页',
-                        currentProjectID: currentProjectID,
-                        currentSiteID: currentSiteID,
-                        leftNavDatas: leftNavDatas,
-                        mainDatas: o,
-                        topNavData: topNavData,
-                        udata: req.session.user
-                    });
-                });
-            }
-        });
-    });
-
-    /**
      * 路由说明： 监控主页 - 设备总览
      * 鉴权说明： 登陆校验, 页面访问权限校验
      * method: GET
      */
     app.get('/user/monitor/:ProjectID/:SiteID', auth, pageAuthority, function (req, res, next) {
 
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "").replace( /\/.*/g, "");
+        pathname = "/user/" + pathname;
+        //console.log(pathname)
 
         //查询初始化信息
         SM.findLeftNavDatas(function (e) {
             var leftNavDatas = e;
-            if (!req.session.user) {
-                // if user is not logged-in redirect back to login page //
-                res.redirect('/login');
-            } else {
-                var currentProjectID = req.params.ProjectID;
-                var currentSiteID = req.params.SiteID;
-                SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (o) {
-                    res.render('./application/index-deviceView.html', {
-                        title: '山西-吉兆 -- 监控主页',
-                        currentProjectID: currentProjectID,
-                        currentSiteID: currentSiteID,
-                        leftNavDatas: leftNavDatas,
-                        mainDatas: o,
-                        topNavData: topNavData,
-                        udata: req.session.user
-                    });
+            var currentProjectID = req.params.ProjectID;
+            var currentSiteID = req.params.SiteID;
+            SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (o) {
+                res.render('./application/index.html', {
+                    title: '山西-吉兆 -- 监控主页',
+                    currentProjectID: currentProjectID,
+                    currentSiteID: currentSiteID,
+                    leftNavDatas: leftNavDatas,
+                    topNavSelected: pathname,
+                    mainDatas: o,
+                    topNavData: topNavData,
+                    udata: req.session.user
                 });
-            }
+            });
         });
+
     });
 
     /**
@@ -881,11 +857,17 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/map', auth, pageAuthority, function (req, res, next) {
-        updateMajorData();  //这个应该放在编辑页面里面
+        //updateMajorData();  //这个应该放在编辑页面里面
+
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "");
+        pathname = "/user/" + pathname;
+        //console.log(pathname)
+
         res.render('./application/map', {
-            title: '山西-吉兆 -- 监控主页',
+            title: '山西-吉兆 -- 地图主页',
             udata: req.session.user,
-            topNavData: topNavData
+            topNavData: topNavData,
+            topNavSelected: pathname
         });
     });
 
@@ -941,14 +923,13 @@ module.exports = function (app) {
      */
     app.get('/admin', auth, pageAuthority, function (req, res) {
         var dashboardInfo = {};
-        AM.getAllRecords(function (e, a) {
-            dashboardInfo.userNum = a.length;
+        AM.getAllRecordsCount(function (e, a) {
+            dashboardInfo.userNum = a;
 
-            RP.getAllRecords(function (e, b) {
-                dashboardInfo.roleNum = b.length
-
-                LM.getAllRecords(function (e, c) {
-                    dashboardInfo.logNum = c.length
+            RP.getAllRecordsCount(function (e, b) {
+                dashboardInfo.roleNum = b;
+                LM.getAllRecordsCount(function (e, c) {
+                    dashboardInfo.logNum = c;
 
                     res.render('./admin/index', {
                         title: "山西-吉兆 -- 管理首页",
@@ -1140,13 +1121,36 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/audioTest', auth, pageAuthority, function (req, res) {
+
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "");
+        pathname = "/user/" + pathname;
+        //console.log(pathname)
+
         res.render('./application/audioTest', {
             title: "山西-吉兆 -- 音频测试",
             udata: req.session.user,
-            topNavData: topNavData
+            topNavData: topNavData,
+            topNavSelected: pathname
         });
     });
 
+    /**
+     * 路由说明： socket测试页面
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/stest', auth, pageAuthority, function (req, res) {
+
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "");
+        pathname = "/user/" + pathname;
+
+        res.render('./application/websocket', {
+            title: "山西-吉兆 -- 音频测试",
+            udata: req.session.user,
+            topNavData: topNavData,
+            topNavSelected: pathname
+        });
+    });
     /**
      * 路由说明： 设置页面
      * 鉴权说明： 登陆校验，页面访问权限校验

@@ -30,7 +30,7 @@ db.open(function (e, d) {
                 }
             });
         } else {
-            console.log('mongo :: connected to database  without authenticated  - LM :: "'+dbName+'"');
+            console.log('mongo :: connected to database  without authenticated  - LM :: "' + dbName + '"');
         }
     }
 });
@@ -49,6 +49,14 @@ exports.getAllRecords = function (callback) {
     Log.find().toArray(function (e, res) {
         if (e) callback(e);
         else callback(null, res);
+    });
+};
+
+/* get all log */
+exports.getAllRecordsCount = function (callback) {
+    Log.find().count(function (e, o) {
+        if (e) callback(e);
+        else callback(null, o);
     });
 };
 
