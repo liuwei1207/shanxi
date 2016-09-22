@@ -103,23 +103,25 @@
     </div>
 </div>
 
-<div class="map-sidebar">
-    <span>图例:</span>
-    <button class="btn btn-success">
-        正常
-    </button>
+<div class="map-sidebar" style="">
+    <span data-change="launch">图例:</span>
+    <div id="launch">
+        <button class="btn btn-success">
+            正常
+        </button>
 
-    <button class="btn btn-gray">
-        掉线
-    </button>
+        <button class="btn btn-gray">
+            掉线
+        </button>
 
-    <button class="btn btn-warning">
-        警告
-    </button>
+        <button class="btn btn-warning">
+            警告
+        </button>
 
-    <button class="btn btn-danger">
-        异常
-    </button>
+        <button class="btn btn-danger">
+            异常
+        </button>
+    </div>
 </div>
 
 <div class="m-deviceInfoBox" id="deviceInfoBox">
@@ -158,5 +160,16 @@
 
 <!-- inline scripts related to this page -->
 <script src="/javascripts/customs/pages/application/baiduMap.js"></script>
+<script type="text/javascript">
+    var launch_bnt=$('[data-change=launch]');
+    var launch = $("#launch");
+    launch_bnt.on("click",function(){
+    if(launch.css("width")=="0px"){
+        launch.animate({width:"220px",height:"100%"},60);
+    }else{
+        launch.animate({width:"0px",height:"100%"},60);
+    }
+})
+</script>
 </body>
 </html>

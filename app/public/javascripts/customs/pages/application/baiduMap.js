@@ -208,7 +208,7 @@
         //初始化加载控制面板数据
         var mapSwitchBox = $("#mapSwitchBox");
         var controlGroup = mapSwitchBox.find(".control-group");
-        var widgetMain = mapSwitchBox.find("widget-main");
+        var widgetMain = mapSwitchBox.find(".widget-main");
         $.ajax({
 
             url: "/api/maps/getAllProjInfo",// 后台接口
@@ -216,6 +216,7 @@
             type: 'post',
             dataType: 'json',
             success: function (Data) {
+                remove_load_animal(widgetMain);
                 controlGroup.html("");
                 var len = Data.length;
                 //console.log(len)
@@ -239,7 +240,8 @@
 
         var siteInfoWindow = $("#siteInfoWindow");
         var siteID = _Data.ID;
-
+        var beforeTime = 0;  //获取ajax传输前的秒数
+        var successTime = 0; //获取ajax传输成功的秒数
         //初始化加载站点详细信息窗口数据
         $.ajax({
             url: "/api/maps/getSiteInfoBySiteID",// 后台接口
@@ -249,11 +251,27 @@
             type: 'post',
             dataType: 'json',
             beforeSend: function(){
-                "static"==siteInfoWindow.css("position")&&(siteInfoWindow.addClass("position-relative")),
-                    siteInfoWindow.append('<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>');
+                remove_load_animal(siteInfoWindow);//移除加载动画
+                add_load_animal(siteInfoWindow);//添加加载动画
+                beforeTime=+new Date();//获取当前秒数
+                console.log(beforeTime);
             },
             success: function (Data) {
-                siteInfoWindow.html(Data[0].SiteName);
+               var minute = 0; //计算时间差
+                successTime=+new Date();//获取当前秒数
+                if(successTime>=beforeTime){
+                    minute=successTime-beforeTime;
+                }else{
+                    minute=beforeTime-successTime;
+                }
+                if(minute >= 500) {
+                    siteInfoWindow.html(Data[0].SiteName);
+                }
+                else{
+                    setTimeout(function(){
+                        siteInfoWindow.html(Data[0].SiteName);
+                    },500)
+                }
                 //已经获得了所有数据， 暂时不知道要怎么展示， 先显示一条站点名称；
             },
             error: function (e) {
@@ -262,6 +280,26 @@
             }
         });
     }
+
+    /**
+     * 功能说明： 添加加载动画
+     * 参数说明: e为要添加加载动画的元素
+     * method: POST
+     */
+    function add_load_animal(e){
+        e.append('<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>');
+    }
+
+    /**
+     * 功能说明： 删除加载动画
+     * 参数说明: e为所需删除加载动画的元素
+     * method: POST
+     */
+    function remove_load_animal(e){
+        var echild=e.children(".widget-box-overlay");
+        echild.remove();
+    }
+
 
     /**
      * 功能说明： ajax请求后台数据， 获取选中站点的所有设备数据
@@ -273,6 +311,8 @@
         var deviceInfoBox = $("#deviceInfoBox");
         var siteID = _Data.ID;
         var siteName = _Data.SiteName;
+        var beforeTime = 0;  //获取ajax传输前的分钟数
+        var successTime = 0; //获取ajax传输成功的数据
 
         //初始化加载站点详细信息窗口数据
         $.ajax({
@@ -283,27 +323,48 @@
             type: 'post',
             dataType: 'json',
             beforeSend: function(){
-                "static"==deviceInfoBox.css("position")&&(deviceInfoBox.addClass("position-relative")),
-                    deviceInfoBox.append('<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>');
+                remove_load_animal(deviceInfoBox);//移除加载动画
+                add_load_animal(deviceInfoBox);//添加加载动画
+                beforeTime=+new Date();//获取当前秒数
             },
             success: function (Data) {
 
                 var _h3_HTML = deviceInfoBox.find("h3");
                 var _ul_HTML = deviceInfoBox.find("ul");
-
-                _h3_HTML.html("");
-                _ul_HTML.html("");
-
-                var len = Data.length;
-                _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
-
-                for (var i = 0; i < len; i++) {
-                    _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
-                }
-
+                var minute = 0; //计算时间差
                 //清除加载动画
-                deviceInfoBox.removeClass("position-relative");
-                $(".widget-box-overlay").remove();
+                successTime=+new Date();//获取当前秒数
+                if(successTime>=beforeTime){
+                    minute=successTime-beforeTime;
+                }else{
+                    minute=beforeTime-successTime;
+                }
+                if(minute >= 500) {
+                    remove_load_animal(deviceInfoBox);
+                    _h3_HTML.html("");
+                    _ul_HTML.html("");
+
+                    var len = Data.length;
+                    _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
+
+                    for (var i = 0; i < len; i++) {
+                        _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
+                    }
+                }
+                else{
+                    setTimeout(function(){
+                        remove_load_animal(deviceInfoBox);
+                        _h3_HTML.html("");
+                        _ul_HTML.html("");
+
+                        var len = Data.length;
+                        _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
+
+                        for (var i = 0; i < len; i++) {
+                            _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
+                        }
+                    },500)
+                }
 
             },
             error: function (e) {
@@ -318,8 +379,6 @@
      * 参数说明: 无
      */
     function loadSiteData(_data) {
-        var siteInfoWindow = $("#siteInfoWindow");
-        siteInfoWindow.html("正在加载数据, 请稍后..");
         ajax_load_siteInfoWindow(_data);
         ajax_load_deviceInfoBox(_data);
     }
