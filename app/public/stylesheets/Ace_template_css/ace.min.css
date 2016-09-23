@@ -9749,7 +9749,7 @@ input.ace + .lbl.padding-0::before {
 
 .tab-content {
     border: 1px solid #C5D0DC;
-    padding: 16px 12px;
+    padding: 8px 12px;
     position: relative
 }
 
@@ -11196,19 +11196,26 @@ tr.detail-row > td {
 .widget-main .tab-content {
     border-width: 0
 }
+.widget-main .tab-content .media-left{
+    position: relative;
+}
 .widget-main .tab-content .strapping{
     background: red;
     position: absolute;
-    top:53px;
-    left: 14px;
+    top:37px;
+    left: 2px;
     width: 80px;
     height: 240px;
 }
 .widget-main .media-body .real-time-data{
     margin-bottom: 10px;
-    border: 1px solid #000;
-    height: 242px;
-
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    height: 247px;
+    overflow-y: scroll;
+}
+.history-time-data .table-bordered{
+    min-height: 225px;
 }
 .widget-toolbar > .nav-tabs {
     border-bottom-width: 0;

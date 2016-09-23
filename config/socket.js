@@ -33,14 +33,22 @@ nodeServer.on('data', function (dataPackage) {
     //console.log(dataPackage.toString());
 
     //这里对收到每一个片段包的数据进行处理
-    splicingDataPackage(dataPackage.toString());
+    try {
+        splicingDataPackage(dataPackage.toString());
+    } catch (err) {
+        console.log("处理程序异常 ：");
+        console.log(err);
+        console.log(dataPackage);
+    }
 
     //// 完全关闭连接
     //nodeServer.destroy();
 });
 
 // 一定时间没收到数据则断开连接!
-var waitTime = 5; //min
+var waitTime = 15; //min
+var retry = null;//重试定时器
+var timer = 5; //sec
 
 //设置超时时间
 nodeServer.setTimeout(1000 * 60 * waitTime, function () {
@@ -48,20 +56,36 @@ nodeServer.setTimeout(1000 * 60 * waitTime, function () {
 });
 //监听到超时事件，断开连接
 nodeServer.on('timeout', function () {
-    nodeServer.end();
+    nodeServer.destroy();
 });
 
 // 为客户端添加"close"事件处理函数
 nodeServer.on('close', function (had_error) {
     console.log('Connection closed' + had_error);
 
-    reconnectToTcpSocketServer();
+    // 完全关闭连接
+    nodeServer.destroy();
+
+    if (!retry) {
+        retry = setInterval(function () {
+            reconnectToTcpSocketServer();
+        }, timer * 1000)
+    }
+
 });
 
 // 当 socket 另一端发送 FIN 包时，触发该事件。
 nodeServer.on('end', function () {
     console.log('断开与服务器的连接');
-    reconnectToTcpSocketServer();
+
+    // 完全关闭连接
+    nodeServer.destroy();
+
+    if (!retry) {
+        retry = setInterval(function () {
+            reconnectToTcpSocketServer();
+        }, timer * 1000)
+    }
 });
 
 // 捕捉客户端的异常
@@ -74,12 +98,12 @@ nodeServer.on('error', function (e) {
 //tcp socket 断线重连
 function reconnectToTcpSocketServer() {
 
-    // 完全关闭连接
-    nodeServer.destroy();
-
     nodeServer.connect(PORT, HOST, function () {
 
+        clearInterval(retry);
+
         console.log('RE-CONNECTED TO: ' + HOST + ':' + PORT);
+
         // 建立连接后立即向服务器发送数据，服务器将收到这些数据
         nodeServer.write('0028{"login":"who","pwd":"xxxx"}');   // server login
 
@@ -103,7 +127,7 @@ function splicingDataPackage(dataPackageStr) {
 
             Cmoment = +new Date(); //每一包完整数据， 重置时间戳标记!
             splicingDataCacheObj[Cmoment] = {}; //设置为对象
-            splicingDataCacheObj[Cmoment].value = dataPackageStr.replace(/^\[(START)\d{4}\]/, "").replace(/\[end\]$/, "");
+            splicingDataCacheObj[Cmoment].value = dataPackageStr;
 
             var result1 = splicingDataCacheObj[Cmoment].value;  //合并后的最终数据！
 
@@ -117,7 +141,7 @@ function splicingDataPackage(dataPackageStr) {
             Cmoment = +new Date(); //每一包新数据， 重置时间戳标记!
             splicingDataCacheObj[Cmoment] = {}; //设置为对象
             splicingDataCacheObj[Cmoment]._length = dataPackageStr.match(/^\[(START)\d{4}\]/)[0].match(/\d{4}/)[0];     //设置数字长度
-            splicingDataCacheObj[Cmoment].value = dataPackageStr.replace(/^\[(START)\d{4}\]/, "");
+            splicingDataCacheObj[Cmoment].value = dataPackageStr;
         }
     }
     //一包数据只包含结束位， 那可以确定这是最后一包数据
@@ -125,7 +149,7 @@ function splicingDataPackage(dataPackageStr) {
 
         //console.log("这是最后一包数据!");
 
-        splicingDataCacheObj[Cmoment].value += dataPackageStr.replace(/\[end\]$/, "");
+        splicingDataCacheObj[Cmoment].value += dataPackageStr;
 
         var result2 = splicingDataCacheObj[Cmoment].value;  //合并后的最终数据！
         //删除该处理程序分支 - 释放内存空间
@@ -159,7 +183,7 @@ function splicingDataPackage(dataPackageStr) {
 
     //正则判断一个数据包是否为最后一包
     function isEndPackage(dataPackage) {
-        var Reg = /\[end\]$/;
+        var Reg = /\[END\]$/;
         return Reg.test(dataPackage);
     }
 
@@ -168,20 +192,49 @@ function splicingDataPackage(dataPackageStr) {
     function testDataLength(result) {
 
         if (result._length = result.length) {
-            //console.log("数据长度与预设长度相同， 保留数据， 并送入缓存模块!")
+            //console.log("数据长度与预设长度相同， 保留数据， next!")
 
-            countNum++; //接受计数器+1
-            console.log(countNum);
-            //console.log("共计收到： " + countNum + " 条完整的socket数据");
 
-            var deviceID = result.match(/"deviceID" : \"(\w{35})\"/)[0].replace(/^"deviceID" : \"/, "").replace('"', "");   //设备ID 35位
-            var expire = 1000 * 60 * 5; //5分钟没数据 即清空缓存， 页面可以直观得到显示！
+            //判断是否为心跳包
+            if (isKeeyAlive(result)) {
+                console.log("这是心跳包!");
 
-            //此处为写入缓存模块代码
-            cache.set(deviceID, result, expire);
+                //收到心跳包， 就立即回送一包心跳包;
+                sendAResponsePackage();
+
+            } else {
+                //console.log("共计收到： " + countNum + " 条完整的socket数据");
+
+                addToCache(result);
+            }
+
         } else {
             console.log("数据设置长度 " + result._length + " 与拼接后的实际长度 " + result.length + " 不符， 该条数据丢弃！");
             console.log(result);
+        }
+
+        //接收到心跳包， 则回送响应包
+        function sendAResponsePackage() {
+            //nodeServer.write('[START0020]{"keepAlive":"true"}[END]');   // server login
+        }
+
+        //判断拼接后的数据是否为心跳包！
+        function isKeeyAlive(result) {
+            var Reg = /^\[START0020\]\{"keepAlive":"\w*"}\[END\]/;
+            return Reg.test(result);
+        }
+
+        //将模块处理后的最终数据 送入缓存模块！
+        function addToCache(result) {
+            //去掉标识位置， 获得最终数据！
+            var _finalResult = result.replace(/^\[(START)\d{4}\]/, "").replace(/\[END\]$/, "");
+            var deviceID = _finalResult.match(/"deviceID" : \"(\w{35})\"/)[0].replace(/^"deviceID" : \"/, "").replace('"', "");   //设备ID 35位
+            var expire = 1000 * 60 * 5; //5分钟没数据 即清空缓存， 页面可以直观得到显示！
+
+            //此处为写入缓存模块代码
+            cache.set(deviceID, _finalResult, expire);
+            countNum++; //接收计数器+1
+            //console.log(countNum);
         }
     }
 }
