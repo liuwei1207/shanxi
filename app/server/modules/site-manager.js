@@ -2,6 +2,7 @@ var MongoDB = require('mongodb').Db;
 var ObjectId = require('mongodb').ObjectID;
 var Server = require('mongodb').Server;
 var config = require("../../../config/config");
+var chokidar = require("../../../config/chokidar");
 var _ = require("underscore")._;
 
 /*
@@ -220,7 +221,7 @@ exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) 
             } else {
 
                 var lastSiteNum = _.last(sitesNumArry);
-                var sitesNumArryIndex = sitesNumArry.length -1;
+                var sitesNumArryIndex = sitesNumArry.length - 1;
 
                 //该项目下有n个站点， 循环查询
                 sitesNumArry.forEach(function (item, index, self) {
@@ -268,3 +269,15 @@ exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) 
 function breakOutTest(lastSiteNum, item, index, sitesNumArryIndex) {
     return _.isEqual(lastSiteNum, item) && (index == sitesNumArryIndex)
 }
+
+
+//传入当前选中站点的项目ID 和 站点 ID 用来查出对应的所有设备数据
+exports.getAllHistoricalAudioDataByDeviceID = function (deviceID, pageNumber, pageSize, callback) {
+    console.log(deviceID);
+    console.log(pageNumber);
+    console.log(pageSize);
+
+    var HistoricalAudioDataPath = '/historicalAudioData/';
+
+
+};

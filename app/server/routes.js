@@ -777,6 +777,26 @@ module.exports = function (app) {
         })
     });
 
+    /**
+     * 路由说明： 监控主页 - 获得对应设备的历史音频数据
+     * 鉴权说明： 登陆校验
+     * method: POST
+     */
+    app.post('/api/monitors/getAllHistoricalAudioDataByDeviceID', auth, function (req, res) {
+        var deviceID = req.body['deviceID'];
+        var pageNumber = req.body['pageNumber'];
+        var pageSize = req.body['pageSize'];
+        SM.getAllHistoricalAudioDataByDeviceID(deviceID, pageNumber, pageSize, function (err, result) {
+            if (err) {
+                res.json("false");
+                res.end()
+            } else {
+                res.json(result);
+                res.end()
+            }
+        })
+    });
+
     /* ********************************************** 页面级路由 **************************************************** */
     /**
      * 路由说明： 主页路径跳转路由
@@ -874,7 +894,7 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/map', auth, pageAuthority, function (req, res, next) {
-        //updateMajorData();  //这个应该放在编辑页面里面
+        updateMajorData();  //这个应该放在编辑页面里面
 
         var pathname = URL.parse(req.url).pathname.replace("/user/", "");
         pathname = "/user/" + pathname;

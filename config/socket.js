@@ -4,7 +4,7 @@
 var net = require('net');
 var moment = require('moment');
 var config = require("./config");
-var cache = require("./cache");
+require("./cache");
 
 
 var HOST = config.tcpSocket.HOST;
@@ -21,7 +21,7 @@ nodeServer.connect(PORT, HOST, function () {
 
     console.log('CONNECTED TO: ' + HOST + ':' + PORT);
     // 建立连接后立即向服务器发送数据，服务器将收到这些数据
-    nodeServer.write('0028{"login":"who","pwd":"xxxx"}');   // server login
+    nodeServer.write('[START0028]{"login":"who","pwd":"xxxx"}[END]');   // server login
 
 });
 
@@ -105,7 +105,7 @@ function reconnectToTcpSocketServer() {
         console.log('RE-CONNECTED TO: ' + HOST + ':' + PORT);
 
         // 建立连接后立即向服务器发送数据，服务器将收到这些数据
-        nodeServer.write('0028{"login":"who","pwd":"xxxx"}');   // server login
+        nodeServer.write('[START0028]{"login":"who","pwd":"xxxx"}[END]');   // server login
 
     });
 
@@ -197,7 +197,7 @@ function splicingDataPackage(dataPackageStr) {
 
             //判断是否为心跳包
             if (isKeeyAlive(result)) {
-                console.log("这是心跳包!");
+                //console.log("这是心跳包!");
 
                 //收到心跳包， 就立即回送一包心跳包;
                 sendAResponsePackage();
@@ -215,7 +215,7 @@ function splicingDataPackage(dataPackageStr) {
 
         //接收到心跳包， 则回送响应包
         function sendAResponsePackage() {
-            //nodeServer.write('[START0020]{"keepAlive":"true"}[END]');   // server login
+            nodeServer.write('[START0020]{"keepAlive":"true"}[END]');   // server login
         }
 
         //判断拼接后的数据是否为心跳包！
@@ -232,7 +232,7 @@ function splicingDataPackage(dataPackageStr) {
             var expire = 1000 * 60 * 5; //5分钟没数据 即清空缓存， 页面可以直观得到显示！
 
             //此处为写入缓存模块代码
-            cache.set(deviceID, _finalResult, expire);
+            GLOBAL_CACHE.set(deviceID, _finalResult, expire);
             countNum++; //接收计数器+1
             //console.log(countNum);
         }
