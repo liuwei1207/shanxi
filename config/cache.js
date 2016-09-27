@@ -2,7 +2,7 @@
  * Created by Liuwei on 2016/9/20.
  */
 
-//缓存容器
+//全局缓存容器
 
 global.GLOBAL_CACHE = {};
 

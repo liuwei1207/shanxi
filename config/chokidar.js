@@ -1,8 +1,14 @@
 var fs = require('fs');
 var util = require('util');
+var config = require("./config");
 var chokidar = require('chokidar');
+var _ = require("underscore")._;
 
-var mp3File = "./app/public/historicalAudioData"; //历史音频存放地址!
+var mp3File = config.historicalAudioDataPath;
+
+var fileJsonTemp = {
+    "time": ""
+};
 
 /**
  * Created by Liuwei on 2016/9/26.
@@ -17,12 +23,35 @@ var watcher = chokidar.watch(mp3File, {
 
 // Something to use when events are received.
 var log = console.log.bind(console);
+
+var setExplorer = null;
+
 // Add event listeners.
 watcher
     .on('ready', () => log('已经监听 historicalAudioData 目录下的文件变化！'))
-    .on('add', path => log(`File ${path} has been added`))
-    .on('change', path => log(`File ${path} has been changed`))
-    .on('unlink', path => log(`File ${path} has been removed`));
+    .on('add', function () {
+        fileJsonTemp = {
+            "time": ""
+        };
+        lazyRunout();
+    })
+    .on('unlink', function () {
+        fileJsonTemp = {
+            "time": ""
+        };
+        lazyRunout();
+    });
+
+
+var lazyRunout = _.debounce(function () {
+    explorer(mp3File);
+
+    var lazyWriteFile = _.debounce(function () {
+        writeFile(fileJsonTemp);
+    }, 2500);
+
+    lazyWriteFile();
+}, 100);
 
 
 /**
@@ -30,9 +59,7 @@ watcher
  * //文件遍历读取并将文件路径写入json文件
  */
 
-var fileJsonTemp = {};
-
-function explorer(path, type) {
+function explorer(path) {
     fs.readdir(path, function (err, files) {
 
         //err 为错误 , files 文件名列表包含文件夹与文件
@@ -46,6 +73,7 @@ function explorer(path, type) {
             fs.stat(path + '/' + file, function (err, stat) {
                 if (err) {
                     console.log(err);
+                    console.log(fileJsonTemp);
                     return;
                 }
                 if (stat.isDirectory()) {
@@ -54,25 +82,38 @@ function explorer(path, type) {
                 } else {
                     // 读出所有的文件
                     var allPath = path + '/' + file;
+                    console.log(allPath)
                     var deviceID = allPath.match(/\w{35}/)[0];
-                    var mp3Path = allPath.match(/\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+                    var mp3Path = allPath.match(/\/\w{35}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
 
-                    if(!isArray(fileJsonTemp[deviceID])) {
+                    if (!isArray(fileJsonTemp[deviceID])) {
                         fileJsonTemp[deviceID] = [];
                         fileJsonTemp[deviceID].push(mp3Path);
+                        fileJsonTemp.time = +new Date();
                     } else {
                         fileJsonTemp[deviceID].push(mp3Path);
+                        fileJsonTemp.time = +new Date();
                     }
                 }
             });
-
         });
-
     });
 }
 
+function writeFile(data) {
+
+    var fileName = './config/historicalAudioMp3List.json';//历史音频目录下所有设备ID对应的音频播放列表
+
+    fs.writeFile(fileName, JSON.stringify(data), {flag: 'w'}, function (err) {
+        if (err) throw err;
+        console.log("写入成功!");
+        fileJsonTemp = {
+            "time": ""
+        };
+    });
+}
+
+//判断是否为数组， 是 返回true
 function isArray(obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
 }
-
-explorer(mp3File);

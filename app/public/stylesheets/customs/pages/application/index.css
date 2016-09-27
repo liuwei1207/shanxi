@@ -101,10 +101,10 @@
 }
 
 .site-states[data-state='0']::after{
-    content: "ON";
+    content: "通信正常";
 }
 .site-states[data-state='1']::after{
-    content: "OFF";
+    content: "通信异常";
 }
 /*页脚*/
 .footer {

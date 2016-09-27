@@ -113,13 +113,14 @@
                                             <!-- nav-tabs -->
                                             <ul class="nav nav-tabs" id="myTab">
                                                 <li class="active">
-                                                    <a data-toggle="tab" href="#NM_<%=a.DeviceID%>"
-                                                       aria-expanded="true"><i class="ace-icon fa fa-exchange"></i>
+                                                    <a data-toggle="tab" href="#NM_<%=a.DeviceID%>" aria-expanded="true"
+                                                       name="实时音频监听"><i class="ace-icon fa fa-exchange"></i>
                                                         实时音频监听</a>
                                                 </li>
                                                 <li class="">
                                                     <a data-toggle="tab" href="#HM_<%=a.DeviceID%>"
-                                                       aria-expanded="false"><i class="ace-icon fa fa-history"></i>
+                                                       aria-expanded="false" name="历史音频监听"><i
+                                                            class="ace-icon fa fa-history"></i>
                                                         历史音频监听</a>
                                                 </li>
                                             </ul><!-- /nav-tabs -->
@@ -187,7 +188,7 @@
                                                                             <td>频率</td>
                                                                             <td class="position-relative"
                                                                                 title="<%= a.RegisterDeviceID %>">
-                                                                                <%= a.RegisterDeviceID %>
+                                                                                <%= a.RegisterDeviceID %> Mhz
                                                                                 <div class="tb-tail">
                                                                                     <button class="btn btn-minier btn-yellow ">
                                                                                         <i class="ace-icon fa fa-cog"></i>设置
@@ -242,123 +243,26 @@
 
                                                 <div id="HM_<%=a.DeviceID%>" class="tab-pane">
                                                     <div class="history-time-data">
-                                                        <table id="PD_<%=a.DeviceID%>" class="table table-hover">
+                                                        <table class="table table-hover Js_Mp3List">
+
                                                             <thead>
                                                             <tr>
-                                                                <td>
-                                                                    选项
-                                                                </td>
+                                                                <td> 选项</td>
                                                                 <td>序号</td>
-                                                                <td>电台名称</td>
+                                                                <td>文件名</td>
                                                                 <td>播放</td>
-                                                                <td>删除</td>
                                                                 <td>下载</td>
                                                             </tr>
                                                             </thead>
-                                                            <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox"/>
-                                                                </td>
-                                                                <td>01</td>
-                                                                <td>电台1</td>
-                                                                <td>
-                                                                    <a class="fa fa-play-circle-o"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-times" aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-cloud-download"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox"/>
-                                                                </td>
-                                                                <td>01</td>
-                                                                <td>电台1</td>
-                                                                <td>
-                                                                    <a class="fa fa-play-circle-o"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-times" aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-cloud-download"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox"/>
-                                                                </td>
-                                                                <td>01</td>
-                                                                <td>电台1</td>
-                                                                <td>
-                                                                    <a class="fa fa-play-circle-o"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-times" aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-cloud-download"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox"/>
-                                                                </td>
-                                                                <td>01</td>
-                                                                <td>电台1</td>
-                                                                <td>
-                                                                    <a class="fa fa-play-circle-o"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-times" aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-cloud-download"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox"/>
-                                                                </td>
-                                                                <td>01</td>
-                                                                <td>电台1</td>
-                                                                <td>
-                                                                    <a class="fa fa-play-circle-o"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-times" aria-hidden="true"></a>
-                                                                </td>
-                                                                <td>
-                                                                    <a class="fa fa-cloud-download"
-                                                                       aria-hidden="true"></a>
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
+
+                                                            <!-- 历史音频播放地址列表 -->
+                                                            <tbody></tbody>
+
                                                         </table>
-                                                        <ul class="pagination pagination-sm no-margin">
-                                                            <li class="disabled"><span>&laquo;</span></li>
-                                                            <li class="active"><span>1 <span
-                                                                    class="sr-only">(current)</span></span>
-                                                            </li>
-                                                            <li><a href="#">2</a></li>
-                                                            <li><a href="#">3</a></li>
-                                                            <li><a href="#">4</a></li>
-                                                            <li><a href="#">5</a></li>
-                                                            <li><a href="#">&raquo;</a></li>
-                                                        </ul>
+
+                                                        <ul class="pagination pagination-sm no-margin Js_pagination"
+                                                            id="PN_<%=a.DeviceID%>"></ul>
+
                                                     </div>
                                                 </div><!-- /tab-content -->
                                             </div>
@@ -473,6 +377,26 @@
 
         $(window).on('resize.scroll_reset', function () {
             $('.scrollable-horizontal').ace_scroll('reset');
+//            自适应实时监听面板
+            var box_width = $(".widget-container-col").width();
+            if (box_width > 320) {
+                $(".fw-left").css("display", "block");
+                $(".fw-right-content").css("margin-left", "110px")
+            } else {
+                $(".fw-left").css("display", "none");
+                $(".fw-right-content").css("margin-left", "0")
+            }
+        });
+//        当插入页边距时实时监听面板设置
+        $("#ace-settings-add-container").on('click', function () {
+            var widgetContainer = $(".widget-container-col");
+            if (widgetContainer.hasClass("col-lg-3")) {
+                widgetContainer.removeClass("col-lg-3");
+                widgetContainer.addClass("col-lg-6");
+            } else {
+                widgetContainer.removeClass("col-lg-6");
+                widgetContainer.addClass("col-lg-3");
+            }
         });
 
 
@@ -657,7 +581,7 @@
 
             if (dataObj) {
                 //实时音频监听中的html模板
-                var str1 = '<thead> <tr> <td>采集时间</td> <td> ' + dataObj.deviceData.CollTime + ' <span class="site-states" data-state="0"></span></td> </tr> </thead><tbody> <tr> <td>设备ID</td> <td class="register-tag" title="' + dataObj.deviceID + '"> ' + dataObj.deviceID + '</td> </tr> <tr>  <td>频率</td> <td class="position-relative" title="' + dataObj.deviceData.FMReceiveFQY + '"> ' + dataObj.deviceData.FMReceiveFQY + '<div class="tb-tail"> <button class="btn btn-minier btn-yellow "><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr> <td>温度</td> <td class="position-relative">' + dataObj.deviceData.RoomTemp + '<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">' + dataObj.deviceData.RoomHum + ' <span class="tb-tail">%</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">' + dataObj.deviceData.FMReviceRSSI + '<span class="tb-tail">N/C</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">' + dataObj.deviceData.FMReviceSNR + '<span class="tb-tail">db</span></td> </tr> </tbody></table></table>';
+                var str1 = '<thead> <tr> <td>采集时间</td> <td> ' + dataObj.deviceData.CollTime.split(" ")[1] + ' <span class="site-states" data-state="0"></span></td> </tr> </thead><tbody> <tr> <td>设备ID</td> <td class="register-tag" title="' + dataObj.deviceID + '"> ' + dataObj.deviceID + '</td> </tr> <tr>  <td>频率</td> <td class="position-relative" title="' + dataObj.deviceData.FMReceiveFQY + '" Mhz> ' + dataObj.deviceData.FMReceiveFQY + ' Mhz<div class="tb-tail"> <button class="btn btn-minier btn-yellow "><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr> <td>温度</td> <td class="position-relative">' + dataObj.deviceData.RoomTemp + '<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">' + dataObj.deviceData.RoomHum + ' <span class="tb-tail">%</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">' + dataObj.deviceData.FMReviceRSSI + '<span class="tb-tail">N/C</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">' + dataObj.deviceData.FMReviceSNR + '<span class="tb-tail">db</span></td> </tr> </tbody></table></table>';
 
                 try {
                     $('#WC_' + key).find(".Js_realTimeDataTabel").html(str1)
@@ -668,7 +592,7 @@
 
                 //如果该设备没有数据
             } else {
-                var str2 = '<thead> <tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> </thead> <tbody> <tr> <td>设备ID</td> <td class="register-tag" title="暂无数据"> 暂无数据</td> </tr> <tr> <td>频率</td> <td class="position-relative" title="暂无数据"> 暂无数据<div class="tb-tail"> <button class="btn btn-minier btn-yellow "><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">温度<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">温度 <span class="tb-tail">cnp</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">温度<span class="tb-tail">cnp</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">温度<span class="tb-tail">cnp</span></td> </tr> </tbody></table>';
+                var str2 = '<thead> <tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> </thead> <tbody> <tr> <td>设备ID</td> <td class="register-tag" title="暂无数据"> 暂无数据</td> </tr> <tr> <td>频率</td> <td class="position-relative" title="暂无数据"> 暂无数据<div class="tb-tail"> <button class="btn btn-minier btn-yellow "><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> </tbody></table>';
                 try {
                     $('#WC_' + key).find(".Js_realTimeDataTabel").html(str2)
                 }
@@ -685,28 +609,135 @@
 <script>
     $(document).ready(function () {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            var deviceID = e.target.href.match(/#HM_\w+$/)[0].replace("#HM_", "");
-            console.log(deviceID)
-            var pageNumber = 1;
-            var pageSize = 5;
 
-            $.ajax({
-                type: "POST",
-                url: '/api/monitors/getAllHistoricalAudioDataByDeviceID',
-                dataType: "JSON",
-                data: {
-                    "deviceID": deviceID,
-                    "pageNumber": pageNumber,
-                    "pageSize": pageSize
-                },
-                beforeSend: function () {
+            var deviceID = e.target.href.match(/#\w{2}_\w+$/)[0].replace(/#\w{2}_/, "");    //获取设备ID
 
-                },
-                success: function (data) {
-                    //成功做某事
+            //判断选中的tab 是否是 历史音频监听标签
+            if ($(this).attr("name") === "历史音频监听") {
+                var pageSize = 5;
+
+                AJAX_LOAD_Mp3List(deviceID);    //初始化加载Mp3List数据;
+
+                function AJAX_LOAD_Mp3List(deviceID, num) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/api/monitors/getAllHistoricalAudioDataByDeviceID',
+                        dataType: "JSON",
+                        data: {
+                            "deviceID": deviceID,
+                            "currentPage": num || 1,
+                            "pageSize": 5
+                        },
+                        success: function (result) {
+
+                            console.log(result);
+
+                            try {
+                                var currentPage = result.currentPage;//当前页码
+                                var pageTotal = result.pageTotal; //总条数
+                                var Mp3ListArry = result.Mp3ListArry;//音频文件地址数组
+
+                                setMp3ListData(deviceID, Mp3ListArry);
+                                //请求数据成功 - 设置分页器
+                                setPagination(deviceID, currentPage, pageSize, pageTotal);
+
+
+                            } catch (err) {
+                                console.log(err);
+                            }
+                        }
+                    });
                 }
-            })
+
+                //通过设备ID ， 设置table中的播放列表;
+                function setMp3ListData(deviceID, Mp3ListArry) {
+
+                    var str = '';
+
+                    for (var i = 0; i < Mp3ListArry.length; i++) {
+
+                        var name = Mp3ListArry[i].match(/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+                        var path = Mp3ListArry[i].match(/\/\w{35}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+
+                        str += '<tr> <td> <input type="checkbox"/> </td> <td>' + (i + 1) + '</td> <td>' + name + '</td> <td> <a href="' + path + '" class="fa fa-play-circle-o" aria-hidden="true"></a> </td> <td> <a href="' + path + '" class="fa fa-cloud-download" aria-hidden="true"></a> </td> </tr>';
+
+                    }
+
+                    $("#HM_" + deviceID).find(".Js_Mp3List").find("tbody").html(str);
+                }
+
+                //通过设备ID ， 分页其当前选中页码， 每一页条数， 数据总条数， 来控制历史音频数据
+                function setPagination(deviceID, currentPage, pageSize, pageTotal) {
+                    try {
+                        var _pagination = $("#PN_" + deviceID);
+
+                        if (_pagination) {
+                            var pagetotal = pageTotal;  //总页数
+                            var pagesize = pageSize;   //一页上的数据条数
+                            var currentpage = currentPage;//当前页码
+                            var counts, pagehtml = "";
+                            if (pagetotal % pagesize == 0) {
+                                counts = parseInt(pagetotal / pagesize);
+                            } else {
+                                counts = parseInt(pagetotal / pagesize) + 1;
+                            }
+                            //只有一页内容
+                            if (pagetotal <= pagesize) {
+                                pagehtml = "";
+                            }
+                            //大于一页内容
+                            if (pagetotal > pagesize) {
+                                if (currentpage > 1) {
+                                    pagehtml += '<li><a class="" href="/index/' + (currentpage - 1) + '">上一页</a></li>';
+                                }
+                                for (var i = 0; i < counts; i++) {
+                                    if (i >= (currentpage - 3) && i < (currentpage + 3)) {
+                                        if (i == currentpage - 1) {
+                                            pagehtml += '<li class="active"><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                        } else {
+                                            pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                        }
+
+                                    }
+                                }
+                                if (currentpage < counts) {
+                                    pagehtml += '<li><a class="" href="/index/' + (parseInt(currentpage)+1) + '">下一页</a></li>';
+                                }
+                            }
+
+                            _pagination.html(pagehtml);    //将计算好的分页写入页面
+
+                            _pagination.on('click', function () {
+                                return false;//阻止链接跳转
+                            })
+                        }
+
+                    } catch (err) {
+                        console.log(err)
+                    }
+                }
+            } else {
+                //若当前打开的不是历史音频， 清除页面元素缓存
+                $("#HM_" + deviceID).find(".Js_Mp3List").html();
+            }
+
+
+            setInterval(function () {
+                if ($(".Js_pagination")) {
+                    var Js_paginationAs = $(".Js_pagination").find("a");
+                    Js_paginationAs.on("click", (function () {
+
+                        var deviceID = $(this).closest(".Js_pagination").attr("id").replace(/^\w{2}\_/, "");
+
+                        var selectNum = $(this).attr("href").replace(/^\/index\//, "");
+
+                        AJAX_LOAD_Mp3List(deviceID, selectNum)
+                    }))
+                }
+            }, 100)
+
         })
+
     });
 </script>
 </body>

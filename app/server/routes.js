@@ -784,13 +784,14 @@ module.exports = function (app) {
      */
     app.post('/api/monitors/getAllHistoricalAudioDataByDeviceID', auth, function (req, res) {
         var deviceID = req.body['deviceID'];
-        var pageNumber = req.body['pageNumber'];
+        var currentPage = req.body['currentPage'];
         var pageSize = req.body['pageSize'];
-        SM.getAllHistoricalAudioDataByDeviceID(deviceID, pageNumber, pageSize, function (err, result) {
+        SM.getAllHistoricalAudioDataByDeviceID(deviceID, currentPage, pageSize, function (err, result) {
             if (err) {
                 res.json("false");
                 res.end()
             } else {
+                console.log(result);
                 res.json(result);
                 res.end()
             }
