@@ -57,7 +57,7 @@
     min-width: 70px;
 }
 .real-time-data tr td:last-child{
-    max-width: 120px;
+    max-width: 130px;
     padding-right: 54px;
     overflow-x: hidden;
     white-space: normal;
@@ -77,12 +77,19 @@
     color: #108398;
 }
 /* *****************************- 历史音频监听面板 -******************************** */
-.history-time-data td a{
-    cursor: pointer;
-}
 .widget-box-audioMonitoring .widget-main {
     height: 320px;
 }
+.history-time-data{
+    height: 308px;
+}
+.history-time-data td a{
+    cursor: pointer;
+}
+.history-time-data .pagination{
+    bottom: 37px;
+}
+
 
 /*实时音频监听状态*/
 [data-state='1']{
@@ -112,5 +119,5 @@
     width: 100%;;
     bottom: 0;
     background: #fff;
-    z-index: 3;
+    z-index: 1028;
 }

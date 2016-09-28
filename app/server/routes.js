@@ -35,8 +35,8 @@ var topNavData = [
         "link": "/user/audioTest"
     },
     {
-        "NavName": "websocket测试",
-        "link": "/user/stest"
+        "NavName": "台站管理",
+        "link": "/user/configuration"
     }
 ];
 
@@ -791,7 +791,6 @@ module.exports = function (app) {
                 res.json("false");
                 res.end()
             } else {
-                console.log(result);
                 res.json(result);
                 res.end()
             }
@@ -1173,17 +1172,17 @@ module.exports = function (app) {
     });
 
     /**
-     * 路由说明： socket测试页面
+     * 路由说明： 台站配置页面
      * 鉴权说明： 登陆校验, 页面访问权限校验
      * method: GET
      */
-    app.get('/user/stest', auth, pageAuthority, function (req, res) {
+    app.get('/user/configuration', auth, pageAuthority, function (req, res) {
 
         var pathname = URL.parse(req.url).pathname.replace("/user/", "");
         pathname = "/user/" + pathname;
 
-        res.render('./application/websocket', {
-            title: "山西-吉兆 -- 音频测试",
+        res.render('./application/configuration', {
+            title: "山西-吉兆 -- 台站管理",
             udata: req.session.user,
             topNavData: topNavData,
             topNavSelected: pathname

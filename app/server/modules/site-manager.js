@@ -313,10 +313,7 @@ exports.getAllHistoricalAudioDataByDeviceID = function (deviceID, currentPage, p
                             resultObj.Mp3ListArry = DeviceMp3ListAll.slice(startIndex);
                             callback(null, resultObj);
                         } else {
-                            console.log(DeviceMp3ListAll);
-                            console.log(startIndex);
-                            console.log(DeviceMp3ListAll.slice(startIndex, startIndex + 5));
-                            resultObj.Mp3ListArry = DeviceMp3ListAll.slice(startIndex, startIndex + 5);
+                            resultObj.Mp3ListArry = DeviceMp3ListAll.slice(startIndex, startIndex + pageSize);
                             callback(null, resultObj);
                         }
                     }

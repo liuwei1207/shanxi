@@ -70,32 +70,38 @@ function explorer(path) {
 
         files.forEach(function (file) {
 
-            fs.stat(path + '/' + file, function (err, stat) {
-                if (err) {
-                    console.log(err);
-                    console.log(fileJsonTemp);
-                    return;
-                }
-                if (stat.isDirectory()) {
-                    // 如果是文件夹遍历
-                    explorer(path + '/' + file);
-                } else {
-                    // 读出所有的文件
-                    var allPath = path + '/' + file;
-                    console.log(allPath)
-                    var deviceID = allPath.match(/\w{35}/)[0];
-                    var mp3Path = allPath.match(/\/\w{35}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
-
-                    if (!isArray(fileJsonTemp[deviceID])) {
-                        fileJsonTemp[deviceID] = [];
-                        fileJsonTemp[deviceID].push(mp3Path);
-                        fileJsonTemp.time = +new Date();
-                    } else {
-                        fileJsonTemp[deviceID].push(mp3Path);
-                        fileJsonTemp.time = +new Date();
+            try {
+                fs.stat(path + '/' + file, function (err, stat) {
+                    if (err) {
+                        console.log(err);
+                        console.log(fileJsonTemp);
+                        return;
                     }
-                }
-            });
+                    if (stat.isDirectory()) {
+                        // 如果是文件夹遍历
+                        explorer(path + '/' + file);
+                    } else {
+                        // 读出所有的文件
+                        var allPath = path + '/' + file;
+
+                        console.log(allPath)
+
+                        var deviceID = allPath.match(/\w{35}/)[0];
+                        var mp3Path = allPath.match(/\/\w{35}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+
+                        if (!isArray(fileJsonTemp[deviceID])) {
+                            fileJsonTemp[deviceID] = [];
+                            fileJsonTemp[deviceID].push(mp3Path);
+                            fileJsonTemp.time = +new Date();
+                        } else {
+                            fileJsonTemp[deviceID].push(mp3Path);
+                            fileJsonTemp.time = +new Date();
+                        }
+                    }
+                });
+            } catch (err) {
+                console.log(err)
+            }
         });
     });
 }

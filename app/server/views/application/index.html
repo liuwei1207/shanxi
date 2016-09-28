@@ -260,7 +260,7 @@
 
                                                         </table>
 
-                                                        <ul class="pagination pagination-sm no-margin Js_pagination"
+                                                        <ul class="pagination pagination-sm no-margin Js_pagination position-absolute"
                                                             id="PN_<%=a.DeviceID%>"></ul>
 
                                                     </div>
@@ -314,6 +314,22 @@
 </a>
 </div><!-- /.main-container -->
 
+<!-- Small modal:实时音频频率设置 -->
+<div class="modal fade set-rate" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" >频率设置</h4>
+            </div>
+            <div class="modal-body">
+                <label for="rate">频率:</label>
+                <input id="rate" type="text"/>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- basic scripts -->
 
 <!--[if !IE]> -->
@@ -353,8 +369,8 @@
             if (color_class != 'default')  new_class += ' widget-color-' + color_class;
             $(this).closest('.widget-box').attr('class', new_class);
         });
-
-
+//        根据面板大小判断彩条是否显示
+        fwLeftIfShow();
         // scrollables
         $('.scrollable').each(function () {
             var $this = $(this);
@@ -378,7 +394,12 @@
         $(window).on('resize.scroll_reset', function () {
             $('.scrollable-horizontal').ace_scroll('reset');
 //            自适应实时监听面板
-            var box_width = $(".widget-container-col").width();
+            fwLeftIfShow();
+        });
+
+//        根据面板大小判断彩条是否显示
+        function fwLeftIfShow() {
+            var box_width = $(".widget-container-col>.widget-box").width();
             if (box_width > 320) {
                 $(".fw-left").css("display", "block");
                 $(".fw-right-content").css("margin-left", "110px")
@@ -386,7 +407,8 @@
                 $(".fw-left").css("display", "none");
                 $(".fw-right-content").css("margin-left", "0")
             }
-        });
+        };
+
 //        当插入页边距时实时监听面板设置
         $("#ace-settings-add-container").on('click', function () {
             var widgetContainer = $(".widget-container-col");
@@ -581,7 +603,14 @@
 
             if (dataObj) {
                 //实时音频监听中的html模板
-                var str1 = '<thead> <tr> <td>采集时间</td> <td> ' + dataObj.deviceData.CollTime.split(" ")[1] + ' <span class="site-states" data-state="0"></span></td> </tr> </thead><tbody> <tr> <td>设备ID</td> <td class="register-tag" title="' + dataObj.deviceID + '"> ' + dataObj.deviceID + '</td> </tr> <tr>  <td>频率</td> <td class="position-relative" title="' + dataObj.deviceData.FMReceiveFQY + '" Mhz> ' + dataObj.deviceData.FMReceiveFQY + ' Mhz<div class="tb-tail"> <button class="btn btn-minier btn-yellow "><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr> <td>温度</td> <td class="position-relative">' + dataObj.deviceData.RoomTemp + '<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">' + dataObj.deviceData.RoomHum + ' <span class="tb-tail">%</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">' + dataObj.deviceData.FMReviceRSSI + '<span class="tb-tail">N/C</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">' + dataObj.deviceData.FMReviceSNR + '<span class="tb-tail">db</span></td> </tr> </tbody></table></table>';
+                var str1 = '<thead> <tr> <td>采集时间</td> <td> ' + dataObj.deviceData.CollTime.split(" ")[1] +
+                        ' <span class="site-states" data-state="0"></span></td> </tr> </thead><tbody> <tr> <td>设备ID</td> <td class="register-tag" title="' + dataObj.deviceID + '"> '
+                        + dataObj.deviceID + '</td> </tr> <tr>  <td>频率</td> <td class="position-relative" title="' + dataObj.deviceData.FMReceiveFQY + '" Mhz> ' + dataObj.deviceData.FMReceiveFQY +
+                        ' Mhz<div class="tb-tail"> <button class="btn btn-minier btn-yellow" data-toggle="modal" data-target=".set-rate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr> <td>温度</td> <td class="position-relative">'
+                        + dataObj.deviceData.RoomTemp + '<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">' +
+                        dataObj.deviceData.RoomHum + ' <span class="tb-tail">%</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">' +
+                        dataObj.deviceData.FMReviceRSSI + '<span class="tb-tail">N/C</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">' +
+                        dataObj.deviceData.FMReviceSNR + '<span class="tb-tail">db</span></td> </tr> </tbody></table></table>';
 
                 try {
                     $('#WC_' + key).find(".Js_realTimeDataTabel").html(str1)
@@ -592,7 +621,7 @@
 
                 //如果该设备没有数据
             } else {
-                var str2 = '<thead> <tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> </thead> <tbody> <tr> <td>设备ID</td> <td class="register-tag" title="暂无数据"> 暂无数据</td> </tr> <tr> <td>频率</td> <td class="position-relative" title="暂无数据"> 暂无数据<div class="tb-tail"> <button class="btn btn-minier btn-yellow "><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> </tbody></table>';
+                var str2 = '<thead> <tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> </thead> <tbody> <tr> <td>设备ID</td> <td class="register-tag" title="暂无数据"> 暂无数据</td> </tr> <tr> <td>频率</td> <td class="position-relative" title="暂无数据"> 暂无数据<div class="tb-tail"> <button class="btn btn-minier btn-yellow" data-toggle="modal" data-target=".set-rate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据<span class="tb-tail"> ℃</span></td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据<span class="tb-tail">cnp</span></td> </tr> </tbody></table>';
                 try {
                     $('#WC_' + key).find(".Js_realTimeDataTabel").html(str2)
                 }
@@ -601,6 +630,7 @@
                 }
             }
         }
+
     })
 
 </script>
@@ -701,7 +731,7 @@
                                     }
                                 }
                                 if (currentpage < counts) {
-                                    pagehtml += '<li><a class="" href="/index/' + (parseInt(currentpage)+1) + '">下一页</a></li>';
+                                    pagehtml += '<li><a class="" href="/index/' + (parseInt(currentpage) + 1) + '">下一页</a></li>';
                                 }
                             }
 
@@ -711,33 +741,29 @@
                                 return false;//阻止链接跳转
                             })
                         }
-
                     } catch (err) {
                         console.log(err)
                     }
                 }
+
+                setMp3LoadEvent();
             } else {
                 //若当前打开的不是历史音频， 清除页面元素缓存
                 $("#HM_" + deviceID).find(".Js_Mp3List").html();
             }
 
 
-            setInterval(function () {
-                if ($(".Js_pagination")) {
-                    var Js_paginationAs = $(".Js_pagination").find("a");
-                    Js_paginationAs.on("click", (function () {
+            function setMp3LoadEvent() {
+                $(".Js_pagination").on("click", "a", function () {
 
-                        var deviceID = $(this).closest(".Js_pagination").attr("id").replace(/^\w{2}\_/, "");
+                    var deviceID = $(this).closest(".Js_pagination").attr("id").replace(/^\w{2}\_/, "");
 
-                        var selectNum = $(this).attr("href").replace(/^\/index\//, "");
+                    var selectNum = $(this).attr("href").replace(/^\/index\//, "");
 
-                        AJAX_LOAD_Mp3List(deviceID, selectNum)
-                    }))
-                }
-            }, 100)
-
-        })
-
+                    AJAX_LOAD_Mp3List(deviceID, selectNum)
+                })
+            }
+        });
     });
 </script>
 </body>
