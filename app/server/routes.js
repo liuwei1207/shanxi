@@ -849,6 +849,23 @@ module.exports = function (app) {
     });
 
     /**
+     * 路由说明： 检查ProjNum是否存在的数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/projects/checkConfirm', auth, function (req, res) {
+        SM.getProjectByProjNum(req.body['ProjNum'], function (o) {
+            if (o) {
+                res.write("false");
+                res.end()
+            } else {
+                res.write("true");
+                res.end()
+            }
+        });
+    });
+
+    /**
      * 路由说明： 台站管理 - 获取站点列表
      * 鉴权说明： 登陆校验
      * method: POST

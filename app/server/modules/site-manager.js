@@ -354,3 +354,9 @@ exports.getAllDevicesRecords = function (callback) {
             else callback(null, res);
         });
 };
+
+exports.getProjectByProjNum = function (ProjNum, callback) {
+    NsOHBasicProject.findOne({ProjNum: ProjNum}, function (e, o) {
+        callback(o);
+    });
+}

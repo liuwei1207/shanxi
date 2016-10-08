@@ -190,7 +190,97 @@
 
                             <div class="widget-body" style="display: block;">
                                 <div class="widget-main">
-                                    <form class="form-horizontal" role="form" id="signupForm">
+                                    <form class="form-horizontal" role="form" id="addProjForm">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_ProjNum">
+                                                项目编号 </label>
+
+                                            <div class="col-sm-9">
+                                                <input type="text" id="ipt_ProjNum" name="ProjNum"
+                                                       placeholder="8位随机数字"
+                                                       class="col-xs-12 col-sm-5">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_ProjName">
+                                                项目名称 </label>
+
+                                            <div class="col-sm-9">
+                                                <input type="text" id="ipt_ProjName" name="ProjName"
+                                                       placeholder=""
+                                                       class="col-xs-12 col-sm-5">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactName">
+                                                项目联系人 </label>
+
+                                            <div class="col-sm-9">
+                                                <input type="text" id="ipt_ContactName" name="ContactName"
+                                                       placeholder=""
+                                                       class="col-xs-12 col-sm-5">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactMobile">
+                                                联系人手机 </label>
+
+                                            <div class="col-sm-9">
+                                                <input type="text" id="ipt_ContactMobile" name="ContactMobile"
+                                                       placeholder=""
+                                                       class="col-xs-12 col-sm-5">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactTel">
+                                                联系人电话 </label>
+
+                                            <div class="col-sm-9">
+                                                <input type="text" id="ipt_ContactTel" name="ContactTel"
+                                                       placeholder=""
+                                                       class="col-xs-12 col-sm-5">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactEmail">
+                                                联系人邮箱 </label>
+
+                                            <div class="col-sm-9">
+                                                <input type="text" id="ipt_ContactEmail" name="ContactEmail"
+                                                       placeholder=""
+                                                       class="col-xs-12 col-sm-5">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_OHNotes">
+                                                备注 </label>
+
+                                            <div class="col-sm-9">
+                                                <textarea id="ipt_OHNotes" rows="2" class="col-xs-12 col-sm-5" name="description" maxlength="100" placeholder="描述..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="clearfix form-actions">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button class="btn btn-info" type="button">
+                                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                                    添加
+                                                </button>
+
+                                                &nbsp; &nbsp; &nbsp;
+                                                <button class="btn" type="reset">
+                                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                                    取消
+                                                </button>
+                                            </div>
+                                        </div>
 
                                     </form>
                                 </div>
@@ -274,6 +364,6 @@
     })
 
 </script>
-<script src="/javascripts/customs/pages/admin/addUser.js"></script>
+<script src="/javascripts/customs/pages/application/addProj.js"></script>
 </body>
 </html>

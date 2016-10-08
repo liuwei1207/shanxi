@@ -336,7 +336,7 @@
 
         function addButton(cellvalue, options, rowObject) {
 
-            var temp = '<a href="/user/configuration/projects/' + cellvalue + '/edit" class="btn btn-default btn-minier">编辑</a>&nbsp;<a href="/user/configuration/projects/' + cellvalue + '/del" class="btn btn-danger btn-minier J_del">删除</a>';
+            var temp = '<a href="/user/configuration/projects/' + cellvalue + '/view" class="btn btn-default btn-minier">查看</a>&nbsp;<a href="/user/configuration/projects/' + cellvalue + '/edit" class="btn btn-info btn-minier">编辑</a>&nbsp;<a href="/user/configuration/projects/' + cellvalue + '/del" class="btn btn-danger btn-minier J_del">删除</a>';
 
 
             return temp
@@ -345,28 +345,21 @@
         jQuery(grid_selector).jqGrid({
             datatype: "local",
             height: 500,
-            colNames: ['_id','ProjName', 'ID', 'ProjNum',  '操作'],
+            colNames: ['_id', '项目名称', '项目联系人', '备注', 'ProjNum', '操作'],
             colModel: [
                 {
                     name: '_id',
                     index: '_id',
-                    width: 80,
+                    width: 60,
                     sorttype: "text",
                     hidden: false,
                     editable: true,
                     editrules: {edithidden: true},
                     key: true
                 },
-                {name: 'ProjName', index: 'ProjName', width: 100, editable: false, sorttype: "text",  formatter: highlight},
-                {
-                    name: 'ID',
-                    index: 'ID',
-                    width: 80,
-                    editable: true,
-                    sorttype: "text",
-                    editrules: {edithidden: true, required: true, email: true},
-                    editoptions: {minlength: 8, maxlength: 16}
-                },
+                {name: 'ProjName', index: '项目名称', width: 60, editable: false, sorttype: "text", formatter: highlight},
+                {name: 'ContactName', index: '项目联系人', width: 60, editable: true, sorttype: "text"},
+                {name: 'OHNotes', index: '备注', width: 120, editable: true, sorttype: "text"},
                 {name: 'ProjNum', index: 'ProjNum', width: 60, editable: true, sorttype: "text"},
                 {
                     name: '_id',
