@@ -147,8 +147,6 @@
                                                 <span class="menu-text">
                                                     设备管理
                                                 </span>
-
-                                <b class="arrow fa fa-angle-down"></b>
                             </a>
 
                             <b class="arrow"></b>
@@ -166,6 +164,96 @@
                                     <a href="/user/configuration/projects/addProjs">
                                         <i class="menu-icon fa fa-caret-right"></i>
                                         添加设备
+                                    </a>
+
+                                    <b class="arrow"></b>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="open">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="menu-icon fa fa-users"></i>
+                                                <span class="menu-text">
+                                                    资源管理 - 端口
+                                                </span>
+                            </a>
+
+                            <b class="arrow"></b>
+
+                            <ul class="submenu nav-show" style="display: block;">
+                                <li class="">
+                                    <a href="/user/configuration/projects">
+                                        <i class="menu-icon fa fa-caret-right"></i>
+                                        端口列表
+                                    </a>
+
+                                    <b class="arrow"></b>
+                                </li>
+                                <li class="">
+                                    <a href="/user/configuration/projects/addProjs">
+                                        <i class="menu-icon fa fa-caret-right"></i>
+                                        新建端口
+                                    </a>
+
+                                    <b class="arrow"></b>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="open">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="menu-icon fa fa-users"></i>
+                                                <span class="menu-text">
+                                                    资源管理 - 设备类型
+                                                </span>
+                            </a>
+
+                            <b class="arrow"></b>
+
+                            <ul class="submenu nav-show" style="display: block;">
+                                <li class="">
+                                    <a href="/user/configuration/projects">
+                                        <i class="menu-icon fa fa-caret-right"></i>
+                                        设备类型列表
+                                    </a>
+
+                                    <b class="arrow"></b>
+                                </li>
+                                <li class="">
+                                    <a href="/user/configuration/projects/addProjs">
+                                        <i class="menu-icon fa fa-caret-right"></i>
+                                        新建设备类型
+                                    </a>
+
+                                    <b class="arrow"></b>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="open">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="menu-icon fa fa-users"></i>
+                                                <span class="menu-text">
+                                                    资源管理 - Tag
+                                                </span>
+                            </a>
+
+                            <b class="arrow"></b>
+
+                            <ul class="submenu nav-show" style="display: block;">
+                                <li class="">
+                                    <a href="/user/configuration/projects">
+                                        <i class="menu-icon fa fa-caret-right"></i>
+                                        Tag列表
+                                    </a>
+
+                                    <b class="arrow"></b>
+                                </li>
+                                <li class="">
+                                    <a href="/user/configuration/projects/addProjs">
+                                        <i class="menu-icon fa fa-caret-right"></i>
+                                        新建tag
                                     </a>
 
                                     <b class="arrow"></b>
@@ -347,7 +435,14 @@
             colNames: ['_id', 'DeviceID', 'SiteID', 'RegisterDeviceID', 'RegisterPortID', 'RegisterTagID', 'DeviceNO', '操作'],
             colModel: [
                 {name: '_id', index: '_id', width: 60, editable: true, sorttype: "text"},
-                {name: 'DeviceID', index: 'DeviceID', width: 120, editable: true, sorttype: "text",formatter: highlight},
+                {
+                    name: 'DeviceID',
+                    index: 'DeviceID',
+                    width: 120,
+                    editable: true,
+                    sorttype: "text",
+                    formatter: highlight
+                },
                 {name: 'SiteID', index: 'SiteID', width: 60, editable: true, sorttype: "text"},
                 {name: 'RegisterDeviceID', index: 'RegisterDeviceID', width: 60, editable: true, sorttype: "text"},
                 {name: 'RegisterPortID', index: 'RegisterPortID', width: 60, editable: true, sorttype: "text"},
