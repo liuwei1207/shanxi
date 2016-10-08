@@ -360,3 +360,24 @@ exports.getProjectByProjNum = function (ProjNum, callback) {
         callback(o);
     });
 }
+
+exports.addNewProject = function (newData, callback) {
+    NsOHBasicProject.findOne({user: newData.user}, function (e, o) {
+        if (o) {
+            callback('username-taken');
+        } else {
+            NsOHBasicProject.findOne({email: newData.email}, function (e, o) {
+                if (o) {
+                    callback('email-taken');
+                } else {
+                    saltAndHash(newData.pass, function (hash) {
+                        newData.pass = hash;
+                        // append date stamp when record was created //
+                        newData.date = moment().format('YYYY MMMM Do, a h:mm:ss');
+                        NsOHBasicProject.insert(newData, {safe: true}, callback);
+                    });
+                }
+            });
+        }
+    });
+}

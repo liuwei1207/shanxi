@@ -866,6 +866,22 @@ module.exports = function (app) {
     });
 
     /**
+     * 路由说明： 新建项目数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/projects/addProj', auth, function (req, res) {
+        var ProjNum = req.body['ProjNum'];
+        var ProjName = req.body['ProjName'];;
+        var name = req.body['name'];
+        var pass = req.body['pass'];
+        var creator = req.session.user.user;
+
+
+
+    });
+
+    /**
      * 路由说明： 台站管理 - 获取站点列表
      * 鉴权说明： 登陆校验
      * method: POST
