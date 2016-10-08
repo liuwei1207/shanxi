@@ -20751,41 +20751,36 @@ input.typeahead.scrollable ~ .tt-menu {
 }
 /*左侧导航警报颜色设置*/
 /*正常*/
-.site_complex_status[data-alert="1"] {
-    background-color: #87b87f;
+[data-alert="1"] {
+    color: #87b87f;
+    font-weight: bold;
 }
 
 /*掉线*/
-.site_complex_status[data-alert="4"] {
-    background-color: #abbac3;
+[data-alert="4"] {
+    color: #abbac3;
+    font-weight: bold;
 }
 
 /*警告*/
-.site_complex_status[data-alert="2"] {
-    background-color: #ffb752;
+[data-alert="2"] {
+    color: #ffb752;
+    font-weight: bold;
 }
 
 /*异常*/
-.site_complex_status[data-alert="3"] {
-    -webkit-box-shadow: inset 0 0 10px #d9543f;
-    -moz-box-shadow: inset 0 0 10px #d9543f;
-    box-shadow: inset 0 0 10px #d9543f;
-    animation: led 1.5s 2s infinite alternate;
-    -moz-animation: led 1.5s 2s infinite alternate;
-    -webkit-animation: led 1.5s 2s infinite alternate;
-    -o-animation: led 1.5s 2s infinite alternate;
+[data-alert="3"] {
+    color: #D15B47;
+    font-weight: bold;
 }
 
 @keyframes led {
-    from, 20%, 53%, 80%, to {
-        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    }
     from {
-        background: transparent;
+        background: #D15B47;
+        color: #fff;
     }
     to {
-        background: #D15B47
+        background: transparent
     }
 }
 

@@ -112,7 +112,7 @@ function writeFile(data) {
 
     fs.writeFile(fileName, JSON.stringify(data), {flag: 'w'}, function (err) {
         if (err) throw err;
-        console.log("写入成功!");
+        console.log("历史音频MP3文件播放列表json文件已生成!");
         fileJsonTemp = {
             "time": ""
         };

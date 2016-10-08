@@ -2,6 +2,7 @@ var AM = require('./modules/account-manager');
 var RP = require('./modules/role-pemission');
 var LM = require('./modules/log-manager');
 var SM = require('./modules/site-manager');
+var ARM = require('./modules/alertRules-manager');
 
 var socket = require("../../config/socket");
 
@@ -797,6 +798,44 @@ module.exports = function (app) {
         })
     });
 
+    /**
+     * 路由说明： 监控主页 - 传入deviceID 获得， 对应的报警规则!
+     * 鉴权说明： 登陆校验
+     * method: POST
+     */
+    app.post('/api/monitor/getAlertRulesByDeviceID', auth, function (req, res) {
+
+        var deviceID = req.body['deviceID'];
+
+        ARM.getAlertRulesByDeviceID(deviceID, function (err, result) {
+            if (err) {
+                res.json("false");
+                res.end()
+            } else {
+                res.json(result);
+                res.end()
+            }
+        })
+    });
+
+    /**
+     * 路由说明： 监控主页 - 接受用户设置的报警规则， 保存入库
+     * 鉴权说明： 登陆校验
+     * method: POST
+     */
+    app.post('/api/monitor/updateAlertRulesByDeviceID', auth, function (req, res) {
+        var newData = req.body;
+        ARM.updateAlertRulesByDeviceID(newData, function (err, result) {
+            if (err) {
+                res.json("false");
+                res.end()
+            } else {
+                res.json("true");
+                res.end()
+            }
+        })
+    });
+
     /* ********************************************** 页面级路由 **************************************************** */
     /**
      * 路由说明： 主页路径跳转路由
@@ -886,6 +925,40 @@ module.exports = function (app) {
             });
         });
 
+    });
+
+    /**
+     * 路由说明： 监控页面 - 统计图表跳转
+     * 鉴权说明： 登陆校验
+     * method: GET
+     */
+    app.get('/user/chart/:deviceID', auth, function (req, res) {
+        var deviceID = req.params.deviceID;
+        res.render('./application/monitorChart.html', {
+            title: '山西-吉兆 -- 统计图表',
+            topNavData: topNavData,
+            deviceID: deviceID,
+            udata: req.session.user
+        });
+    });
+
+    /**
+     * 路由说明： 监控页面 - 统计图表跳转 - 传入时间和设备ID 返回当日的监控参数数据
+     * 鉴权说明： 登陆校验
+     * method: POST
+     */
+    app.post('/api/charts/getChartDataByDeviceID', auth, function (req, res) {
+        var deviceID = req.body['deviceID'];
+        var date = req.body['date'];
+        ARM.getChartDataByDeviceIDAndDate(deviceID, date, function (err, result) {
+            if (err) {
+                res.json(result);
+                res.end();
+            } else {
+                res.json(result);
+                res.end();
+            }
+        });
     });
 
     /**
@@ -1198,6 +1271,20 @@ module.exports = function (app) {
             title: "山西-吉兆 -- 设置",
             udata: req.session.user
         });
+    });
+
+    /**
+     * 路由说明： error 404 提示页面
+     * 鉴权说明： 登陆校验
+     * method: get
+     */
+    app.get('/user/downloads/historicalAudioData/:deviceID/:date/:filename', auth, function (req, res) {
+        //历史音频文件下载!
+        var deviceID = req.params.deviceID;
+        var date = req.params.date;
+        var filename = req.params.filename;
+        var realpath = "./app/public/historicalAudioData/" + deviceID + "/" + date + "/" + filename;
+        res.download(realpath, filename);
     });
 
     /**

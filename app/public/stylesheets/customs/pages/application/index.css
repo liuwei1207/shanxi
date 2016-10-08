@@ -11,6 +11,9 @@
 .ace-settings-container{
     top: 60px;
 }
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover{
+    background: #2c5976;
+}
 @media only screen and (max-width: 991px)  {
     .navbar .navbar-nav>li, .navbar .navbar-nav>li {
         display: inline-block;
@@ -19,7 +22,7 @@
 /* *****************************- sidebar  -******************************** */
 #sidebar {
     margin-top: 5px;
-    z-index: 1025;
+    z-index: 99999;
     background-image: linear-gradient(to bottom,#FFF 0,#EEE 100%);
     background-image: -webkit-linear-gradient(top,#FFF 0,#EEE 100%);
     background-image: -o-linear-gradient(top,#FFF 0,#EEE 100%);
@@ -30,18 +33,108 @@
     z-index: 1000;
 }
 #sidebar .sidebar-legend{
-    z-index: 1028;
+    z-index: 1024;
+}
+/* *****************************- 音乐播放器  -******************************** */
+.m-MP3player{
+    padding: 3px 6px;
+    background: #eee;
+    border: 1px solid #ccc;
+    opacity: .75;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+    z-index: 1025;
+}
+.player-music{
+    position: fixed;
+    top: 200px;
+    right: 0px;
+    overflow: hidden;
+    z-index: 1025;
+}
+.player-music .jp-interface, .player-music .jp-audio,
+.player-music .jp-audio-stream, .jp-video{
+    background: transparent;
+}
+.player-music .jp-audio, .jp-audio-stream, .jp-video{
+    border: none;
+}
+.player-music .jp-audio .jp-interface, .jp-audio-stream .jp-interface{
+    height: 48px;
+}
+.player-music .jp-audio .jp-controls {
+    width: 380px;
+    padding: 0 10px 0;
+}
+.player-music .jp-audio .jp-progress,
+.player-music .jp-volume-controls{
+    top: 17px;
+}
+.player-music .jp-audio .jp-time-holder{
+    top: 32px;
+}
+@-webkit-keyframes scrollText2 {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-204px);
+    }
+    100%{
+        transform: translateX(-408px);
+    }
+
+}
+@keyframes scrollText2 {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-304px);
+    }
+    100%{
+        transform: translateX(-608px);
+    }
+
+}
+.subtitles-box{
+    position: absolute;
+    top: 0;
+    left: 100px;
+    width: 300px;
+    height: 15px;
+    overflow: hidden;
+    z-index: 1026;
+
+}
+.subtitles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1000px;
+    -webkit-animation:scrollText2 10s infinite  cubic-bezier(1,0,0.5,0) ;
+    animation:scrollText2 10s infinite  cubic-bezier(1,0,0.5,0) ;
+}
+.subtitles div{
+    height: 15px;
+    width: 300px;
+    overflow: hidden;
+    display: inline-block;
+}
+.subtitles:hover{
+    animation-play-state:paused;
+    -webkit-animation-play-state:paused;
 }
 /* *****************************- 音频面板  -******************************** */
 .widget-main .main-left{float: left;  width: 150px;}
 .widget-main .main-right{margin-left: 150px;/*==等于左边栏宽度==*/}
+.widget-toolbar > a {cursor: pointer;}
 /* *****************************- 实时音频监听面板 -******************************** */
 
 .col-lg-3.widget-container-col .tab-content{
         padding: 3px 5px;
 }
 .widget-main .tab-content .strapping{
-    background: red;
+    background: #A5A5A5;
     position: absolute;
     top:37px;
     left: 2px;
@@ -75,6 +168,11 @@
     font-size: 11px;
     color: #108398;
 }
+/* *****************************- 设置频率对话框 -******************************** */
+.ui-dialog.ui-widget-content .ui-dialog-titlebar{
+    padding: 10px;
+}
+
 /* *****************************- 历史音频监听面板 -******************************** */
 .widget-box-audioMonitoring .widget-main {
     height: 320px;
@@ -119,5 +217,5 @@
     width: 100%;;
     bottom: 0;
     background: #fff;
-    z-index: 1028 ;
+    z-index: 1024 ;
 }
