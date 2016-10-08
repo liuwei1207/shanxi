@@ -330,3 +330,27 @@ exports.getAllHistoricalAudioDataByDeviceID = function (deviceID, currentPage, p
 
 
 };
+
+exports.getAllProjectsRecords = function (callback) {
+    NsOHBasicProject.find().toArray(
+        function (e, res) {
+            if (e) callback(e);
+            else callback(null, res);
+        });
+};
+
+exports.getAllSitesRecords = function (callback) {
+    NsOHBasicSite.find().toArray(
+        function (e, res) {
+            if (e) callback(e);
+            else callback(null, res);
+        });
+};
+
+exports.getAllDevicesRecords = function (callback) {
+    NsOHBasicDevice.find().toArray(
+        function (e, res) {
+            if (e) callback(e);
+            else callback(null, res);
+        });
+};
