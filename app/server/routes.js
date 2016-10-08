@@ -1305,6 +1305,21 @@ module.exports = function (app) {
     });
 
     /**
+     * 路由说明： 台站配置页面 - 项目管理 - 新建项目
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/configuration/projects/addProj', auth, function (req, res) {
+        var pathname = "/user/" + "configuration";
+        res.render('./application/configuration-addProj', {
+            title: "山西-吉兆 -- 新建项目",
+            udata: req.session.user,
+            topNavData: topNavData,
+            topNavSelected: pathname
+        });
+    });
+
+    /**
      * 路由说明： 台站配置页面 - 站点管理
      * 鉴权说明： 登陆校验, 页面访问权限校验
      * method: GET
