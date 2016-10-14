@@ -9,8 +9,7 @@ log4js.configure({
             type: 'file', //文件输出
             filename: 'logs/errors.log',
             maxLogSize: 1024,
-            backups: 3,
-            category: 'errors'
+            backups: 3
         }
     ],
     replaceConsole: true

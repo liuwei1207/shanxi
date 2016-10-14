@@ -1,0 +1,281 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'memwatch' ]
+2 info using npm@2.15.8
+3 info using node@v4.4.7
+4 verbose install initial load of C:\Users\Liuwei\Desktop\脚手架\shanxi\package.json
+5 warn package.json shanxi@0.0.1 No repository field.
+6 warn package.json shanxi@0.0.1 No README data
+7 warn package.json shanxi@0.0.1 No license field.
+8 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\body-parser\package.json
+9 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\bootstrap-table\package.json
+10 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\bunyan\package.json
+11 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\chokidar\package.json
+12 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\connect-flash\package.json
+13 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\connect-mongo\package.json
+14 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\cookie-parser\package.json
+15 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\cookie-session\package.json
+16 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\crypto\package.json
+17 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\package.json
+18 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\emailjs\package.json
+19 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\errorhandler\package.json
+20 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\package.json
+21 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express-flash\package.json
+22 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express-session\package.json
+23 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\jade\package.json
+24 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\log4js\package.json
+25 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\moment\package.json
+26 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\mongodb\package.json
+27 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\morgan\package.json
+28 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\path\package.json
+29 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\q\package.json
+30 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\querystring\package.json
+31 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\rbac\package.json
+32 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\roles\package.json
+33 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\serve-favicon\package.json
+34 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\socket.io\package.json
+35 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\stylus\package.json
+36 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\svg-captcha\package.json
+37 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ua-parser-js\package.json
+38 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\underscore\package.json
+39 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\util\package.json
+40 verbose installManyTop reading scoped package data from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ws\package.json
+41 info package.json connect-flash@0.1.1 No license field.
+42 info package.json path@0.12.7 path is also the name of a node core module.
+43 info package.json q@1.4.1 license should be a valid SPDX license expression
+44 info package.json ua-parser-js@0.7.10 No license field.
+45 info package.json util@0.10.3 util is also the name of a node core module.
+46 info package.json connect-mongo@0.8.2 No license field.
+47 info package.json express-flash@0.0.2 No license field.
+48 info package.json crypto@0.0.3 crypto is also the name of a node core module.
+49 info package.json crypto@0.0.3 No license field.
+50 info package.json roles@0.0.4 No license field.
+51 info package.json querystring@0.2.0 querystring is also the name of a node core module.
+52 info package.json querystring@0.2.0 No license field.
+53 info package.json moment@2.10.3 No license field.
+54 verbose readDependencies loading dependencies from C:\Users\Liuwei\Desktop\脚手架\shanxi\package.json
+55 silly cache add args [ 'memwatch', null ]
+56 verbose cache add spec memwatch
+57 silly cache add parsed spec Result {
+57 silly cache add   raw: 'memwatch',
+57 silly cache add   scope: null,
+57 silly cache add   name: 'memwatch',
+57 silly cache add   rawSpec: '',
+57 silly cache add   spec: 'latest',
+57 silly cache add   type: 'tag' }
+58 silly addNamed memwatch@latest
+59 verbose addNamed "latest" is being treated as a dist-tag for memwatch
+60 info addNameTag [ 'memwatch', 'latest' ]
+61 silly mapToRegistry name memwatch
+62 silly mapToRegistry using default registry
+63 silly mapToRegistry registry http://registry.cnpmjs.org/
+64 silly mapToRegistry data Result {
+64 silly mapToRegistry   raw: 'memwatch',
+64 silly mapToRegistry   scope: null,
+64 silly mapToRegistry   name: 'memwatch',
+64 silly mapToRegistry   rawSpec: '',
+64 silly mapToRegistry   spec: 'latest',
+64 silly mapToRegistry   type: 'tag' }
+65 silly mapToRegistry uri http://registry.cnpmjs.org/memwatch
+66 verbose addNameTag registry:http://registry.cnpmjs.org/memwatch not in flight; fetching
+67 verbose request uri http://registry.cnpmjs.org/memwatch
+68 verbose request no auth needed
+69 info attempt registry request try #1 at 20:27:21
+70 verbose request id b61f9965e0da599b
+71 http request GET http://registry.cnpmjs.org/memwatch
+72 http 200 http://registry.cnpmjs.org/memwatch
+73 verbose headers { server: 'nginx/1.4.6 (Ubuntu)',
+73 verbose headers   date: 'Thu, 13 Oct 2016 12:27:20 GMT',
+73 verbose headers   'content-type': 'application/json; charset=utf-8',
+73 verbose headers   'transfer-encoding': 'chunked',
+73 verbose headers   connection: 'keep-alive',
+73 verbose headers   'x-current-requests': '1',
+73 verbose headers   'x-readtime': '14',
+73 verbose headers   'strict-transport-security': 'max-age=15768000',
+73 verbose headers   'content-encoding': 'gzip' }
+74 silly get cb [ 200,
+74 silly get   { server: 'nginx/1.4.6 (Ubuntu)',
+74 silly get     date: 'Thu, 13 Oct 2016 12:27:20 GMT',
+74 silly get     'content-type': 'application/json; charset=utf-8',
+74 silly get     'transfer-encoding': 'chunked',
+74 silly get     connection: 'keep-alive',
+74 silly get     'x-current-requests': '1',
+74 silly get     'x-readtime': '14',
+74 silly get     'strict-transport-security': 'max-age=15768000',
+74 silly get     'content-encoding': 'gzip' } ]
+75 verbose get saving memwatch to C:\Users\Liuwei\AppData\Roaming\npm-cache\registry.cnpmjs.org\memwatch\.cache.json
+76 verbose correctMkdir C:\Users\Liuwei\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+77 silly addNameTag next cb for memwatch with tag latest
+78 silly addNamed memwatch@0.2.2
+79 verbose addNamed "0.2.2" is a plain semver version for memwatch
+80 silly mapToRegistry name memwatch
+81 silly mapToRegistry using default registry
+82 silly mapToRegistry registry http://registry.cnpmjs.org/
+83 silly mapToRegistry data Result {
+83 silly mapToRegistry   raw: 'memwatch',
+83 silly mapToRegistry   scope: null,
+83 silly mapToRegistry   name: 'memwatch',
+83 silly mapToRegistry   rawSpec: '',
+83 silly mapToRegistry   spec: 'latest',
+83 silly mapToRegistry   type: 'tag' }
+84 silly mapToRegistry uri http://registry.cnpmjs.org/memwatch
+85 verbose addRemoteTarball http://registry.cnpmjs.org/memwatch/download/memwatch-0.2.2.tgz not in flight; adding
+86 verbose addRemoteTarball [ 'http://registry.cnpmjs.org/memwatch/download/memwatch-0.2.2.tgz',
+86 verbose addRemoteTarball   '779e8cd982532b6221b6ed1c1269098bee16f92c' ]
+87 info retry fetch attempt 1 at 20:27:22
+88 info attempt registry request try #1 at 20:27:22
+89 http fetch GET http://registry.cnpmjs.org/memwatch/download/memwatch-0.2.2.tgz
+90 http fetch 200 http://registry.cnpmjs.org/memwatch/download/memwatch-0.2.2.tgz
+91 silly fetchAndShaCheck shasum 779e8cd982532b6221b6ed1c1269098bee16f92c
+92 verbose addTmpTarball C:\Users\Liuwei\AppData\Local\Temp\npm-11388-4fbe9e73\registry.cnpmjs.org\memwatch\download\memwatch-0.2.2.tgz not in flight; adding
+93 verbose addTmpTarball already have metadata; skipping unpack for memwatch@0.2.2
+94 verbose correctMkdir C:\Users\Liuwei\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+95 silly cache afterAdd memwatch@0.2.2
+96 verbose afterAdd C:\Users\Liuwei\AppData\Roaming\npm-cache\memwatch\0.2.2\package\package.json not in flight; writing
+97 verbose correctMkdir C:\Users\Liuwei\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+98 verbose afterAdd C:\Users\Liuwei\AppData\Roaming\npm-cache\memwatch\0.2.2\package\package.json written
+99 silly install resolved [ { name: 'memwatch',
+99 silly install resolved     description: 'Keep an eye on your memory usage, and discover and isolate leaks.',
+99 silly install resolved     version: '0.2.2',
+99 silly install resolved     author: { name: 'Lloyd Hilaiel', url: 'http://lloyd.io' },
+99 silly install resolved     engines: { node: '>= 0.6.0' },
+99 silly install resolved     repository:
+99 silly install resolved      { type: 'git',
+99 silly install resolved        url: 'https://github.com/lloyd/node-memwatch.git' },
+99 silly install resolved     main: 'include.js',
+99 silly install resolved     licenses: [ [Object] ],
+99 silly install resolved     bugs: { url: 'https://github.com/lloyd/node-memwatch/issues' },
+99 silly install resolved     scripts: { install: 'node-gyp rebuild', test: 'mocha tests' },
+99 silly install resolved     devDependencies: { mocha: '1.2.2', should: '0.6.3', 'node-gyp': '0.5.7' },
+99 silly install resolved     contributors: [ [Object], [Object], [Object] ],
+99 silly install resolved     readmeFilename: 'README.md',
+99 silly install resolved     _id: 'memwatch@0.2.2',
+99 silly install resolved     dist:
+99 silly install resolved      { tarball: 'http://registry.cnpmjs.org/memwatch/download/memwatch-0.2.2.tgz',
+99 silly install resolved        shasum: '779e8cd982532b6221b6ed1c1269098bee16f92c',
+99 silly install resolved        size: 11266,
+99 silly install resolved        noattachment: false },
+99 silly install resolved     _from: 'memwatch@latest',
+99 silly install resolved     _npmVersion: '1.2.14',
+99 silly install resolved     _npmUser: { name: 'lloyd', email: 'lloyd@hilaiel.com' },
+99 silly install resolved     maintainers: [ [Object] ],
+99 silly install resolved     directories: {},
+99 silly install resolved     publish_time: 1363215719219,
+99 silly install resolved     _cnpm_publish_time: 1363215719219,
+99 silly install resolved     _shasum: '779e8cd982532b6221b6ed1c1269098bee16f92c',
+99 silly install resolved     _resolved: 'http://registry.cnpmjs.org/memwatch/download/memwatch-0.2.2.tgz' } ]
+100 info install memwatch@0.2.2 into C:\Users\Liuwei\Desktop\脚手架\shanxi
+101 info installOne memwatch@0.2.2
+102 verbose installOne of memwatch to C:\Users\Liuwei\Desktop\脚手架\shanxi not in flight; installing
+103 verbose correctMkdir C:\Users\Liuwei\AppData\Roaming\npm-cache\_locks correctMkdir not in flight; initializing
+104 verbose lock using C:\Users\Liuwei\AppData\Roaming\npm-cache\_locks\memwatch-01c70b4becb66706.lock for C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+105 silly install write writing memwatch 0.2.2 to C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+106 verbose unbuild node_modules\memwatch
+107 silly gentlyRm C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch is being purged from base C:\Users\Liuwei\Desktop\脚手架\shanxi
+108 verbose gentlyRm don't care about contents; nuking C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+109 verbose tar unpack C:\Users\Liuwei\AppData\Roaming\npm-cache\memwatch\0.2.2\package.tgz
+110 verbose tar unpacking to C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+111 silly gentlyRm C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch is being purged
+112 verbose gentlyRm don't care about contents; nuking C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+113 silly gunzTarPerm modes [ '777', '666' ]
+114 silly gunzTarPerm extractEntry package.json
+115 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+116 silly gunzTarPerm extractEntry .npmignore
+117 silly gunzTarPerm modified mode [ '.npmignore', 420, 438 ]
+118 silly gunzTarPerm extractEntry README.md
+119 silly gunzTarPerm modified mode [ 'README.md', 420, 438 ]
+120 silly gunzTarPerm extractEntry tests.js
+121 silly gunzTarPerm modified mode [ 'tests.js', 420, 438 ]
+122 silly gunzTarPerm extractEntry foo.js
+123 silly gunzTarPerm modified mode [ 'foo.js', 420, 438 ]
+124 silly gunzTarPerm extractEntry include.js
+125 silly gunzTarPerm modified mode [ 'include.js', 420, 438 ]
+126 silly gunzTarPerm extractEntry .travis.yml
+127 silly gunzTarPerm modified mode [ '.travis.yml', 420, 438 ]
+128 silly gunzTarPerm extractEntry ChangeLog
+129 silly gunzTarPerm modified mode [ 'ChangeLog', 420, 438 ]
+130 silly gunzTarPerm extractEntry #wscript#
+131 silly gunzTarPerm modified mode [ '#wscript#', 420, 438 ]
+132 silly gunzTarPerm extractEntry binding.gyp
+133 silly gunzTarPerm modified mode [ 'binding.gyp', 420, 438 ]
+134 silly gunzTarPerm extractEntry src/heapdiff.cc
+135 silly gunzTarPerm modified mode [ 'src/heapdiff.cc', 420, 438 ]
+136 silly gunzTarPerm extractEntry src/heapdiff.hh
+137 silly gunzTarPerm modified mode [ 'src/heapdiff.hh', 420, 438 ]
+138 silly gunzTarPerm extractEntry src/init.cc
+139 silly gunzTarPerm modified mode [ 'src/init.cc', 420, 438 ]
+140 silly gunzTarPerm extractEntry src/memwatch.cc
+141 silly gunzTarPerm modified mode [ 'src/memwatch.cc', 420, 438 ]
+142 silly gunzTarPerm extractEntry src/memwatch.hh
+143 silly gunzTarPerm modified mode [ 'src/memwatch.hh', 420, 438 ]
+144 silly gunzTarPerm extractEntry src/platformcompat.hh
+145 silly gunzTarPerm modified mode [ 'src/platformcompat.hh', 420, 438 ]
+146 silly gunzTarPerm extractEntry src/util.cc
+147 silly gunzTarPerm modified mode [ 'src/util.cc', 420, 438 ]
+148 silly gunzTarPerm extractEntry src/util.hh
+149 silly gunzTarPerm modified mode [ 'src/util.hh', 420, 438 ]
+150 silly gunzTarPerm extractEntry examples/basic_heapdiff.js
+151 silly gunzTarPerm modified mode [ 'examples/basic_heapdiff.js', 420, 438 ]
+152 silly gunzTarPerm extractEntry examples/do_nothing_server.js
+153 silly gunzTarPerm modified mode [ 'examples/do_nothing_server.js', 420, 438 ]
+154 silly gunzTarPerm extractEntry examples/slightly_leaky.js
+155 silly gunzTarPerm modified mode [ 'examples/slightly_leaky.js', 420, 438 ]
+156 verbose write writing to C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch\package.json
+157 info preinstall memwatch@0.2.2
+158 verbose readDependencies loading dependencies from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch\package.json
+159 verbose readDependencies loading dependencies from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch\package.json
+160 silly install resolved []
+161 verbose about to build C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+162 info build C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+163 info linkStuff memwatch@0.2.2
+164 silly linkStuff memwatch@0.2.2 has C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules as its parent node_modules
+165 verbose linkBins memwatch@0.2.2
+166 verbose linkMans memwatch@0.2.2
+167 verbose rebuildBundles memwatch@0.2.2
+168 info install memwatch@0.2.2
+169 verbose unsafe-perm in lifecycle true
+170 info memwatch@0.2.2 Failed to exec install script
+171 verbose unlock done using C:\Users\Liuwei\AppData\Roaming\npm-cache\_locks\memwatch-01c70b4becb66706.lock for C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+172 verbose stack Error: memwatch@0.2.2 install: `node-gyp rebuild`
+172 verbose stack Exit status 1
+172 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:217:16)
+172 verbose stack     at emitTwo (events.js:87:13)
+172 verbose stack     at EventEmitter.emit (events.js:172:7)
+172 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:24:14)
+172 verbose stack     at emitTwo (events.js:87:13)
+172 verbose stack     at ChildProcess.emit (events.js:172:7)
+172 verbose stack     at maybeClose (internal/child_process.js:827:16)
+172 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+173 verbose pkgid memwatch@0.2.2
+174 verbose cwd C:\Users\Liuwei\Desktop\脚手架\shanxi
+175 error Windows_NT 10.0.14393
+176 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "--save" "memwatch"
+177 error node v4.4.7
+178 error npm  v2.15.8
+179 error code ELIFECYCLE
+180 error memwatch@0.2.2 install: `node-gyp rebuild`
+180 error Exit status 1
+181 error Failed at the memwatch@0.2.2 install script 'node-gyp rebuild'.
+181 error This is most likely a problem with the memwatch package,
+181 error not with npm itself.
+181 error Tell the author that this fails on your system:
+181 error     node-gyp rebuild
+181 error You can get information on how to open an issue for this project with:
+181 error     npm bugs memwatch
+181 error Or if that isn't available, you can get their info via:
+181 error
+181 error     npm owner ls memwatch
+181 error There is likely additional logging output above.
+182 verbose exit [ 1, true ]
+183 verbose unbuild node_modules\memwatch
+184 info preuninstall memwatch@0.2.2
+185 info uninstall memwatch@0.2.2
+186 verbose unbuild rmStuff memwatch@0.2.2 from C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules
+187 info postuninstall memwatch@0.2.2
+188 silly gentlyRm C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch is being purged from base C:\Users\Liuwei\Desktop\脚手架\shanxi
+189 verbose gentlyRm don't care about contents; nuking C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+190 silly vacuum-fs purging C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\memwatch
+191 silly vacuum-fs quitting because other entries in C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules

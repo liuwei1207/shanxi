@@ -8,16 +8,26 @@ var moment = require('moment');
 var config = require("./config");
 require("./cache");
 
-
 var HOST = config.tcpSocket.HOST;
 var PORT = config.tcpSocket.PORT;
+var HOST2 = config.tcpSocket.HOST2;
+var PORT2 = config.tcpSocket.PORT2;
+
+global.nodeServer = new net.Socket();       //实时数据通道
+var nodeServer2 = new net.Socket();     //实时音频通道
+
+var waitTime = 15; //min无数据清空缓存
+var timer = 5; //重连时间
 
 
-global.nodeServer = new net.Socket();
+/* ********************************************** nodeServer1 **************************************************** */
+
+//负责实时数据和下发设置
 
 var splicingDataCacheObj = {}; //拼接数据缓存
 var Cmoment = null;//用来给处理程序传递时间戳标记
 var countNum = null;//处理完的可用数据计数器
+var retry = null;//重试定时器
 
 nodeServer.connect(PORT, HOST, function () {
 
@@ -37,7 +47,7 @@ nodeServer.on('data', function (dataPackage) {
 
     //这里对收到每一个片段包的数据进行处理
     try {
-        splicingDataPackage(dataPackage.toString());
+        splicingRealDataPackage(dataPackage.toString());
     } catch (err) {
         console.log("处理程序异常 ：");
         console.log(err);
@@ -48,15 +58,10 @@ nodeServer.on('data', function (dataPackage) {
     //nodeServer.destroy();
 });
 
-// 一定时间没收到数据则断开连接!
-var waitTime = 15; //min
-var retry = null;//重试定时器
-var timer = 5; //sec
-
 //设置超时时间
 nodeServer.setTimeout(1000 * 60 * waitTime, function () {
     console.log('客户端在' + waitTime + 'min内未通信，将断开连接...');
-    nodeServer.destroy();
+    nodeServer.end();
 });
 
 // 为客户端添加"close"事件处理函数
@@ -93,8 +98,6 @@ nodeServer.on('error', function (e) {
     console.log(e);
 });
 
-/* ********************************************** function **************************************************** */
-
 //tcp socket 断线重连
 function reconnectToTcpSocketServer() {
 
@@ -112,7 +115,7 @@ function reconnectToTcpSocketServer() {
 }
 
 //数据拼接程序
-function splicingDataPackage(dataPackageStr) {
+function splicingRealDataPackage(dataPackageStr) {
 
 
 //一包数据，包含起始符与结束符， 那可以确定这是一包完整数据!
@@ -349,5 +352,282 @@ function splicingDataPackage(dataPackageStr) {
         //此处为写入缓存模块代码
         GLOBAL_CACHE.set('levels_' + deviceID, levels, expire);
         console.log(GLOBAL_CACHE.get('levels_' + deviceID))
+    }
+}
+
+
+
+/* ********************************************** nodeServer2 **************************************************** */
+
+//负责levels音频数据接收, 无设置下发;
+
+var countNumLevels = null;//处理完的可用数据计数器
+var TEMP = "";
+var n = 0;  //音频报错计数器
+var retryLevels = null;//重试定时器
+
+nodeServer2.connect(PORT2, HOST2, function () {
+
+    console.log('levels connect to: ' + HOST2 + ':' + PORT2);
+    // 建立连接后立即向服务器发送数据，服务器将收到这些数据
+    nodeServer2.write('[START0043]{"type":"login","login":"who","pwd":"xxxx"}[END]');   // server login
+    retryLevels = null;     //重置
+
+});
+
+// 为客户端添加"data"事件处理函数
+// dataPackage是服务器发回的数据 , 1包！
+nodeServer2.on('data', function (dataPackage) {
+
+    //此处接受到一包包的字符串数据
+    //console.log(dataPackage.toString());
+
+    //这里对收到每一个片段包的数据进行处理
+    splicingDataPackage(dataPackage.toString());
+    if (TEMP) {
+        splicingDataPackage(TEMP);
+    }
+
+    //// 完全关闭连接
+    //nodeServer2.destroy();
+});
+
+//设置超时时间
+nodeServer2.setTimeout(1000 * 60 * waitTime, function () {
+    console.log('客户端在' + waitTime + 'min内未通信，将断开连接...');
+    nodeServer2.end();
+});
+
+// 为客户端添加"close"事件处理函数
+nodeServer2.on('close', function (had_error) {
+    console.log('Connection closed ' + had_error);
+
+    // 完全关闭连接
+    nodeServer2.destroy();
+
+    if (!retryLevels) {
+        retryLevels = setInterval(function () {
+            reconnectToTcpSocketServer2();
+        }, timer * 1000)
+    }
+
+});
+
+// 当 socket 另一端发送 FIN 包时，触发该事件。
+nodeServer2.on('end', function () {
+    console.log('断开与服务器的连接');
+
+    // 完全关闭连接
+    nodeServer2.destroy();
+
+    if (!retryLevels) {
+        retryLevels = setInterval(function () {
+            reconnectToTcpSocketServer2();
+        }, timer * 1000)
+    }
+});
+
+// 捕捉客户端的异常
+nodeServer2.on('error', function (e) {
+    console.log(e);
+});
+
+//tcp socket 断线重连
+function reconnectToTcpSocketServer2() {
+
+    nodeServer2.connect(PORT2, HOST2, function () {
+
+        clearInterval(retryLevels);
+
+        console.log('RE-CONNECTED TO: ' + HOST2 + ':' + PORT2);
+
+        // 建立连接后立即向服务器发送数据，服务器将收到这些数据
+        nodeServer2.write('[START0043]{"type":"login","login":"who","pwd":"xxxx"}[END]');   // server login
+
+    });
+
+}
+
+//数据拼接程序
+function splicingDataPackage(splicingDataPackage) {
+    var arr = splicingDataPackage.match(/\[START\d{4}\][\s\S]*?\[END\]/g);
+    if (arr) {
+
+        //match 返回的是数组形式， 所以需要遍历
+        for (var i = 0; i < arr.length; i++) {
+            //获得了每一条完整数据！送入数据处理模块
+            var _length = arr[i].match(/^\[(START)\d{4}\]/)[0].match(/\d{4}/)[0];   //预期字节长度
+            var length = arr[i].length;//实际字节长度
+
+            //解析后的字符串长度与预期相同！
+            if (_length = length) {
+                //送入type处理模块
+                try {
+                    testDataType(arr[i]);
+                } catch (err) {
+                    console.log(err);
+                    console.log(n);
+                }
+            } else {
+                //解析后的字符串长度与预期不同！
+                console.log("解析后的字符串长度与预期不同!");
+            }
+        }
+        TEMP += splicingDataPackage.replace(/\[START\d{4}\][\s\S]*?\[END\]/g, "");
+
+    } else {
+
+        TEMP = "";
+        n++
+    }
+
+    function testDataType(dataStr) {
+        //去掉标识位置， 获得最终数据！
+        var _finalResult = dataStr.replace(/^\[(START)\d{4}\]/, "").replace(/\[END\]$/, "");
+        var _finalResultObj = JSON.parse(_finalResult);
+
+        //获得数据的json对象 -- 已准备接受type类型检查
+        var _type = _finalResultObj.type;
+
+        if (_type === "heartBeat") {
+            //这是心跳
+            //console.log("这是心跳");
+            //收到心跳包， 就立即回送一包心跳包;
+            sendAResponsePackage();
+
+        } else if (_type === "deviceData") {
+            //这是实时数据
+            //console.log("这是实时数据")
+            //console.log("共计收到： " + countNumLevels + " 条完整的socket数据");
+            alertVerification(_finalResultObj);
+        } else if (_type === "levels") {
+            //这是音频彩条
+            //console.log("这是音频彩条")
+            audioLevels(_finalResultObj);
+        }
+
+
+    }
+
+//接收到心跳包， 则回送响应包
+    function sendAResponsePackage() {
+        nodeServer2.write('[START0039]{"type":"heartBeat","keepAlive":"true"}[END]');   // server login
+    }
+
+//报警规则模块
+    function alertVerification(_finalResultObj) {
+        var _deviceDataObj = _finalResultObj.deviceData;
+        var deviceID = _finalResultObj.deviceID;
+
+        //通过设备ID 查找对应的 报警规则!
+        ARM.getAlertRulesByDeviceID(deviceID, function (err, res) {
+
+            if (err) {
+                console.log(err)
+            } else {
+
+                addAlertRules(res[0]);   //将查询出来的报警规则与最终数据集合组合
+
+                function addAlertRules(alertRulesObj) {
+                    if (alertRulesObj) {
+                        var len = Object.getOwnPropertyNames(alertRulesObj).length;
+
+                        var i = 1;
+
+
+                        var normal = 1;   //正常
+                        var warning = 2;   //警告
+                        var danger = 3;   //异常
+                        var offline = 4;   //掉线
+
+                        for (var key in _deviceDataObj) {
+
+                            if (alertRulesObj.hasOwnProperty(key)) {
+                                try {
+                                    //从报警规则 对象中 获取对应key的报警规则， 数组的第一位是min ，  第二位是max
+
+                                    var value = parseFloat(_deviceDataObj[key].value);
+                                    var min = parseFloat(alertRulesObj[key].value[0]);
+                                    var max = parseFloat(alertRulesObj[key].value[1]);
+
+                                    if (len == i) {
+                                        if (value >= min && value <= max) {
+                                            //console.log("正常");
+                                            _finalResultObj.deviceData[key].alarmStatus = normal;
+                                            //等待循环结束后， 将带有参数是否报警的状态值集合送入缓存！
+
+                                            var _finalResultStr = JSON.stringify(_finalResultObj);
+                                            var expire = 1000 * 60 * 5; //5分钟没数据 即清空缓存， 页面可以直观得到显示！
+
+                                            //此处为写入缓存模块代码
+                                            GLOBAL_CACHE.set(deviceID, _finalResultStr, expire);
+                                            addDataToHistoricalDatabase(_finalResultObj);  //写入数据库
+                                            countNumLevels++; //接收计数器+1
+                                            //console.log(countNumLevels);
+                                        } else {
+                                            //console.log("超出范围");
+                                            _finalResultObj.deviceData[key].alarmStatus = danger;
+                                            //等待循环结束后， 将带有参数是否报警的状态值集合送入缓存！
+
+                                            var _finalResultStr = JSON.stringify(_finalResultObj);
+                                            var expire = 1000 * 60 * 5; //5分钟没数据 即清空缓存， 页面可以直观得到显示！
+
+                                            //此处为写入缓存模块代码
+                                            GLOBAL_CACHE.set(deviceID, _finalResultStr, expire);
+                                            addDataToHistoricalDatabase(_finalResultObj);  //写入数据库
+                                            countNumLevels++; //接收计数器+1
+                                            //console.log(countNumLevels);
+
+                                            _finalResultStr = null;//释放内存
+                                        }
+                                    } else {
+                                        if (value >= min && value <= max) {
+                                            //console.log("正常");
+                                            _finalResultObj.deviceData[key].alarmStatus = normal;
+                                            i++;
+                                        } else {
+                                            //console.log("超出范围");
+                                            _finalResultObj.deviceData[key].alarmStatus = danger;
+                                            i++;
+                                        }
+                                    }
+
+
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            }
+                        }
+                    } else {
+                        console.log("报警规则未配置!");
+
+                        //不进行报警规则验证， 直接添加到缓存！
+                        var _finalResultStr = JSON.stringify(_finalResultObj);
+
+
+                        //此处为写入缓存模块代码
+                        GLOBAL_CACHE.set(deviceID, _finalResultStr, expire);
+
+                        addDataToHistoricalDatabase(_finalResultObj);  //写入数据库
+                    }
+
+                    //
+                    //写入数据库
+                    function addDataToHistoricalDatabase(data) {
+                        ARM.addDataToHistoricalDatabase(data);
+                    }
+                }
+            }
+        });
+    }
+
+//彩条处理模块
+    function audioLevels(_finalResultObj) {
+        var levels = _finalResultObj.levels;
+        var deviceID = _finalResultObj.deviceID;
+        var expire = 1000 * 60 * 5; //5分钟没数据 即清空缓存， 页面可以直观得到显示！
+
+        //此处为写入缓存模块代码
+        GLOBAL_CACHE.set('levels_' + deviceID, levels, expire);
     }
 }

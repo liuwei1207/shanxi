@@ -27,14 +27,21 @@ module.exports = function (io) {
             if (data.name == name && data.pass == pass) {
                 //console.log("验证通过");
 
-                socket.on("getData", function (deviceIDArry) {
+                socket.on("getData", function (Obj) {
+                    try {
+                        var deviceDataArry = Obj.deviceDataArry.siteNumArry;
+                        var allDeviceDataArry = Obj.allDeviceDataArry.siteNumArry;
+                    } catch (err) {
+
+                    }
+
                     //客户端传的 设备 ID   数组
-                    console.log(deviceIDArry);
                     update();
                     clearInterval(timer);
                     timer = setInterval(update, t);//间隔5s 发送
                     function update() {
-                        socket.emit('data', send(deviceIDArry.siteNumArry)); //要反复执行的是emit
+                        socket.emit('data', send(deviceDataArry)); //要反复执行的是emit
+                        socket.emit('allData', send(allDeviceDataArry)); //要反复执行的是emit
                     }
 
 
@@ -62,44 +69,47 @@ module.exports = function (io) {
 
 
         socket.on("set", function (newData) {
-            var str = JSON.stringify(newData);
-            var len = str.length;
-
-            var dataStrLen = preZeroFill(len + 16, 4);
-            console.log(dataStrLen);
-            console.log('[START' + dataStrLen + ']' + str + '[END]');
-            nodeServer.write('[START' + dataStrLen + ']' + str + '[END]');   // server login
-
-
-            //补0模块
-            function preZeroFill(num, size) {
-                if (num >= Math.pow(10, size)) { //如果num本身位数不小于size位
-                    return num.toString();
-                } else {
-                    var _str = Array(size + 1).join('0') + num;
-                    return _str.slice(_str.length - size);
+            try {
+                var str = JSON.stringify(newData);
+                var len = str.length;
+                var dataStrLen = preZeroFill(len, 4);
+                nodeServer.write('[START' + dataStrLen + ']' + str + '[END]');   // server login
+                socket.emit('msg', "true"); //要反复执行的是emit
+                //补0模块
+                function preZeroFill(num, size) {
+                    if (num >= Math.pow(10, size)) { //如果num本身位数不小于size位
+                        return num.toString();
+                    } else {
+                        var _str = Array(size + 1).join('0') + num;
+                        return _str.slice(_str.length - size);
+                    }
                 }
+            } catch (err) {
+                socket.emit('msg', "false"); //要反复执行的是emit
             }
         });
 
 
-        socket.on("levels", function (deviceID) {
-            console.log(deviceID);
-            socket.emit('levels', getData()); //要反复执行的是emit
+        socket.on("levels", function (deviceIDArry) {
+            setInterval(update, 200);//间隔5s 发送
+            function update() {
+                socket.emit('levels', getData(deviceIDArry.deviceIDArry)); //要反复执行的是emit
+            }
 
-            function getData() {
-                var data = [];
-                //取0-100的随机整数
-
-                var randomNumL = 60 * Math.random(),
-                    randomNumR = 60 * Math.random();
-                data_L = Math.floor(60 - randomNumL);
-                data_R = Math.floor(60 - randomNumR);
-
-                data.push(data_L);
-                data.push(data_R);
-
-                return data;
+            function getData(deviceIDArry) {
+                //return GLOBAL_CACHE.get('levels_' + deviceID);
+                return (function () {
+                    var len = deviceIDArry.length;
+                    var dataTemp = {};
+                    if (len > 0) {
+                        for (var i = 0; i < len; i++) {
+                            dataTemp[deviceIDArry[i]] = GLOBAL_CACHE.get('levels_' + deviceIDArry[i]) ? GLOBAL_CACHE.get('levels_' + deviceIDArry[i]) : "";
+                            if (i == len - 1) {
+                                return dataTemp
+                            }
+                        }
+                    }
+                })()
             }
         });
     });

@@ -2,8 +2,30 @@
  * Created by Liuwei on 2016/9/8.
  */
 
-(function () {
+$(document).ready(function () {
 
+    var allDataStr = (function () {
+        return (function () {
+            if (window.localStorage) {
+                if ('<%- deviceData.currentProjectID %>' == "all") {
+                    var allDataStr = '<%- JSON.stringify(deviceData.deviceData) %>';
+                    window.localStorage.allDataStr = allDataStr;
+                    return allDataStr ? allDataStr : "";
+                } else {
+                    return window.localStorage.allDataStr ? window.localStorage.allDataStr : ""
+                }
+
+            } else {
+                alert("您的浏览器不支持HTML5技术， 请升级浏览器， 推荐使用谷歌新版浏览器！")
+            }
+        })()
+    })();
+
+    var allDeviceDataArry = eval('(' + allDataStr + ')');
+
+    allDeviceDataArry.forEach(function (item, index) {
+        allDeviceDataArry[index] = item.DeviceID;
+    });
     var socket = null;
 
     $("#baiduMap").height($(window).height() - 75);
@@ -13,7 +35,7 @@
     });
 
 
-    var map = new BMap.Map("baiduMap", {minZoom: 6, maxZoom: 13});    // 创建Map实例
+    var map = new BMap.Map("baiduMap", {minZoom: 6, maxZoom: 18});    // 创建Map实例
 
 
     /* ********************************************** 百度地图初始化设置 **************************************** */
@@ -32,7 +54,7 @@
     var polygonFillOpacityAfterSelected = .75;   // 行政边界线段粗细
 
 
-    //地图数据缓存
+//地图数据缓存
     var markerCache = [];
     var markerPointCache = [];
     var labelCache = [];
@@ -245,7 +267,8 @@
             dataType: 'json',
             success: function (Data) {
                 var deviceID = Data[0].DeviceID;
-                SOCKET_SiteInfoWindows(deviceID)
+                var SiteName = Data[0].SiteName;
+                SOCKET_SiteInfoWindows(deviceID, SiteName)
             },
             error: function (e) {
                 console.log(e);
@@ -253,6 +276,7 @@
             }
         });
     }
+
     function ajax_load_siteInfoWindow2(_Data, callback) {
 
         var siteInfoWindow = $("#siteInfoWindow");
@@ -267,7 +291,8 @@
             dataType: 'json',
             success: function (Data) {
                 var deviceID = Data[0].DeviceID;
-                SOCKET_SiteInfoWindows2(deviceID)
+                var SiteName = Data[0].SiteName;
+                SOCKET_SiteInfoWindows2(deviceID, SiteName)
             },
             error: function (e) {
                 console.log(e);
@@ -275,46 +300,56 @@
             }
         });
     }
-    //function ajax_load_siteInfoWindow(_Data, callback) {
-    //
-    //    var siteInfoWindow = $("#siteInfoWindow");
-    //    var siteID = _Data.ID;
-    //    //初始化加载站点详细信息窗口数据
-    //    $.ajax({
-    //        url: "/api/maps/getSiteInfoBySiteID",// 后台接口
-    //        data: {
-    //            "siteID": siteID
-    //        },
-    //        type: 'post',
-    //        dataType: 'json',
-    //        beforeSend: function () {
-    //            add_load_animal(siteInfoWindow);//添加加载动画
-    //        },
-    //        success: function (Data) {
-    //            var deviceID = Data[0].DeviceID;
-    //            SOCKET_SiteInfoWindows(deviceID)
-    //        },
-    //        error: function (e) {
-    //            console.log(e);
-    //
-    //        }
-    //    });
-    //}
 
-    function SOCKET_SiteInfoWindows(deviceID) {
+//function ajax_load_siteInfoWindow(_Data, callback) {
+//
+//    var siteInfoWindow = $("#siteInfoWindow");
+//    var siteID = _Data.ID;
+//    //初始化加载站点详细信息窗口数据
+//    $.ajax({
+//        url: "/api/maps/getSiteInfoBySiteID",// 后台接口
+//        data: {
+//            "siteID": siteID
+//        },
+//        type: 'post',
+//        dataType: 'json',
+//        beforeSend: function () {
+//            add_load_animal(siteInfoWindow);//添加加载动画
+//        },
+//        success: function (Data) {
+//            var deviceID = Data[0].DeviceID;
+//            SOCKET_SiteInfoWindows(deviceID)
+//        },
+//        error: function (e) {
+//            console.log(e);
+//
+//        }
+//    });
+//}
+
+    function SOCKET_SiteInfoWindows(deviceID, SiteName) {
+
         var deviceDataArry = [];
+        var SiteName = SiteName;
         deviceDataArry.push(deviceID);
         socket = io.connect();
         socket.on("login", function (data) {
             socket.emit("userLogin", {name: "who", pass: "xxxx"});
-            socket.emit("getData", {siteNumArry: deviceDataArry});
+            socket.emit("getData", {
+                deviceDataArry: {
+                    siteNumArry: deviceDataArry
+                },
+                allDeviceDataArry: {
+                    siteNumArry: allDeviceDataArry
+                }
+            });
         });
 
         socket.on('data', function (data) {
             try {
                 for (var key in data) {
                     //获得每一个数据json对象
-                    addSocketDataToPage(key, data[key]); //传入一个设备的json参数
+                    addSocketDataToPage(key, data[key], SiteName); //传入一个设备的json参数
                 }
             } catch (err) {
 
@@ -322,16 +357,22 @@
         });
     }
 
-    function SOCKET_SiteInfoWindows2(deviceID) {
+    function SOCKET_SiteInfoWindows2(deviceID, SiteName) {
         var deviceDataArry = [];
         deviceDataArry.push(deviceID);
-        socket.emit("getData", {siteNumArry: deviceDataArry});
+        socket.emit("getData", {
+            deviceDataArry: {
+                siteNumArry: deviceDataArry
+            },
+            allDeviceDataArry: {
+                siteNumArry: allDeviceDataArry
+            }
+        });
         socket.on('data', function (data) {
-            console.log(data)
             try {
                 for (var key in data) {
                     //获得每一个数据json对象
-                    addSocketDataToPage(key, data[key]); //传入一个设备的json参数
+                    addSocketDataToPage(key, data[key], SiteName); //传入一个设备的json参数
                 }
             } catch (err) {
 
@@ -339,21 +380,20 @@
         });
     }
 
-    //传入一个设备的json参数
-    function addSocketDataToPage(key, dataObj) {
-
+//传入一个设备的json参数
+    function addSocketDataToPage(key, dataObj, SiteName) {
         //如果该设备有数据
 
         if (dataObj) {
             //实时音频监听中的html模板
-            var str1 = '<thead> <tr> <td>采集时间</td> <td title="' + dataObj.deviceData.CollTime + '"> ' + dataObj.deviceData.CollTime.split(" ")[1] +
-                ' <span class="site-states" data-state="0"></span></td> </tr> </thead><tbody> <tr> <td>设备ID</td> <td class="register-tag" title="' + dataObj.deviceID + '"> '
-                + dataObj.deviceID + '</td> </tr> <tr>  <td>频率</td> <td class="position-relative"> ' + dataObj.deviceData.FMReceiveFQY.value +
+            var str1 = '<thead> <tr> <td>所属站点</td> <td class="register-tag" title="' + SiteName + '"><span class="text-primary bigger-110"> <i class="menu-icon fa fa-map-marker"></i> '
+                + SiteName + '</span></td> </tr> </thead><tbody><tr> <td>采集时间</td> <td title="' + dataObj.deviceData.CollTime + '"> ' + dataObj.deviceData.CollTime.split(" ")[1] +
+                ' <span class="site-states" data-state="0"></span></td> </tr> <tr>  <td>频率</td> <td class="position-relative"> ' + dataObj.deviceData.FMReceiveFQY.value +
                 ' Mhz<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate" data-toggle="modal"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr data-alert="' + dataObj.deviceData.RoomTemp.alarmStatus + '"> <td>温度</td> <td class="position-relative">'
                 + dataObj.deviceData.RoomTemp.value + '<span class="tb-tail"> ℃</span></td> </tr> <tr data-alert="' + dataObj.deviceData.RoomHum.alarmStatus + '"> <td>湿度</td> <td class="position-relative">' +
                 dataObj.deviceData.RoomHum.value + ' <span class="tb-tail">%</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceRSSI.alarmStatus + '"> <td>场强</td> <td class="position-relative">' +
                 dataObj.deviceData.FMReviceRSSI.value + '<span class="tb-tail">N/C</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceSNR.alarmStatus + '"> <td>信噪比</td> <td class="position-relative">' +
-                dataObj.deviceData.FMReviceSNR.value + '<span class="tb-tail">db</span></td> </tr> </tbody></table></table>';
+                dataObj.deviceData.FMReviceSNR.value + '<span class="tb-tail">db</span></td> </tr> </tbody>';
 
             try {
                 $('#siteInfoWindow').find(".Js_realTimeDataTabel").html(str1)
@@ -364,7 +404,8 @@
 
             //如果该设备没有数据
         } else {
-            var str2 = '<thead> <tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> </thead> <tbody> <tr> <td>设备ID</td> <td class="register-tag"> 暂无数据</td> </tr> <tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr> </tbody></table>';
+            var str2 = '<thead> <tr> <td>所属站点</td> <td class="register-tag" title="' + SiteName + '"><span class="text-primary bigger-110"> <i class="menu-icon fa fa-map-marker"></i> '
+                + SiteName + '</span></td> </tr>  </thead> <tbody><tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr><tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr> </tbody>';
             try {
                 $('#siteInfoWindow').find(".Js_realTimeDataTabel").html(str2)
             }
@@ -399,72 +440,72 @@
      * 参数说明: 无
      * method: POST
      */
-    //function ajax_load_deviceInfoBox(_Data, callback) {
-    //
-    //    var deviceInfoBox = $("#deviceInfoBox");
-    //    var siteID = _Data.ID;
-    //    var siteName = _Data.SiteName;
-    //    var beforeTime = 0;  //获取ajax传输前的分钟数
-    //    var successTime = 0; //获取ajax传输成功的数据
-    //
-    //    //初始化加载站点详细信息窗口数据
-    //    $.ajax({
-    //        url: "/api/maps/getAllDevicesInfoBySiteID",// 后台接口
-    //        data: {
-    //            "siteID": siteID
-    //        },
-    //        type: 'post',
-    //        dataType: 'json',
-    //        beforeSend: function(){
-    //            remove_load_animal(deviceInfoBox);//移除加载动画
-    //            add_load_animal(deviceInfoBox);//添加加载动画
-    //            beforeTime=+new Date();//获取当前秒数
-    //        },
-    //        success: function (Data) {
-    //
-    //            var _h3_HTML = deviceInfoBox.find("h3");
-    //            var _ul_HTML = deviceInfoBox.find("ul");
-    //            var minute = 0; //计算时间差
-    //            //清除加载动画
-    //            successTime=+new Date();//获取当前秒数
-    //            if(successTime>=beforeTime){
-    //                minute=successTime-beforeTime;
-    //            }else{
-    //                minute=beforeTime-successTime;
-    //            }
-    //            if(minute >= 500) {
-    //                remove_load_animal(deviceInfoBox);
-    //                _h3_HTML.html("");
-    //                _ul_HTML.html("");
-    //
-    //                var len = Data.length;
-    //                _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
-    //
-    //                for (var i = 0; i < len; i++) {
-    //                    _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
-    //                }
-    //            }
-    //            else{
-    //                setTimeout(function(){
-    //                    remove_load_animal(deviceInfoBox);
-    //                    _h3_HTML.html("");
-    //                    _ul_HTML.html("");
-    //
-    //                    var len = Data.length;
-    //                    _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
-    //
-    //                    for (var i = 0; i < len; i++) {
-    //                        _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
-    //                    }
-    //                },500)
-    //            }
-    //
-    //        },
-    //        error: function (e) {
-    //            console.log(e)
-    //        }
-    //    });
-    //}
+//function ajax_load_deviceInfoBox(_Data, callback) {
+//
+//    var deviceInfoBox = $("#deviceInfoBox");
+//    var siteID = _Data.ID;
+//    var siteName = _Data.SiteName;
+//    var beforeTime = 0;  //获取ajax传输前的分钟数
+//    var successTime = 0; //获取ajax传输成功的数据
+//
+//    //初始化加载站点详细信息窗口数据
+//    $.ajax({
+//        url: "/api/maps/getAllDevicesInfoBySiteID",// 后台接口
+//        data: {
+//            "siteID": siteID
+//        },
+//        type: 'post',
+//        dataType: 'json',
+//        beforeSend: function(){
+//            remove_load_animal(deviceInfoBox);//移除加载动画
+//            add_load_animal(deviceInfoBox);//添加加载动画
+//            beforeTime=+new Date();//获取当前秒数
+//        },
+//        success: function (Data) {
+//
+//            var _h3_HTML = deviceInfoBox.find("h3");
+//            var _ul_HTML = deviceInfoBox.find("ul");
+//            var minute = 0; //计算时间差
+//            //清除加载动画
+//            successTime=+new Date();//获取当前秒数
+//            if(successTime>=beforeTime){
+//                minute=successTime-beforeTime;
+//            }else{
+//                minute=beforeTime-successTime;
+//            }
+//            if(minute >= 500) {
+//                remove_load_animal(deviceInfoBox);
+//                _h3_HTML.html("");
+//                _ul_HTML.html("");
+//
+//                var len = Data.length;
+//                _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
+//
+//                for (var i = 0; i < len; i++) {
+//                    _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
+//                }
+//            }
+//            else{
+//                setTimeout(function(){
+//                    remove_load_animal(deviceInfoBox);
+//                    _h3_HTML.html("");
+//                    _ul_HTML.html("");
+//
+//                    var len = Data.length;
+//                    _h3_HTML.append('<strong>' + siteName + '</strong> 站点设备列表');
+//
+//                    for (var i = 0; i < len; i++) {
+//                        _ul_HTML.append('<li class="col-sm-2"><div class="widget-box" ><div class="widget-header"><h5 class="widget-title smaller">设备: ' + Data[i].RegisterDeviceID + '</h5><div class="widget-toolbar"> <span class="badge badge-danger">设备异常</span></div></div><div class="widget-body"><div class="widget-main padding-6"><div class="alert alert-info">  ' + Data[i].RegisterTagID + ' </div></div></div></div></li>')
+//                    }
+//                },500)
+//            }
+//
+//        },
+//        error: function (e) {
+//            console.log(e)
+//        }
+//    });
+//}
 
 
     /**
@@ -486,6 +527,84 @@
      */
     function mapSetting() {
         map.centerAndZoom(new BMap.Point(center[0], center[1]), Zoom);  // 初始化地图,设置中心点坐标和地图级别
+        map.setMapStyle({
+            styleJson: [
+                {
+                    "featureType": "road",
+                    "elementType": "all",
+                    "stylers": {
+                        "lightness": 20
+                    }
+                },
+                {
+                    "featureType": "highway",
+                    "elementType": "geometry",
+                },
+                {
+                    "featureType": "highway",
+                    "elementType": "labels.icon",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {//铁路
+                    "featureType": "railway",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {//普通道路
+                    "featureType": "local",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": {
+                        "color": "#d1e5ff"
+                    }
+                },
+                {//城市主路
+                    "featureType": "arterial",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {//地铁
+                    "featureType": "subway",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {
+                    "featureType": "building",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                },
+                {
+                    "featureType": "manmade",
+                    "elementType": "all",
+                    "stylers": {
+                        "visibility": "off"
+                    }
+                }
+            ]
+        });
         map.addControl(new BMap.MapTypeControl({
             mapTypes: [BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP]
         }));    //添加右上角地图切换
@@ -834,18 +953,18 @@
         var OHLongitude = _Data.OHLongitude;
         var OHLatitude = _Data.OHLatitude;
         var point = new BMap.Point(OHLongitude, OHLatitude);
-        map.panTo(point);
+        //map.panTo(point);
     }
 
     /**
      * 功能说明： 单击获取点击的经纬度
      * 参数说明: [ppArr: 存储所选坐标点]
      */
-    //var ppArr = "";
-    //map.addEventListener("click", function (e) {
-    //    ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
-    //    console.log(ppArr)
-    //});
+var ppArr = "";
+map.addEventListener("click", function (e) {
+    ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
+    console.log(ppArr)
+});
 
 
     /* ********************************************** 基础javascript工具 ****************************************** */
@@ -853,7 +972,7 @@
         return (data == "" || data == undefined || data == null) ? false : data;
     }
 
-    //阻止事件冒泡
+//阻止事件冒泡
     function stopBubble(e) {
 
         // 如果提供了事件对象，则这是一个非IE浏览器
@@ -873,4 +992,4 @@
         }
 
     }
-})();
+});

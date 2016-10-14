@@ -58,7 +58,7 @@
 
 <div id="baiduMap" class="m-hunanMap"></div>
 
-<div class="m-siteInfoWindow">
+<div class="m-siteInfoWindow draggable">
     <div class="widget-box position-relative" id="widget-box-9">
         <div class="widget-header">
             <h5 class="widget-title">站点详细信息</h5>
@@ -72,7 +72,6 @@
 
         <div class="widget-body">
             <div class="widget-main" id="siteInfoWindow">
-                <div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>
                 <table class="table table-bordered no-margin-bottom Js_realTimeDataTabel"></table>
             </div>
         </div>
@@ -80,7 +79,7 @@
 </div>
 
 
-<div class="m-ctrlBox" id="mapSwitchBox">
+<div class="m-ctrlBox draggable" id="mapSwitchBox">
     <div class="widget-box">
         <div class="widget-header">
             <h4 class="widget-title">地图控制</h4>
@@ -95,7 +94,7 @@
         <div class="widget-body">
             <div class="widget-main">
                 <div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>
-                <div class="control-group" >
+                <div class="control-group">
                     正在加载数据, 请稍后..
                 </div>
             </div>
@@ -125,10 +124,10 @@
 </div>
 
 <!--<div class="m-deviceInfoBox" id="deviceInfoBox">-->
-    <!--<h3>正在加载数据, 请稍后..</h3>-->
-    <!--<ul>-->
-    <!--</ul>-->
-    <!--<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>-->
+<!--<h3>正在加载数据, 请稍后..</h3>-->
+<!--<ul>-->
+<!--</ul>-->
+<!--<div class="widget-box-overlay"><i class="fa fa-spinner fa-spin fa-3x fa-fw white"></i></div>-->
 <!--</div>-->
 
 <div class="navbar-fixed-bottom" role="navigation">
@@ -158,19 +157,29 @@
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>
 <script src="/javascripts/Ace_template_js/ace.min.js"></script>
+<script src="/javascripts/Ace_template_js/jquery.cookie.js"></script>
 
 <!-- inline scripts related to this page -->
 <script src="/javascripts/customs/pages/application/baiduMap.js"></script>
 <script type="text/javascript">
-    var launch_bnt=$('[data-change=launch]');
-    var launch = $("#launch");
-    launch_bnt.on("click",function(){
-    if(launch.css("width")=="0px"){
-        launch.animate({width:"220px",height:"100%"},60);
-    }else{
-        launch.animate({width:"0px",height:"100%"},60);
-    }
-})
+
+    $(document).ready(function() {
+
+        var launch_bnt = $('[data-change=launch]');
+        var launch = $("#launch");
+        launch_bnt.on("click", function () {
+            if (launch.css("width") == "0px") {
+                launch.animate({width: "220px", height: "100%"}, 60);
+            } else {
+                launch.animate({width: "0px", height: "100%"}, 60);
+            }
+        });
+
+        $(function() {
+            $( ".draggable" ).draggable();
+        })
+    });
+
 </script>
 </body>
 </html>

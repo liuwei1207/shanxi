@@ -1,0 +1,27 @@
+[2016-10-14 14:30:04.742] [ERROR] console - ReferenceError: C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\views\admin\index.html:49
+    47| 
+    48| <body class="no-skin">
+ >> 49| <% include ../includes/admin-topNav.html %>
+    50| 
+    51| <div class="main-container ace-save-state" id="main-container">
+    52|     <script type="text/javascript">
+
+C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\views\includes\admin-topNav.html:27
+    25|             <ul class="nav navbar-nav">
+    26| 
+ >> 27|                 <% topNavData.forEach(function(a, index){ %>
+    28|                 <li class="<% try{ if(a.link==topNavSelected){%>active<%} } catch(err) {} %>">
+    29|                     <a href='<%= a.link %>'><%= a.NavName %></a>
+    30|                 </li>
+
+topNavData is not defined
+    at eval (eval at <anonymous> (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:495:12), <anonymous>:21:8)
+    at eval (eval at <anonymous> (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:495:12), <anonymous>:40:10)
+    at returnedFn (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:524:17)
+    at View.exports.renderFile [as engine] (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:378:31)
+    at View.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\view.js:126:8)
+    at tryRender (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\application.js:639:10)
+    at EventEmitter.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\application.js:591:3)
+    at ServerResponse.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\response.js:960:7)
+    at ServerResponse.res.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express-flash\lib\express-flash.js:29:16)
+    at C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\routes.js:1497:25

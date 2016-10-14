@@ -8,8 +8,18 @@
 
     <ul class="nav nav-list">
 
+        <li class="<%if(currentProjectID=='all'){%>active<%}%>">
+            <a href="/user/monitor/all/all">
+                <i class="menu-icon fa fa-map-marker"></i>
+							<span class="menu-text">
+                                全部项目
+							</span>
+            </a>
+            <b class="arrow"></b>
+        </li>
+
         <% leftNavDatas.forEach(function(b){ %>
-        <li class="<%if(b.ProjNum==currentProjectID){%>active open<%}%>">
+        <li class="<%if(b.ProjNum==currentProjectID || currentProjectID=='all'){%>active open<%}%>">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-map-marker"></i>
 							<span class="menu-text">
@@ -35,7 +45,12 @@
                         <%= c.SiteName %>
                     </a>
 
-                    <!--<b class="arrow site_complex_status" data-alert="3"></b>-->
+                    <% if (c.devices) { %>
+                        <% c.devices.forEach(function(d){ %>
+                        <b class="arrow site_complex_status state_<%= d.DeviceID %>" data-state="1" title="站点异常"></b>
+                        <% }) %>
+                    <% } %>
+
                 </li>
                 <% }) %>
             </ul>

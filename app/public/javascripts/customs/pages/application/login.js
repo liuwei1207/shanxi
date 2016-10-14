@@ -82,7 +82,7 @@ $(document).ready(function () {
                     })
                 },
                 success: function (result) {
-                    window.location.href="/menu"
+                    window.location.href="/"
                 }
             });
             return false;//阻止表单提交

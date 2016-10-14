@@ -1293,7 +1293,7 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/', auth, function (req, res) {
-        res.redirect('/menu');
+        res.redirect('/user/monitor/');
     });
 
     /**
@@ -1309,7 +1309,7 @@ module.exports = function (app) {
 
         SM.findLeftNavDatas(function (e) {
             leftNavDatas = e;
-            res.redirect('/user/monitor/' + leftNavDatas[0].ProjNum + '/all');
+            res.redirect('/user/monitor/all/all');
         });
     });
 
@@ -1327,7 +1327,7 @@ module.exports = function (app) {
             });
 
         } else {
-            res.redirect('/menu');
+            res.redirect('/user/monitor/');
         }
     });
 
@@ -1368,7 +1368,10 @@ module.exports = function (app) {
                         topNavSelected: pathname,
                         mainDatas: mainDatas,
                         topNavData: topNavData,
-                        deviceData: deviceData,
+                        deviceData: {
+                            currentProjectID: currentProjectID,
+                            deviceData: deviceData
+                        },
                         udata: req.session.user
                     });
                 })
@@ -1417,7 +1420,7 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/map', auth, pageAuthority, function (req, res, next) {
-        updateMajorData();  //这个应该放在编辑页面里面
+        //updateMajorData();  //这个应该放在编辑页面里面
 
         var pathname = URL.parse(req.url).pathname.replace("/user/", "");
         pathname = "/user/" + pathname;

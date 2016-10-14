@@ -78,7 +78,7 @@
                         </small>
                     </h1>
                     <!-- MP3 Player -->
-                    <div class="m-MP3player player-music">
+                    <div class="m-MP3player player-music draggable">
                         <div class="subtitles-box">
                             <div class="subtitles Js_Mp3Info">
                                 <div class="deviceName">[播放状态：暂停]</div>
@@ -140,17 +140,17 @@
                         <!-- PAGE CONTENT BEGINS -->
                         <div class="invisible" id="main-widget-container">
 
-                            <% if(deviceData.length == 0) { %>
+                            <% if(deviceData.deviceData.length == 0) { %>
                             <div class="well well-lg">
                                 该站点没有配置相应的站点设备...
                             </div>
                             <% } %>
 
-                            <% try{deviceData.forEach(function(a, index){ %>
+                            <% try{deviceData.deviceData.forEach(function(a, index){ %>
 
                             <!-- real-time: 实时数据 --> <!-- historical: 实时数据 -->
 
-                            <div class="col-md-6 col-lg-3 widget-container-col" id="WC_<%=a.DeviceID%>">
+                            <div class="col-md-6 half col-lg-4 widget-container-col" id="WC_<%=a.DeviceID%>">
                                 <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>">
                                     <div class="widget-header">
                                         <div class="widget-toolbar no-border pull-left">
@@ -207,7 +207,9 @@
                                                         <div class="fw-left" href="#" title="音频左右声道">
                                                             <img src="/images/customs/application/rule.png"
                                                                  alt="...">
-                                                            <div class="strapping" id="meter"></div>
+                                                            <div class="strapping" id="meter_<%=a.DeviceID%>">
+                                                                <canvas style="width: 100%;height: 100%;"></canvas>
+                                                            </div>
                                                         </div>
                                                         <div class="fw-right">
                                                             <div class="fw-right-content">
@@ -216,21 +218,23 @@
                                                                            style="">
                                                                         <thead>
                                                                         <tr>
-                                                                            <td>采集时间</td>
+                                                                            <td>所属设备</td>
                                                                             <td>
-                                                                                暂无数据
-                                                                                <span class="site-states"
-                                                                                      data-state="1"></span>
-                                                                            </td>
+                                                                                <span class="text-primary bigger-110">
+                                                                                    <i class="menu-icon fa fa-map-marker"></i>
+                                                                                    <%=a.SiteName%>
+                                                                                </span>
                                                                             </td>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                         <tr>
-                                                                            <td>设备ID</td>
-                                                                            <td class="register-tag"
-                                                                                title="<%= a.RegisterTagID %>"><%=
-                                                                                a.RegisterTagID %>
+                                                                            <td>采集时间</td>
+                                                                            <td>
+                                                                                暂无数据
+                                                                            <span class="site-states"
+                                                                                  data-state="1"></span>
+                                                                            </td>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -282,7 +286,7 @@
                                                                 </div>
                                                                 <button class="btn btn-block btn-info btn-sm Js_player_realTime"
                                                                         title="实时音频监听"
-                                                                        data-mp3="http://123.57.215.156:10011/215268A4D6FBF45F55A423EE15FD635A.mp3">
+                                                                        data-mp3="http://123.57.215.156:10011/<%= a.RegisterTagID %>.mp3">
                                                                     <i class="fa fa-play" aria-hidden="true"></i> 开始监听
                                                                 </button>
                                                             </div>
@@ -457,11 +461,17 @@
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>
 <script src="/javascripts/Ace_template_js/ace.min.js"></script>
+<script src="/javascripts/Ace_template_js/jquery.cookie.js"></script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
 
+    var reload = setTimeout(function () {
+        location.reload(true);
+    }, 1000 * 60 * 2);
+
     var socket = io.connect();
+    var currentDeviceID = "";
     //common
     //        根据面板大小判断彩条是否显示
     function fwLeftIfShow() {
@@ -481,8 +491,12 @@
         }
     }
 
-
     $(document).ready(function () {
+
+        $(function () {
+            $(".draggable").draggable();
+        });
+
         jQuery(function ($) {
             //tooltip
             $(document).tooltip();
@@ -524,15 +538,17 @@
 
 //        当插入页边距时实时监听面板设置
             $("#ace-settings-add-container").on('click', function () {
+
                 var widgetContainer = $(".widget-container-col");
-                if (widgetContainer.hasClass("col-lg-3")) {
-                    widgetContainer.removeClass("col-lg-3");
-                    widgetContainer.addClass("col-lg-6");
-                } else {
+                if (widgetContainer.hasClass("col-lg-6")) {
                     widgetContainer.removeClass("col-lg-6");
-                    widgetContainer.addClass("col-lg-3");
+                    widgetContainer.addClass("col-lg-4");
+                } else {
+                    widgetContainer.removeClass("col-lg-4");
+                    widgetContainer.addClass("col-lg-6");
                 }
             });
+            ;
 
 
             $('#id-checkbox-vertical').prop('checked', false).on('click', function () {
@@ -680,34 +696,88 @@
 
         });
     });
-</script>
 
-<script>
-    $(document).ready(function () {
+    var allDataStr = (function () {
+        return (function () {
+            if (window.localStorage) {
+                if ('<%- deviceData.currentProjectID %>' == "all") {
+                    var allDataStr = '<%- JSON.stringify(deviceData.deviceData) %>';
+                    window.localStorage.allDataStr = allDataStr;
+                    return allDataStr ? allDataStr : "";
+                } else {
+                    return window.localStorage.allDataStr ? window.localStorage.allDataStr : ""
+                }
 
-        var dataStr = '<%- JSON.stringify(deviceData) %>';
-        //获得后台传来的当前站点 设备信息, json 对象
-        var deviceDataArry = eval('(' + dataStr + ')');
+            } else {
+                alert("您的浏览器不支持HTML5技术， 请升级浏览器， 推荐使用谷歌新版浏览器！")
+            }
+        })()
+    })();
 
-        deviceDataArry.forEach(function (item, index) {
-            deviceDataArry[index] = item.DeviceID;
+    var allDeviceDataArry = eval('(' + allDataStr + ')');
+
+    var dataStr = '<%- JSON.stringify(deviceData.deviceData) %>';
+    //获得后台传来的当前站点 设备信息, json 对象
+    var deviceDataArry = eval('(' + dataStr + ')');
+
+    deviceDataArry.forEach(function (item, index) {
+        deviceDataArry[index] = item.DeviceID;
+    });
+
+    allDeviceDataArry.forEach(function (item, index) {
+        allDeviceDataArry[index] = item.DeviceID;
+    });
+
+    //获得实时面板数据
+    socket.on("login", function (data) {
+//            console.log(deviceDataArry)
+        socket.emit("userLogin", {name: "who", pass: "xxxx"});
+        socket.emit("getData", {
+            deviceDataArry: {
+                siteNumArry: deviceDataArry
+            },
+            allDeviceDataArry: {
+                siteNumArry: allDeviceDataArry
+            }
         });
-        socket.on("login", function (data) {
-            console.log(deviceDataArry)
-            socket.emit("userLogin", {name: "who", pass: "xxxx"});
-            socket.emit("getData", {siteNumArry: deviceDataArry});
-        });
+    });
 
-        socket.on('data', function (data) {
+
+    socket.on('data', function (data) {
+        try {
+            for (var key in data) {
+                //获得每一个数据json对象
+                addSocketDataToPage(key, data[key]); //传入一个设备的json参数
+            }
+        } catch (err) {
+
+        }
+
+        //获取全部在线站点信息
+        socket.on('allData', function (data) {
             try {
                 for (var key in data) {
                     //获得每一个数据json对象
-                    addSocketDataToPage(key, data[key]); //传入一个设备的json参数
+                    addSocketDataToPage2(key, data[key]); //传入一个设备的json参数
                 }
             } catch (err) {
 
             }
         });
+
+        //获得音频彩条数据
+        socket.emit("levels", {deviceIDArry: deviceDataArry});
+        socket.on("levels", function (levelsObj) {
+            //将获得的levels数组送入彩条模块
+            if (levelsObj) {
+                for (var i = 0; i < deviceDataArry.length; i++) {
+                    var deviceID = deviceDataArry[i];
+                    var levels = levelsObj[deviceID] ? levelsObj[deviceID] : [59, 59];
+                    Meter("#meter_" + deviceID, levels);
+                }
+            }
+        });
+
 
 //传入一个设备的json参数
         function addSocketDataToPage(key, dataObj) {
@@ -716,41 +786,124 @@
 
             if (dataObj) {
                 //实时音频监听中的html模板
-                var str1 = '<thead> <tr> <td>采集时间</td> <td title="' + dataObj.deviceData.CollTime + '"> ' + dataObj.deviceData.CollTime.split(" ")[1] +
-                        ' <span class="site-states" data-state="0"></span></td> </tr> </thead><tbody> <tr> <td>设备ID</td> <td class="register-tag" title="' + dataObj.deviceID + '"> '
-                        + dataObj.deviceID + '</td> </tr> <tr>  <td>频率</td> <td class="position-relative"> ' + dataObj.deviceData.FMReceiveFQY.value +
+                var str1 = '<tr> <td>采集时间</td> <td title="' + dataObj.deviceData.CollTime + '"> ' + dataObj.deviceData.CollTime.split(" ")[1] +
+                        '</span><span class="site-states" data-state="0"></span></td> </tr> <tr>  <td>频率</td> <td class="position-relative"> ' + dataObj.deviceData.FMReceiveFQY.value +
                         ' MHz<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate" data-toggle="modal"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr data-alert="' + dataObj.deviceData.RoomTemp.alarmStatus + '"> <td>温度</td> <td class="position-relative">'
                         + dataObj.deviceData.RoomTemp.value + '<span class="tb-tail"> ℃</span></td> </tr> <tr data-alert="' + dataObj.deviceData.RoomHum.alarmStatus + '"> <td>湿度</td> <td class="position-relative">' +
                         dataObj.deviceData.RoomHum.value + ' <span class="tb-tail">%</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceRSSI.alarmStatus + '"> <td>场强</td> <td class="position-relative">' +
                         dataObj.deviceData.FMReviceRSSI.value + '<span class="tb-tail">N/C</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceSNR.alarmStatus + '"> <td>信噪比</td> <td class="position-relative">' +
-                        dataObj.deviceData.FMReviceSNR.value + '<span class="tb-tail">db</span></td> </tr> </tbody></table></table>';
+                        dataObj.deviceData.FMReviceSNR.value + '<span class="tb-tail">db</span></td> </tr>';
 
                 try {
-                    $('#WC_' + key).find(".Js_realTimeDataTabel").html(str1)
+                    $('#WC_' + key).find(".Js_realTimeDataTabel tbody").html(str1);
                 }
                 catch (err) {
-                    console.log(err)
+//                    console.log(err)
                 }
 
                 //如果该设备没有数据
             } else {
-                var str2 = '<thead> <tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> </thead> <tbody> <tr> <td>设备ID</td> <td class="register-tag"> 暂无数据</td> </tr> <tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr> </tbody></table>';
+                var str2 = '<tr><td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> <tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr>';
                 try {
-                    $('#WC_' + key).find(".Js_realTimeDataTabel").html(str2)
+                    $('#WC_' + key).find(".Js_realTimeDataTabel tbody").html(str2);
                 }
                 catch (err) {
-                    console.log(err)
+//                    console.log(err)
                 }
             }
         }
 
-    })
+        function addSocketDataToPage2(key, dataObj) {
 
-</script>
+            //如果该设备有数据
 
-<script>
+            if (dataObj) {
+                try {
+                    $('.state_' + dataObj.deviceID).attr("data-state", "0").attr("title", "站点正常")
+                }
+                catch (err) {
+//                    console.log(err)
+                }
 
-    var currentDeviceID = "";
+                //如果该设备没有数据
+            } else {
+                try {
+                    $('.state_' + dataObj.deviceID).attr("data-state", "1").attr("title", "站点异常")
+                }
+                catch (err) {
+//                    console.log(err)
+                }
+            }
+        }
+
+        function Meter(id, levels) {
+            var dom = $(id)[0];
+            var width = null;
+            var height = null;
+            var Dots = [];//保存cap位置信息
+            var canvas = null;
+            canvas = dom.childNodes[1];
+            var ctx = canvas.getContext("2d");
+
+            function resize() {
+                var w = dom.clientWidth;
+                var h = dom.clientHeight;
+                width = w;
+                height = h;
+                canvas.width = w;
+                canvas.height = h;
+                //渐变色
+                var line = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                line.addColorStop(0, "#FF0000");
+                line.addColorStop(0.05, "#FFFF00");
+                line.addColorStop(0.3, "#09FD00");
+                line.addColorStop(1, "#09FD00");
+                ctx.fillStyle = line;
+            }
+
+
+            function getDots() {
+                for (var i = 0; i < 2; i++) {
+                    Dots.push({
+                        cap: 0
+                    });
+                }
+            }
+
+            function draw(arr) {
+                getDots();
+                ctx.clearRect(0, 0, width, height);
+                var w = 42;
+                var cw = 38;
+                var capH = 4;
+
+
+                for (var i = 0; i < arr.length; i++) {
+                    var oo = Dots[i];
+                    var h = arr[i] * capH;
+                    if (oo.cap < 0) {
+                        oo.cap = 0;
+                    }
+                    if (h > 0 && oo.cap < h + capH) {
+
+                        oo.cap = h + capH;
+
+                    }
+                    if (h > 236) {
+                        oo.cap = 240;
+                    }
+                    ctx.fillRect(w * i, h + 2 * capH, cw, height - (h + 2 * capH));//矩形彩条
+                    ctx.fillRect(w * i, h, cw, capH);// 帽子
+                    oo.cap = oo.cap - capH;
+
+                }
+            }
+
+            resize();
+
+            draw(levels);
+        }
+    });
 
     $(document).ready(function () {
 
@@ -784,10 +937,10 @@
                             if (freqs_len > 0) {
                                 var paramsArry = $("#setForm").serialize().split("&");
                                 var newData = {
-                                    type:"set",
+                                    type: "set",
                                     timeCircle: "",
                                     freqs: [],
-                                    deviceID: "07WxacTCHY7giNmpKetxn8tNDQcBhOLfBfk"
+                                    deviceID: currentDeviceID
                                 };
 
                                 for (var i = 0; i < paramsArry.length; i++) {
@@ -801,20 +954,29 @@
                                         newData[key].push(value);
                                     }
                                 }
-
-                                console.log(newData);   //获得输入的input值
+                                var that = $(this);
+//                                console.log(newData);   //获得输入的input值
                                 //获取用户设置的频率数据， 提交给后台处理!
                                 socket.emit("set", newData);
-
-
-
-//                                $(this).dialog("close");
-//                                msgFreqSet = Messenger().post({
-//                                    message: '抱歉, 该功能暂未开放！',
-//                                    type: 'error',
-//                                    hideAfter: 5,
-//                                    id: "Only-one-message2"
-//                                });
+                                socket.on("msg", function (mssg) {
+                                    if (mssg == "true") {
+                                        that.dialog("close");
+                                        msgFreqSet = Messenger().post({
+                                            message: '设备指令下发成功！',
+                                            type: 'success',
+                                            hideAfter: 5,
+                                            id: "Only-one-message2"
+                                        });
+                                    } else {
+                                        that.dialog("close");
+                                        msgFreqSet = Messenger().post({
+                                            message: '设备指令下发失败！',
+                                            type: 'error',
+                                            hideAfter: 5,
+                                            id: "Only-one-message2"
+                                        });
+                                    }
+                                });
 
                             } else {
                                 msgFreqSet = Messenger().post({
@@ -957,14 +1119,12 @@
                 }
             });
         });
-    })
+    });
 
     $(function () {
         $(".m-siteInfoWindow").draggable();
-    })
-</script>
+    });
 
-<script>
     $(document).ready(function () {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 
@@ -1092,9 +1252,6 @@
             }
         });
     });
-</script>
-
-<script>
     //<![CDATA[
     $(document).ready(function () {
         var loadURL = $("#loadURL");
@@ -1157,18 +1314,13 @@
 
     });
     //]]>
-</script>
-
-<script>
     $(document).ready(function () {
         $(".Js_chart").on("click", function () {
             var href = $(this).attr("href");
             window.open(href);
         })
     });
-</script>
-<script src="/javascripts/customs/pages/application/meter.js"></script>
-<script>
+
     $(document).ready(function () {
 
         var MaxInputs = 10; //maximum input boxes allowed

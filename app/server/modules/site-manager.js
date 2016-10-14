@@ -55,7 +55,7 @@ exports.splicingMajorData = function (callback) {
 };
 
 exports.getAllSiteInfoByProjNum = function (proNum, callback) {
-    NsOHBasicSite.find({"ProjectID": "" + proNum}, {_id: 0}).toArray(function (err, o) {
+    NsOHBasicSite.find({"ProjectID": "" + proNum}, {_id: 0}).sort({"SiteName": 1}).toArray(function (err, o) {
         if (err) {
             callback(err, null);
         } else {
@@ -207,35 +207,46 @@ exports.findDataByProId = function (ProjNum, callback) {
 };
 
 exports.findDataByProIdAndSiteId = function (ProjNum, siteID, callback) {
-    if (siteID != "all") {
-        majorDatas.find({"ProjNum": ProjNum, "sites.ID": siteID}, {
-            _id: 0,
-            "ProjNum": 1,
-            "ProjName": 1,
-            "sites.$": 1
-        }).toArray(function (err, o) {
-            if (o) {
-                callback(o)
-            } else {
-                callback(null)
-            }
-        })
+    if (ProjNum != "all") {
+        if (siteID != "all") {
+            majorDatas.find({"ProjNum": ProjNum, "sites.ID": siteID}, {
+                _id: 0,
+                "ProjNum": 1,
+                "ProjName": 1,
+                "sites.$": 1
+            }).toArray(function (err, o) {
+                if (o) {
+                    callback(o)
+                } else {
+                    callback(null)
+                }
+            })
+        } else {
+            majorDatas.find({"ProjNum": ProjNum}, {
+                _id: 0,
+                "ProjNum": 1,
+                "ProjName": 1
+            }).toArray(function (err, o) {
+                if (o) {
+                    var sites = o[0].sites = [];
+                    sites.push({
+                        "SiteName": "全部站点"
+                    });
+                    callback(o)
+                } else {
+                    callback(null)
+                }
+            })
+        }
     } else {
-        majorDatas.find({"ProjNum": ProjNum}, {
-            _id: 0,
-            "ProjNum": 1,
-            "ProjName": 1
-        }).toArray(function (err, o) {
-            if (o) {
-                var sites = o[0].sites = [];
-                sites.push({
-                    "SiteName": "显示全部"
-                });
-                callback(o)
-            } else {
-                callback(null)
-            }
-        })
+        //选择全部项目、站点
+        var o = [{
+            ProjName: "全部项目",
+            sites: [{
+                "SiteName": "全部站点"
+            }]
+        }];
+        callback(o)
     }
 };
 
@@ -243,62 +254,51 @@ exports.findDataByProIdAndSiteId = function (ProjNum, siteID, callback) {
 exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) {
 
     var devicesInfo = [];   //用于存储找到的设备信息
+    if (ProjID != "all") {
+        if (siteID === "all") {
+            NsOHBasicSite.find({"ProjectID": ProjID}, {
+                "_id": 0,
+                "SiteNum": 1
+            }).sort({"SiteName": 1}).toArray(function (err, sitesNumArry) {
+                if (err) {
+                    callback(err)
+                } else {
+                    NsOHBasicDevice.find({"$or": sitesNumArry}).sort({"DeviceIndex": 1}).toArray(function (err, deviceInfo) {
+                        if (err) {
+                            callback(err)
+                        }
+                        callback(deviceInfo);
+                    });
+                }
+            })
+        } else {
+            NsOHBasicDevice.find({"SiteID": siteID}, {"_id": 0}).sort({"DeviceIndex": 1}).toArray(function (err, deviceInfo) {
+                if (err) {
+                    callback(err)
+                }
+                callback(deviceInfo);
+            });
+        }
+    } else {
 
-    if (siteID === "all") {
-        NsOHBasicSite.find({"ProjectID": ProjID}, {"_id": 0, "SiteNum": 1}).toArray(function (err, sitesNumArry) {
+        NsOHBasicSite.find({"ProjectID": {$exists: true}}, {
+            "_id": 0,
+            "SiteNum": 1
+        }).toArray(function (err, sitesNumArry) {
             if (err) {
                 callback(err)
             } else {
-
-                var lastSiteNum = _.last(sitesNumArry);
-                var sitesNumArryIndex = sitesNumArry.length - 1;
-
-                //该项目下有n个站点， 循环查询
-                sitesNumArry.forEach(function (item, index, self) {
-
-                    NsOHBasicDevice.find({"SiteID": item.SiteNum}, {"_id": 0}).toArray(function (err, deviceInfo) {
-
-                        if (err) {
-                            callback(err)
-                        } else {
-                            if (deviceInfo.length > 0) {
-                                //如果查询到设备信息
-                                devicesInfo.push(deviceInfo);
-
-                                //传入第一个循环 最后一个站点，  传入当前站点, 传入第二个循环的下标
-                                if (breakOutTest(lastSiteNum, item, index, sitesNumArryIndex)) {
-                                    devicesInfo = _.flatten(devicesInfo);
-                                    callback(devicesInfo);
-                                }
-                            } else {
-                                //查询的设备数为空 不做处理;
-                                //传入第一个循环 最后一个站点，  传入当前站点, 传入第二个循环的下标
-                                if (breakOutTest(lastSiteNum, item, index, sitesNumArryIndex)) {
-                                    devicesInfo = _.flatten(devicesInfo);
-                                    callback(devicesInfo);
-                                }
-                            }
-                        }
-                    });
+                NsOHBasicDevice.find({"$or": sitesNumArry}).sort({"DeviceIndex": 1}).toArray(function (err, deviceInfo) {
+                    if (err) {
+                        callback(err)
+                    }
+                    callback(deviceInfo);
                 });
             }
         })
-    } else {
-        NsOHBasicDevice.find({"SiteID": siteID}, {"_id": 0}).toArray(function (err, deviceInfo) {
-            if (err) {
-                callback(err)
-            }
-            callback(deviceInfo);
-        });
+
     }
 };
-
-
-//使用underscore 作为比较
-
-function breakOutTest(lastSiteNum, item, index, sitesNumArryIndex) {
-    return _.isEqual(lastSiteNum, item) && (index == sitesNumArryIndex)
-}
 
 
 //传入当前选中站点的项目ID 和 站点 ID 用来查出对应的所有设备数据
