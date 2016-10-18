@@ -14,11 +14,7 @@
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover{
     background: #2c5976;
 }
-@media only screen and (max-width: 991px)  {
-    .navbar .navbar-nav>li, .navbar .navbar-nav>li {
-        display: inline-block;
-    }
-}
+
 /* *****************************- sidebar  -******************************** */
 #sidebar {
     margin-top: 5px;
@@ -219,8 +215,16 @@
     background: #fff;
     z-index: 1027 ;
 }
+@media (max-width: 1848px) and (min-width: 980px) {
+    .flexible-width {
+        width: 33.33%;
+    }
+    .main-container.container .flexible-width{
+        width: 50%;
+    }
+}
 @media (max-width: 1287px) and (min-width: 980px) {
- .half{
+ .flexible-width{
      width: 50%;
  }
 }

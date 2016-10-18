@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -7,6 +7,9 @@
 
     <meta name="description" content="Draggabble Widget Boxes with Persistent Position and State"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta http-equiv="Expires" CONTENT="0">
+    <meta http-equiv="Cache-Control" CONTENT="no-cache">
+    <meta http-equiv="Pragma" CONTENT="no-cache">
 
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/bootstrap.min.css"/>
@@ -150,7 +153,7 @@
 
                             <!-- real-time: 实时数据 --> <!-- historical: 实时数据 -->
 
-                            <div class="col-md-6 half col-lg-4 widget-container-col" id="WC_<%=a.DeviceID%>">
+                            <div class="col-md-6 flexible-width  col-lg-3 widget-container-col" id="WC_<%=a.DeviceID%>">
                                 <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>">
                                     <div class="widget-header">
                                         <div class="widget-toolbar no-border pull-left">
@@ -232,9 +235,9 @@
                                                                             <td>采集时间</td>
                                                                             <td>
                                                                                 暂无数据
-                                                                            <span class="site-states"
-                                                                                  data-state="1"></span>
-                                                                            </td>
+                                                                                <span class="site-states"
+                                                                                      data-state="1">
+                                                                                </span>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -271,7 +274,7 @@
                                                                             <td class="position-relative">
                                                                                 <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
                                                                                 loading..
-                                                                                <span class="tb-tail"> N/C</span></td>
+                                                                                <span class="tb-tail"> dBuV</span></td>
                                                                         </tr>
 
                                                                         <tr>
@@ -466,10 +469,6 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
 
-    var reload = setTimeout(function () {
-        location.reload(true);
-    }, 1000 * 60 * 2);
-
     var socket = io.connect();
     var currentDeviceID = "";
     //common
@@ -542,13 +541,12 @@
                 var widgetContainer = $(".widget-container-col");
                 if (widgetContainer.hasClass("col-lg-6")) {
                     widgetContainer.removeClass("col-lg-6");
-                    widgetContainer.addClass("col-lg-4");
+                    widgetContainer.addClass("col-lg-3");
                 } else {
-                    widgetContainer.removeClass("col-lg-4");
+                    widgetContainer.removeClass("col-lg-3");
                     widgetContainer.addClass("col-lg-6");
                 }
             });
-            ;
 
 
             $('#id-checkbox-vertical').prop('checked', false).on('click', function () {
@@ -632,7 +630,7 @@
 
             ///////////////////////
 
-            //when a widget is shown/hidden/closed, we save its state for later retrieval
+            //when a widget is shown/hiddedBuVlosed, we save its state for later retrieval
             $(document).on('shown.ace.widget hidden.ace.widget closed.ace.widget', '.widget-box', function (event) {
                 var widgets = ace.data.get('demo', 'widget-state', true);
                 if (widgets == null) widgets = {};
@@ -728,6 +726,144 @@
         allDeviceDataArry[index] = item.DeviceID;
     });
 
+    //传入一个设备的json参数
+    function addSocketDataToPage(key, dataObj) {
+
+        //如果该设备有数据
+
+        if (dataObj) {
+            //实时音频监听中的html模板
+            var str1 = '<tr> <td>采集时间</td> <td title="' + dataObj.deviceData.CollTime + '"> ' + dataObj.deviceData.CollTime.split(" ")[1] +
+                    '</span><span class="site-states" data-state="0"></span></td> </tr> <tr>  <td>频率</td> <td class="position-relative"> ' + dataObj.deviceData.FMReceiveFQY.value +
+                    ' MHz<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate" data-toggle="modal"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr data-alert="' + dataObj.deviceData.RoomTemp.alarmStatus + '"> <td>温度</td> <td class="position-relative">'
+                    + dataObj.deviceData.RoomTemp.value + '<span class="tb-tail"> ℃</span></td> </tr> <tr data-alert="' + dataObj.deviceData.RoomHum.alarmStatus + '"> <td>湿度</td> <td class="position-relative">' +
+                    dataObj.deviceData.RoomHum.value + ' <span class="tb-tail">%</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceRSSI.alarmStatus + '"> <td>场强</td> <td class="position-relative">' +
+                    dataObj.deviceData.FMReviceRSSI.value + '<span class="tb-tail">dBuV</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceSNR.alarmStatus + '"> <td>信噪比</td> <td class="position-relative">' +
+                    dataObj.deviceData.FMReviceSNR.value + '<span class="tb-tail">dB</span></td> </tr>';
+
+            try {
+                $('#WC_' + key).find(".Js_realTimeDataTabel tbody").html(str1);
+            }
+            catch (err) {
+                //                    console.log(err)
+            }
+
+            //如果该设备没有数据
+        } else {
+            var str2 = '<tr><td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> <tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr>';
+            try {
+                $('#WC_' + key).find(".Js_realTimeDataTabel tbody").html(str2);
+            }
+            catch (err) {
+                //                    console.log(err)
+            }
+        }
+    }
+
+    function addSocketDataToPage2(key, dataObj) {
+
+        //如果该设备有数据
+
+        if (dataObj) {
+            try {
+                $('.state_' + dataObj.deviceID).attr("data-state", "0").attr("title", "站点正常")
+            }
+            catch (err) {
+                //                    console.log(err)
+            }
+
+            //如果该设备没有数据
+        } else {
+            try {
+                $('.state_' + dataObj.deviceID).attr("data-state", "1").attr("title", "站点异常")
+            }
+            catch (err) {
+                //                    console.log(err)
+            }
+        }
+    }
+
+    window.caps = {};
+    caps.timer = {};
+
+    function Meter(id, levels) {
+        var width = 80;
+        var height = 240;
+        var canvas = document.getElementById(id).childNodes[1];
+        var ctx = canvas.getContext("2d");
+        var Dots = caps[id] ? caps[id].value : [{cap: 236}, {cap: 236}];
+
+        function draw(arr) {
+            ctx.clearRect(0, 0, width, height);
+            var w = 42;
+            var cw = 38;
+            var capH = 4;
+
+            for (var i = 0; i < arr.length; i++) {
+                var oo = Dots[i];
+                var h = arr[i] * capH;
+                //这里对帽子进行处理
+                if (h <= 0) {
+                    oo.cap = 0;
+                }
+                if (0 < h < 236) {
+                    if (h < oo.cap) {
+                        oo.cap = h;
+                        if (caps[id]) {
+                            caps[id].flag = null;
+                        }
+                        clearTimeout(caps.timer[id]);
+                        caps.timer[id] = setTimeout(updateCaps, 5000);  //5s后， flag置为true ， 小帽开始下降；
+
+                        function updateCaps() {
+                            caps[id].flag = true;
+                        }
+                    }
+                }
+                if (oo.cap >= 236) {
+                    oo.cap = 236;
+                }
+                ctx.fillRect(w * i, h + 2 * capH, cw, height - (h + 2 * capH));//矩形彩条
+                ctx.fillRect(w * i, oo.cap, cw, capH);// 帽子
+                if (caps[id]) {
+                    if (caps[id].flag == true) {
+                        Dots[i].cap = h;
+                    }
+                }
+            }
+
+            //将小帽保存为变量
+            if (!caps[id]) {
+                caps[id] = {
+                    flag: null,
+                    value: null
+                };
+                caps[id].value = Dots;
+            } else {
+                caps[id].value = Dots;
+            }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        //渐变色
+        var line = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        line.addColorStop(0, "#B74635");
+        line.addColorStop(.1, "#B74635");
+        line.addColorStop(.1, "#FDFE00");
+        line.addColorStop(.2, "#FDFE00");
+        line.addColorStop(.2, "#09FD00");
+        line.addColorStop(1, "#09FD00");
+        ctx.fillStyle = line;
+
+        draw(levels);
+
+        width = null;
+        height = null;
+        ctx = null;
+        canvas = null;
+    }
+
     //获得实时面板数据
     socket.on("login", function (data) {
 //            console.log(deviceDataArry)
@@ -740,6 +876,8 @@
                 siteNumArry: allDeviceDataArry
             }
         });
+        //获得音频彩条数据
+        socket.emit("levels", {deviceIDArry: deviceDataArry});
     });
 
 
@@ -752,158 +890,57 @@
         } catch (err) {
 
         }
+    });
 
-        //获取全部在线站点信息
-        socket.on('allData', function (data) {
-            try {
-                for (var key in data) {
-                    //获得每一个数据json对象
-                    addSocketDataToPage2(key, data[key]); //传入一个设备的json参数
-                }
-            } catch (err) {
-
+    //获取全部在线站点信息
+    socket.on('allData', function (data) {
+        try {
+            for (var key in data) {
+                //获得每一个数据json对象
+                addSocketDataToPage2(key, data[key]); //传入一个设备的json参数
             }
-        });
+        } catch (err) {
 
-        //获得音频彩条数据
-        socket.emit("levels", {deviceIDArry: deviceDataArry});
-        socket.on("levels", function (levelsObj) {
+        }
+    });
+
+
+    socket.on("levels", function (levelsObj) {
+        //防止代码重复执行
+        throttle(onLevels);
+
+        function throttle(fun) {
+            if (fun.timeoutId) {
+                window.clearTimeout(fun.timeoutId);
+            }
+            fun.timeoutId = window.setTimeout(function () {
+                fun();
+                fun.timeoutId = null;
+            }, 200);
+        }
+
+        function onLevels() {
             //将获得的levels数组送入彩条模块
             if (levelsObj) {
                 for (var i = 0; i < deviceDataArry.length; i++) {
                     var deviceID = deviceDataArry[i];
-                    var levels = levelsObj[deviceID] ? levelsObj[deviceID] : [59, 59];
-                    Meter("#meter_" + deviceID, levels);
+                    var levels = levelsObj[deviceID];
+                    var aa = Meter("meter_" + deviceID, levels);
+                    aa = null;
                 }
+                levelsObj = null;
             }
-        });
-
-
-//传入一个设备的json参数
-        function addSocketDataToPage(key, dataObj) {
-
-            //如果该设备有数据
-
-            if (dataObj) {
-                //实时音频监听中的html模板
-                var str1 = '<tr> <td>采集时间</td> <td title="' + dataObj.deviceData.CollTime + '"> ' + dataObj.deviceData.CollTime.split(" ")[1] +
-                        '</span><span class="site-states" data-state="0"></span></td> </tr> <tr>  <td>频率</td> <td class="position-relative"> ' + dataObj.deviceData.FMReceiveFQY.value +
-                        ' MHz<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate" data-toggle="modal"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td></tr> <tr data-alert="' + dataObj.deviceData.RoomTemp.alarmStatus + '"> <td>温度</td> <td class="position-relative">'
-                        + dataObj.deviceData.RoomTemp.value + '<span class="tb-tail"> ℃</span></td> </tr> <tr data-alert="' + dataObj.deviceData.RoomHum.alarmStatus + '"> <td>湿度</td> <td class="position-relative">' +
-                        dataObj.deviceData.RoomHum.value + ' <span class="tb-tail">%</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceRSSI.alarmStatus + '"> <td>场强</td> <td class="position-relative">' +
-                        dataObj.deviceData.FMReviceRSSI.value + '<span class="tb-tail">N/C</span></td> </tr> <tr data-alert="' + dataObj.deviceData.FMReviceSNR.alarmStatus + '"> <td>信噪比</td> <td class="position-relative">' +
-                        dataObj.deviceData.FMReviceSNR.value + '<span class="tb-tail">db</span></td> </tr>';
-
-                try {
-                    $('#WC_' + key).find(".Js_realTimeDataTabel tbody").html(str1);
-                }
-                catch (err) {
-//                    console.log(err)
-                }
-
-                //如果该设备没有数据
-            } else {
-                var str2 = '<tr><td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr> <tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr>';
-                try {
-                    $('#WC_' + key).find(".Js_realTimeDataTabel tbody").html(str2);
-                }
-                catch (err) {
-//                    console.log(err)
-                }
-            }
-        }
-
-        function addSocketDataToPage2(key, dataObj) {
-
-            //如果该设备有数据
-
-            if (dataObj) {
-                try {
-                    $('.state_' + dataObj.deviceID).attr("data-state", "0").attr("title", "站点正常")
-                }
-                catch (err) {
-//                    console.log(err)
-                }
-
-                //如果该设备没有数据
-            } else {
-                try {
-                    $('.state_' + dataObj.deviceID).attr("data-state", "1").attr("title", "站点异常")
-                }
-                catch (err) {
-//                    console.log(err)
-                }
-            }
-        }
-
-        function Meter(id, levels) {
-            var dom = $(id)[0];
-            var width = null;
-            var height = null;
-            var Dots = [];//保存cap位置信息
-            var canvas = null;
-            canvas = dom.childNodes[1];
-            var ctx = canvas.getContext("2d");
-
-            function resize() {
-                var w = dom.clientWidth;
-                var h = dom.clientHeight;
-                width = w;
-                height = h;
-                canvas.width = w;
-                canvas.height = h;
-                //渐变色
-                var line = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                line.addColorStop(0, "#FF0000");
-                line.addColorStop(0.05, "#FFFF00");
-                line.addColorStop(0.3, "#09FD00");
-                line.addColorStop(1, "#09FD00");
-                ctx.fillStyle = line;
-            }
-
-
-            function getDots() {
-                for (var i = 0; i < 2; i++) {
-                    Dots.push({
-                        cap: 0
-                    });
-                }
-            }
-
-            function draw(arr) {
-                getDots();
-                ctx.clearRect(0, 0, width, height);
-                var w = 42;
-                var cw = 38;
-                var capH = 4;
-
-
-                for (var i = 0; i < arr.length; i++) {
-                    var oo = Dots[i];
-                    var h = arr[i] * capH;
-                    if (oo.cap < 0) {
-                        oo.cap = 0;
-                    }
-                    if (h > 0 && oo.cap < h + capH) {
-
-                        oo.cap = h + capH;
-
-                    }
-                    if (h > 236) {
-                        oo.cap = 240;
-                    }
-                    ctx.fillRect(w * i, h + 2 * capH, cw, height - (h + 2 * capH));//矩形彩条
-                    ctx.fillRect(w * i, h, cw, capH);// 帽子
-                    oo.cap = oo.cap - capH;
-
-                }
-            }
-
-            resize();
-
-            draw(levels);
         }
     });
+
+    socket.onclose = function () {
+        console.log('closed....');
+    };
+
+
+    function reconnect() {
+        var socket = io.connect();
+    }
 
     $(document).ready(function () {
 

@@ -1,27 +1,9 @@
-[2016-10-14 14:29:36.909] [ERROR] console - ReferenceError: C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\views\admin\index.html:49
-    47| 
-    48| <body class="no-skin">
- >> 49| <% include ../includes/admin-topNav.html %>
-    50| 
-    51| <div class="main-container ace-save-state" id="main-container">
-    52|     <script type="text/javascript">
-
-C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\views\includes\admin-topNav.html:27
-    25|             <ul class="nav navbar-nav">
-    26| 
- >> 27|                 <% topNavData.forEach(function(a, index){ %>
-    28|                 <li class="<% try{ if(a.link==topNavSelected){%>active<%} } catch(err) {} %>">
-    29|                     <a href='<%= a.link %>'><%= a.NavName %></a>
-    30|                 </li>
-
-topNavData is not defined
-    at eval (eval at <anonymous> (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:495:12), <anonymous>:21:8)
-    at eval (eval at <anonymous> (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:495:12), <anonymous>:40:10)
-    at returnedFn (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:524:17)
-    at View.exports.renderFile [as engine] (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:378:31)
-    at View.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\view.js:126:8)
-    at tryRender (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\application.js:639:10)
-    at EventEmitter.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\application.js:591:3)
-    at ServerResponse.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\response.js:960:7)
-    at ServerResponse.res.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express-flash\lib\express-flash.js:29:16)
-    at C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\routes.js:1497:25
+[2016-10-18 14:25:32.131] [INFO] console - <Buffer 5b 53 54 41 52 54 37 37 34 38 5d 7b 0a 20 20 20 22 61 75 64 69 6f 4c 65 76 65 6c 41 64 64 72 65 73 73 22 20 3a 20 22 22 2c 0a 20 20 20 22 61 75 64 69 ... >
+[2016-10-18 14:25:32.152] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
+[2016-10-18 14:25:32.153] [INFO] console - mongo :: authenticated and connected to database - SM :: "shanxi"
+[2016-10-18 14:25:32.154] [INFO] console - mongo :: authenticated and connected to database - ARM :: "shanxi"
+[2016-10-18 14:25:32.155] [INFO] console - mongo :: authenticated and connected to database - AM :: "shanxi"
+[2016-10-18 14:25:32.158] [INFO] console - mongo :: authenticated and connected to database - RP :: "shanxi"
+[2016-10-18 14:25:32.466] [INFO] console - 已经监听 historicalAudioData 目录下的文件变化！
+[2016-10-18 14:25:32.567] [INFO] console - ./app/public/historicalAudioData/07WxacTCHY7giNmpKetxn8tNDQcBhOLfBfk/20160801/15_00_00FM0222.mp3
+[2016-10-18 14:25:32.568] [INFO] console - ./app/public/historicalAudioData/07WxacTCHY7giNmpKetxn8tNDQcBhOLfBfk/20160801/15_00_00FM0800.mp3

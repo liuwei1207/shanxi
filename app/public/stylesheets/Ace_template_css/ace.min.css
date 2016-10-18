@@ -1835,6 +1835,10 @@ pre.prettyprint {
     .navbar.navbar-collapse .navbar-buttons > .ace-nav > li:last-child {
         border-right: 1px solid rgba(255, 255, 255, .4)
     }
+
+    .navbar-buttons >.ace-nav > li.dropdown-modal > .user-menu > li > a{
+        font-size: 1.2em;
+    }
 }
 
 .container-fluid > .navbar-buttons, .container > .navbar-buttons {
@@ -1908,6 +1912,10 @@ pre.prettyprint {
 }
 
 @media only screen and (max-width: 991px) {
+    .navbar .navbar-nav>li, .navbar .navbar-nav>li {
+        display: inline-block;
+    }
+
     .navbar .navbar-nav .dropdown-menu > li > a, .navbar .navbar-nav .dropdown-menu > li > a > .ace-icon {
         color: #FFF !important
     }
@@ -1972,6 +1980,7 @@ pre.prettyprint {
 }
 
 @media only screen and (max-width: 991px) {
+
     .navbar-form .form-group {
         display: inline-block;
         width: 50%;

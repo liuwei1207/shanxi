@@ -16,8 +16,9 @@ var PORT2 = config.tcpSocket.PORT2;
 global.nodeServer = new net.Socket();       //实时数据通道
 var nodeServer2 = new net.Socket();     //实时音频通道
 
-var waitTime = 15; //min无数据清空缓存
+var waitTime = 5; //min无数据清空缓存
 var timer = 5; //重连时间
+var n = 0;  //重连计数器
 
 
 /* ********************************************** nodeServer1 **************************************************** */
@@ -27,24 +28,17 @@ var timer = 5; //重连时间
 var splicingDataCacheObj = {}; //拼接数据缓存
 var Cmoment = null;//用来给处理程序传递时间戳标记
 var countNum = null;//处理完的可用数据计数器
-var retry = null;//重试定时器
+var retry = null;//重置定时器
 
 nodeServer.connect(PORT, HOST, function () {
-
     console.log('CONNECTED TO: ' + HOST + ':' + PORT);
     // 建立连接后立即向服务器发送数据，服务器将收到这些数据
     nodeServer.write('[START0043]{"type":"login","login":"who","pwd":"xxxx"}[END]');   // server login
-    retry = null;     //重置
-
 });
 
 // 为客户端添加"data"事件处理函数
 // dataPackage是服务器发回的数据 , 1包！
 nodeServer.on('data', function (dataPackage) {
-
-    //此处接受到一包包的字符串数据
-    //console.log(dataPackage.toString());
-
     //这里对收到每一个片段包的数据进行处理
     try {
         splicingRealDataPackage(dataPackage.toString());
@@ -61,57 +55,58 @@ nodeServer.on('data', function (dataPackage) {
 //设置超时时间
 nodeServer.setTimeout(1000 * 60 * waitTime, function () {
     console.log('客户端在' + waitTime + 'min内未通信，将断开连接...');
+});
+
+//监听到超时事件，断开连接
+nodeServer.on('timeout', function () {
     nodeServer.end();
 });
 
 // 为客户端添加"close"事件处理函数
 nodeServer.on('close', function (had_error) {
     console.log('Connection closed ' + had_error);
-
-    // 完全关闭连接
-    nodeServer.destroy();
-
-    if (!retry) {
-        retry = setInterval(function () {
-            reconnectToTcpSocketServer();
-        }, timer * 1000)
-    }
-
+    retry = setInterval(reconnectToTcpSocketServer, 1000 * timer);
 });
 
 // 当 socket 另一端发送 FIN 包时，触发该事件。
 nodeServer.on('end', function () {
     console.log('断开与服务器的连接');
-
-    // 完全关闭连接
-    nodeServer.destroy();
-
-    if (!retry) {
-        retry = setInterval(function () {
-            reconnectToTcpSocketServer();
-        }, timer * 1000)
-    }
 });
 
 // 捕捉客户端的异常
-nodeServer.on('error', function (e) {
-    console.log(e);
+nodeServer.on('error', function (err) {
+    if (err) {
+        try {
+            console.log("【错误】socket异常关闭" + err);
+            clearInterval(retry);
+            nodeServer.end();
+            nodeServer.destroy()
+        } catch (err) {
+            console.log("【错误】socket服务异常关闭" + err)
+        }
+    }
 });
 
 //tcp socket 断线重连
 function reconnectToTcpSocketServer() {
-
     nodeServer.connect(PORT, HOST, function () {
-
         clearInterval(retry);
-
+        ++n;
+        console.log(n);
         console.log('RE-CONNECTED TO: ' + HOST + ':' + PORT);
-
         // 建立连接后立即向服务器发送数据，服务器将收到这些数据
         nodeServer.write('[START0043]{"type":"login","login":"who","pwd":"xxxx"}[END]');   // server login
-
     });
 
+    //设置超时时间
+    nodeServer.setTimeout(1000 * 60 * waitTime, function () {
+        console.log('客户端在' + waitTime + 'min内未通信，将断开连接...');
+    });
+
+//监听到超时事件，断开连接
+    nodeServer.on('timeout', function () {
+        nodeServer.end();
+    });
 }
 
 //数据拼接程序
@@ -356,7 +351,6 @@ function splicingRealDataPackage(dataPackageStr) {
 }
 
 
-
 /* ********************************************** nodeServer2 **************************************************** */
 
 //负责levels音频数据接收, 无设置下发;
@@ -364,24 +358,17 @@ function splicingRealDataPackage(dataPackageStr) {
 var countNumLevels = null;//处理完的可用数据计数器
 var TEMP = "";
 var n = 0;  //音频报错计数器
-var retryLevels = null;//重试定时器
+var retryLevels = null;//重置定时器
 
 nodeServer2.connect(PORT2, HOST2, function () {
-
     console.log('levels connect to: ' + HOST2 + ':' + PORT2);
     // 建立连接后立即向服务器发送数据，服务器将收到这些数据
     nodeServer2.write('[START0043]{"type":"login","login":"who","pwd":"xxxx"}[END]');   // server login
-    retryLevels = null;     //重置
-
 });
 
 // 为客户端添加"data"事件处理函数
 // dataPackage是服务器发回的数据 , 1包！
 nodeServer2.on('data', function (dataPackage) {
-
-    //此处接受到一包包的字符串数据
-    //console.log(dataPackage.toString());
-
     //这里对收到每一个片段包的数据进行处理
     splicingDataPackage(dataPackage.toString());
     if (TEMP) {
@@ -395,57 +382,57 @@ nodeServer2.on('data', function (dataPackage) {
 //设置超时时间
 nodeServer2.setTimeout(1000 * 60 * waitTime, function () {
     console.log('客户端在' + waitTime + 'min内未通信，将断开连接...');
-    nodeServer2.end();
+});
+
+//监听到超时事件，断开连接
+nodeServer2.on('timeout', function () {
+    nodeServer.end();
 });
 
 // 为客户端添加"close"事件处理函数
 nodeServer2.on('close', function (had_error) {
     console.log('Connection closed ' + had_error);
-
-    // 完全关闭连接
-    nodeServer2.destroy();
-
-    if (!retryLevels) {
-        retryLevels = setInterval(function () {
-            reconnectToTcpSocketServer2();
-        }, timer * 1000)
-    }
-
+    retryLevels = setInterval(reconnectToTcpSocketServer2, 1000 * timer);
 });
 
 // 当 socket 另一端发送 FIN 包时，触发该事件。
 nodeServer2.on('end', function () {
     console.log('断开与服务器的连接');
-
-    // 完全关闭连接
-    nodeServer2.destroy();
-
-    if (!retryLevels) {
-        retryLevels = setInterval(function () {
-            reconnectToTcpSocketServer2();
-        }, timer * 1000)
-    }
 });
 
 // 捕捉客户端的异常
-nodeServer2.on('error', function (e) {
-    console.log(e);
+nodeServer2.on('error', function (err) {
+    if (err) {
+        try {
+            console.log("【错误】socket异常关闭" + err);
+            clearInterval(retryLevels);
+            nodeServer2.end();
+            nodeServer2.destroy()
+        } catch (err) {
+            console.log("【错误】socket服务异常关闭" + err)
+        }
+    }
 });
 
 //tcp socket 断线重连
 function reconnectToTcpSocketServer2() {
 
     nodeServer2.connect(PORT2, HOST2, function () {
-
         clearInterval(retryLevels);
-
-        console.log('RE-CONNECTED TO: ' + HOST2 + ':' + PORT2);
-
+        console.log('levels connect to: ' + HOST2 + ':' + PORT2);
         // 建立连接后立即向服务器发送数据，服务器将收到这些数据
         nodeServer2.write('[START0043]{"type":"login","login":"who","pwd":"xxxx"}[END]');   // server login
-
     });
 
+//设置超时时间
+    nodeServer2.setTimeout(1000 * 60 * waitTime, function () {
+        console.log('客户端在' + waitTime + 'min内未通信，将断开连接...');
+    });
+
+//监听到超时事件，断开连接
+    nodeServer2.on('timeout', function () {
+        nodeServer.end();
+    });
 }
 
 //数据拼接程序

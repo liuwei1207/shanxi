@@ -355,6 +355,18 @@ $(document).ready(function () {
 
             }
         });
+
+        //获取全部在线站点信息
+        socket.on('allData', function (data) {
+            try {
+                for (var key in data) {
+                    //获得每一个数据json对象
+                    addSocketDataToPage2(key, data[key]); //传入一个设备的json参数
+                }
+            } catch (err) {
+
+            }
+        });
     }
 
     function SOCKET_SiteInfoWindows2(deviceID, SiteName) {
@@ -405,12 +417,33 @@ $(document).ready(function () {
             //如果该设备没有数据
         } else {
             var str2 = '<thead> <tr> <td>所属站点</td> <td class="register-tag" title="' + SiteName + '"><span class="text-primary bigger-110"> <i class="menu-icon fa fa-map-marker"></i> '
-                + SiteName + '</span></td> </tr>  </thead> <tbody><tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="1"></span></td> </tr><tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr> </tbody>';
+                + SiteName + '</span></td> </tr>  </thead> <tbody><tr> <td>采集时间</td> <td>暂无数据 <span class="site-states" data-state="2"></span></td> </tr><tr> <td>频率</td> <td class="position-relative"> 暂无数据<div class="tb-tail"> <button title="设备频率设置按钮" class="btn btn-minier btn-yellow Js_setRate"><i class="ace-icon fa fa-cog"></i>设置 </button> </div> </td> </tr> <tr> <td>温度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>湿度</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>场强</td> <td class="position-relative">暂无数据</td> </tr> <tr> <td>信噪比</td> <td class="position-relative">暂无数据</td> </tr> </tbody>';
             try {
                 $('#siteInfoWindow').find(".Js_realTimeDataTabel").html(str2)
             }
             catch (err) {
                 console.log(err)
+            }
+        }
+    }
+
+    function addSocketDataToPage2(key, dataObj) {
+        //如果该设备有数据
+        if (dataObj) {
+            try {
+                $('.state_' + dataObj.deviceID).attr("data-state", "0");
+            }
+            catch (err) {
+//                    console.log(err)
+            }
+
+            //如果该设备没有数据
+        } else {
+            try {
+                $('.state_' + dataObj.deviceID).attr("data-state", "1");
+            }
+            catch (err) {
+//                    console.log(err)
             }
         }
     }
@@ -866,12 +899,13 @@ $(document).ready(function () {
         var OHLatitude = _data.OHLatitude;
         if (notNull(OHLongitude) && notNull(OHLatitude)) {
             var SiteName = _data.SiteName;
+            var deviceID = _data.deviceID;
             var point = new BMap.Point(OHLongitude, OHLatitude);
             var opts = {
                 position: point,    // 指定文本标注所在的地理位置
                 offset: new BMap.Size(15, -30)    //设置文本偏移量
             };
-            var label = new BMap.Label('<a class="m-mapLabel" data-alert="1">' + SiteName + '</a>', opts);  // 创建文本标注对象
+            var label = new BMap.Label('<a class="m-mapLabel state_' + deviceID + '" data-state="1">' + SiteName + '</a>', opts);  // 创建文本标注对象
             label.setStyle({
                 color: "#1291a9",
                 fontSize: "16px",
@@ -960,11 +994,11 @@ $(document).ready(function () {
      * 功能说明： 单击获取点击的经纬度
      * 参数说明: [ppArr: 存储所选坐标点]
      */
-var ppArr = "";
-map.addEventListener("click", function (e) {
-    ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
-    console.log(ppArr)
-});
+    var ppArr = "";
+    map.addEventListener("click", function (e) {
+        ppArr = ppArr + e.point.lng + "," + e.point.lat + "&";
+        //console.log(ppArr)
+    });
 
 
     /* ********************************************** 基础javascript工具 ****************************************** */

@@ -1,8 +1,8 @@
-/**
+﻿/**
  * Created by Liuwei on 2016/8/15.
  */
 module.exports = {
-    port: 3000,
+    port: 8050,
     mongodb: {
         dbName: "shanxi",
         dbHost: "localhost",

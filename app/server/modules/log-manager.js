@@ -40,7 +40,7 @@ var Log = db.collection('log');
 /* add a log */
 
 exports.addLog = function (newData, callback) {
-    newData.date = moment().format('YYYY MMMM Do, a h:mm:ss');
+    newData.date = moment().format('YYYY-MM-DD HH:mm:ss');
     Log.insert(newData, {safe: true}, callback);
 };
 
