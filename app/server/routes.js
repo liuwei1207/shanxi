@@ -1286,6 +1286,32 @@ module.exports = function (app) {
         })
     });
 
+    /**
+     * 路由说明： 报警主页 - 获取报警列表
+     * 鉴权说明： 登陆校验
+     * method: POST
+     */
+    app.post('/api/user/alert/getAllRecords', auth, function (req, res, next) {
+        var page = req.body['page'];   //页码
+        var rows = req.body['rows'];   //行数
+        var sidx = req.body['sidx'];            //排序关键字
+        var sord = (function () {                 //排序方式
+            if (req.body['sord'] == 'asc') {
+                return 1
+            } else if (req.body['sord'] == 'desc') {
+                return -1
+            }
+        })();
+        ARM.getAllRecords({
+            page: page,
+            rows: rows,
+            sidx: sidx,
+            sord: sord
+        }, function (result) {
+            res.json(result);
+        })
+    });
+
     /* ********************************************** 页面级路由 **************************************************** */
     /**
      * 路由说明： 主页路径跳转路由
@@ -1873,6 +1899,21 @@ module.exports = function (app) {
         var filename = req.params.filename;
         var realpath = "./app/public/historicalAudioData/" + deviceID + "/" + date + "/" + filename;
         res.download(realpath, filename);
+    });
+
+    /**
+     * 路由说明： error 404 提示页面
+     * 鉴权说明： 登陆校验
+     * method: get
+     */
+    app.get('/user/alert', auth, function (req, res) {
+        var pathname = "/user/" + "alert";
+        res.render('./application/alert', {
+            title: "山西-吉兆 -- 报警主页",
+            udata: req.session.user,
+            topNavData: topNavData,
+            topNavSelected: pathname
+        });
     });
 
     /**

@@ -37,6 +37,7 @@ db.open(function (e, d) {
 });
 
 var alertRules = db.collection('alertRules');
+var alertData = db.collection('alertData');
 var historicalData = db.collection('historicalData');
 
 
@@ -51,8 +52,82 @@ exports.getAlertRulesByDeviceID = function (deviceID, callback) {
 };
 
 exports.addDataToHistoricalDatabase = function (data) {
-    data.insertDate = moment().format('YYYY-MM-DD HH:mm:ss'); //2014-09-24 23:36:09
+    //实时数据入库
+    var _Date = moment().format('YYYY-MM-DD HH:mm:ss'); //2014-09-24 23:36:09
+    data.insertDate = _Date;
     historicalData.insert(data);
+
+    //每一条入库数据 -- 监测4个参数的报警状态 - 判断报警状态并入库
+    var FMReviceRSSI_Status = data.deviceData.FMReviceRSSI.alarmStatus;
+    var FMReviceSNR_Status = data.deviceData.FMReviceSNR.alarmStatus;
+    var RoomHum_Status = data.deviceData.RoomHum.alarmStatus;
+    var RoomTemp_Status = data.deviceData.RoomTemp.alarmStatus;
+    var deviceID = data.deviceID;
+    var normal = 1;   //正常
+    var warning = 2;   //警告
+    var danger = 3;   //异常
+    var offline = 4;   //掉线
+
+    if (FMReviceRSSI_Status == danger) {
+        alertData.insert({
+            AlarmTime: _Date,
+            deviceID: deviceID,
+            AlarmContent: "设备参数【场强】值 异常！",
+            IsRemove: "0",
+            RemovedWays: "",
+            RemovedTime: "",
+            IsHandle: "0",
+            HandleTime: "",
+            HandleUserID: "",
+            HandleMark: "",
+            remove: "0"
+        })
+    }
+    if (FMReviceSNR_Status == danger) {
+        alertData.insert({
+            AlarmTime: _Date,
+            deviceID: deviceID,
+            AlarmContent: "设备参数【信噪比】值 异常！",
+            IsRemove: "0",
+            RemovedWays: "",
+            RemovedTime: "",
+            IsHandle: "0",
+            HandleTime: "",
+            HandleUserID: "",
+            HandleMark: "",
+            remove: "0"
+        })
+    }
+    if (RoomHum_Status == danger) {
+        alertData.insert({
+            AlarmTime: _Date,
+            deviceID: deviceID,
+            AlarmContent: "设备参数【湿度】值 异常！",
+            IsRemove: "0",
+            RemovedWays: "",
+            RemovedTime: "",
+            IsHandle: "0",
+            HandleTime: "",
+            HandleUserID: "",
+            HandleMark: "",
+            remove: "0"
+        })
+    }
+    if (RoomTemp_Status == danger) {
+        alertData.insert({
+            AlarmTime: _Date,
+            deviceID: deviceID,
+            AlarmContent: "设备参数【温度】值 异常！",
+            IsRemove: "0",
+            RemovedWays: "",
+            RemovedTime: "",
+            IsHandle: "0",
+            HandleTime: "",
+            HandleUserID: "",
+            HandleMark: "",
+            remove: "0"
+        })
+    }
 };
 
 exports.updateAlertRulesByDeviceID = function (newData, callback) {
@@ -102,6 +177,30 @@ exports.getChartDataByDeviceIDAndDate = function (deviceID, date, callback) {
             callback(err, null);
         } else {
             callback(err, o);
+        }
+    });
+};
+
+exports.getAllRecords = function (newData, callback) {
+    var page = parseInt(newData.page);
+    var rows = parseInt(newData.rows);
+    var sidx = newData.sidx;
+    var sord = parseInt(newData.sord);
+    var sortStr = {};   //排序查询字符串！
+    sortStr[sidx] = sord;
+    alertData.find({}).sort(sortStr).skip((page - 1) * rows).limit(rows).toArray(function (err, rs) {
+        if (err) {
+            callback(err)
+        } else {
+            //计算数据总数
+            alertData.find({}).count(function (e, count) {
+                if (e) callback(e);
+                else {
+                    var totalPages = Math.ceil(count / rows);
+                    var jsonArray = {rows: rs, total: totalPages};
+                    callback(jsonArray)
+                }
+            });
         }
     });
 };
