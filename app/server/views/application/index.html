@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="/bower_components/jPlayer/dist/skin/blue.monday/css/jplayer.blue.monday.min.css"/>
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger.css"/>
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger-theme-future.css"/>
+    <link href="/bower_components/pickadate/css/default.css" type="text/css" rel="stylesheet"/>
+    <link href="/bower_components/pickadate/css/default.date.css" type="text/css" rel="stylesheet"/>
 
     <!-- text fonts -->
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/fonts.googleapis.com.css"/>
@@ -317,10 +319,15 @@
                                                             <tbody class="Js_Mp3ListTable"></tbody>
 
                                                         </table>
-
-                                                        <ul class="pagination pagination-sm no-margin Js_pagination position-absolute"
-                                                            id="PN_<%=a.DeviceID%>"></ul>
-
+                                                        <div class="clearfix">
+                                                            <div class="pull-left">
+                                                                <ul class="pagination pagination-sm no-margin Js_pagination position-absolute"
+                                                                    id="PN_<%=a.DeviceID%>"></ul>
+                                                            </div>
+                                                            <div class="pull-right date-wrap">
+                                                                <input class="datepicker drop-date-picker" type="text"/>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div><!-- /tab-content -->
                                             </div>
@@ -461,6 +468,9 @@
 <script src="/bower_components/socket.io/socket.io-1.4.5.js"></script>
 <script src="/bower_components/Messenger/js/messenger.min.js"></script>
 <script src="/bower_components/Messenger/js/messenger-theme-future.js"></script>
+<script src="/bower_components/pickadate/js/legacy.js"></script>
+<script src="/bower_components/pickadate/js/picker.js"></script>
+<script src="/bower_components/pickadate/js/picker.date.js"></script>
 
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>
@@ -1172,29 +1182,27 @@
             if ($(this).attr("name") === "历史音频监听") {
                 var pageSize = 5;
 
-                AJAX_LOAD_Mp3List(RegisterTagID);    //初始化加载Mp3List数据;
+                AJAX_LOAD_Mp3List(deviceID, RegisterTagID);    //初始化加载Mp3List数据;
 
-                function AJAX_LOAD_Mp3List(RegisterTagID, num) {
+                function AJAX_LOAD_Mp3List(deviceID, RegisterTagID, num) {
                     $.ajax({
                         type: "POST",
                         url: '/api/monitors/getAllHistoricalAudioDataByRegisterTagID',
                         dataType: "JSON",
                         data: {
                             "RegisterTagID": RegisterTagID,
+                            "date": "20161024",
                             "currentPage": num || 1,
                             "pageSize": 5
                         },
                         success: function (result) {
                             try {
                                 var currentPage = result.currentPage;//当前页码
-                                var pageTotal = result.pageTotal; //总条数
-                                var Mp3ListArry = result.Mp3ListArry;//音频文件地址数组
-
+                                var pageTotal = result.total; //总条数
+                                var Mp3ListArry = result.rows;//音频文件地址数组
                                 setMp3ListData(deviceID, RegisterTagID, Mp3ListArry);
                                 //请求数据成功 - 设置分页器
                                 setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal);
-
-
                             } catch (err) {
                                 console.log(err);
                             }
@@ -1204,20 +1212,14 @@
 
                 //通过设备ID ， 设置table中的播放列表;
                 function setMp3ListData(deviceID, RegisterTagID, Mp3ListArry) {
-
                     var str = '';
-
                     for (var i = 0; i < Mp3ListArry.length; i++) {
-
-                        var name = Mp3ListArry[i].match(/\d{2}_\d{2}_\w{8}.mp3$/)[0];
-                        var path = Mp3ListArry[i].match(/\/\w{32}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
-
+                        var name = Mp3ListArry[i].mp3Name;
+                        var path = Mp3ListArry[i].mp3Path;
                         str += '<tr> <td> <input type="checkbox"/> </td> <td>' + (i + 1) + '</td> <td>' + name + '</td> <td> <a href="' + path + '" class="fa fa-play-circle-o Js_play" aria-hidden="true"></a> </td> <td> <a href="' + path + '" class="fa fa-cloud-download Js_download" aria-hidden="true"></a> </td> </tr>';
 
                     }
-
-                    $("#HM_" + RegisterTagID).find(".Js_Mp3List").find("tbody").html(str);
-
+                    $("#HM_" + deviceID).find(".Js_Mp3List").find("tbody").html(str);
                     fwLeftIfShow();//自适应宽度
                 }
 
@@ -1225,12 +1227,12 @@
                 function setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal) {
                     try {
                         var _pagination = $("#PN_" + deviceID);
-
                         if (_pagination) {
                             var pagetotal = pageTotal;  //总页数
                             var pagesize = pageSize;   //一页上的数据条数
                             var currentpage = currentPage;//当前页码
                             var counts, pagehtml = "";
+
                             if (pagetotal % pagesize == 0) {
                                 counts = parseInt(pagetotal / pagesize);
                             } else {
@@ -1238,7 +1240,7 @@
                             }
                             //只有一页内容
                             if (pagetotal <= pagesize) {
-                                pagehtml = "";
+                                pagehtml = '<li>仅1页</li>';
                             }
                             //大于一页内容
                             if (pagetotal > pagesize) {
@@ -1259,7 +1261,6 @@
                                     pagehtml += '<li><a class="" href="/index/' + (parseInt(currentpage) + 1) + '">下一页</a></li>';
                                 }
                             }
-
                             _pagination.html(pagehtml);    //将计算好的分页写入页面
 
                             _pagination.on('click', function () {
@@ -1272,20 +1273,18 @@
                 }
 
                 setMp3LoadEvent();
-            } else {
-                //若当前打开的不是历史音频， 清除页面元素缓存;
-                $("#HM_" + RegisterTagID).find(".Js_Mp3List").html();
             }
-
+            else {
+                //若当前打开的不是历史音频， 清除页面元素缓存;
+                $("#HM_" + deviceID).find(".Js_Mp3List").html();
+            }
 
             function setMp3LoadEvent() {
                 $(".Js_pagination").on("click", "a", function () {
-
                     var deviceID = $(this).closest(".Js_pagination").attr("id").replace(/^\w{2}\_/, "");
-
+                    var RegisterTagID = $(this).closest(".widget-box-audioMonitoring").find("a[name='历史音频监听']").data("registertagid");
                     var selectNum = $(this).attr("href").replace(/^\/index\//, "");
-
-                    AJAX_LOAD_Mp3List(deviceID, selectNum)
+                    AJAX_LOAD_Mp3List(deviceID, RegisterTagID, selectNum);
                 })
             }
         });
@@ -1389,6 +1388,61 @@
         })
 
     });
+</script>
+
+<script>
+    $(document).ready(function () {
+        history_datepicker();
+        function history_datepicker() {
+            //初始化部分
+            $('.datepicker').pickadate({
+                // Strings and translations
+                monthsFull: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthsShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                weekdaysFull: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                weekdaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                showMonthsShort: true,
+
+                // Buttons
+                today: '今天',
+                clear: false,
+                close: '关闭',
+
+                // Accessibility labels
+                labelMonthNext: '下一月',
+                labelMonthPrev: '上一月',
+                labelMonthSelect: '选择月份',
+                labelYearSelect: '选择年份',
+
+                // Formats
+                format: '选择：yyyy/mm/dd',
+                formatSubmit: 'yyyy/mm/dd',
+                hiddenPrefix: undefined,
+                hiddenSuffix: '_submit',
+                hiddenName: undefined,
+
+                // First day of the week
+                firstDay: '周一',
+
+                // Date limits
+                min: [2016, 8, 1],
+                max: true
+
+            });
+
+            //控制部分
+            var get_date = "";  //得到日期
+            var $input = $('.datepicker').pickadate();  //      实例化日期参数
+            var picker = $input.pickadate('picker');
+            picker.on("set", function () {
+                get_date = picker.get('select', 'yyyymmdd');
+
+
+            });
+
+
+        }
+    })
 </script>
 </body>
 </html>

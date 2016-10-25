@@ -44,17 +44,13 @@ watcher
         lazyRunout();
     });
 
-
 var lazyRunout = _.debounce(function () {
     explorer(mp3File);
-
     var lazyWriteFile = _.debounce(function () {
         writeFile(fileJsonTemp);
     }, 2500);
-
     lazyWriteFile();
 }, 100);
-
 
 /**
  * Created by Liuwei on 2016/9/26.
@@ -83,7 +79,6 @@ function explorer(path) {
                     } else {
                         // 读出所有的文件
                         var allPath = path + '/' + file;
-                        console.log(allPath)
                         var RegisterTagID = allPath.match(/\w{32}/)[0];
                         var mp3Path = allPath.match(/\/\w{32}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
                         var date = allPath.match(/\/\d{8}\//)[0].substring(1, 9);

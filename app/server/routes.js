@@ -2,6 +2,7 @@ var AM = require('./modules/account-manager');
 var RP = require('./modules/role-pemission');
 var LM = require('./modules/log-manager');
 var SM = require('./modules/site-manager');
+var HM = require('./modules/historicalAudioData-manager.js');
 var ARM = require('./modules/alertRules-manager');
 
 var socket = require("../../config/socket");
@@ -784,9 +785,10 @@ module.exports = function (app) {
      */
     app.post('/api/monitors/getAllHistoricalAudioDataByRegisterTagID', auth, function (req, res) {
         var RegisterTagID = req.body['RegisterTagID'];
+        var date = req.body['date'];
         var currentPage = req.body['currentPage'];
         var pageSize = req.body['pageSize'];
-        SM.getAllHistoricalAudioDataByRegisterTagID(RegisterTagID, currentPage, pageSize, function (err, result) {
+        HM.getAllHistoricalAudioDataByRegisterTagID(RegisterTagID, date, currentPage, pageSize, function (err, result) {
             if (err) {
                 res.json("false");
                 res.end()

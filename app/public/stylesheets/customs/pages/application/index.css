@@ -185,6 +185,10 @@
     bottom: 37px;
 }
 
+.history-time-data .datepicker{
+    height: 30px;
+    max-width: 130px;
+}
 /*实时音频监听状态*/
 [data-state='1']{
     color: #fff;

@@ -47,7 +47,33 @@ exports.updateMp3List = function (RegisterTagID, date, mp3Path, mp3Name, callbac
             'mp3Name': mp3Name,
             'RegisterTagID': RegisterTagID,
             'date': date,
-            'mp3Path': mp3Path
+            'mp3Path': mp3Path,
+            'insertTime': moment().format('YYYY-MM-DD HH:mm:ss')
         }
     }, {upsert: true});
+};
+
+
+//传入当前选中站点的RegisterTagID， 获得历史mp3播放列表
+exports.getAllHistoricalAudioDataByRegisterTagID = function (RegisterTagID, date, currentPage, pageSize, callback) {
+    historicalAudioData.find({
+        "RegisterTagID": RegisterTagID,
+        "date": date
+    }).sort({"insertTime": -1}).skip((currentPage - 1) * pageSize).limit(parseInt(pageSize)).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            //计算数据总数
+            historicalAudioData.find({
+                "RegisterTagID": RegisterTagID,
+                "date": date
+            }).count(function (e, count) {
+                if (e) callback(e);
+                else {
+                    var jsonArray = {rows: o, total: count, currentPage: currentPage};
+                    callback(err, jsonArray)
+                }
+            });
+        }
+    })
 };

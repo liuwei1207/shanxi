@@ -1,8 +1,9 @@
-[2016-10-25 09:25:28.076] [INFO] console - ./app/public/historicalAudioData/C91B9803DDA0DC0A77E7748038CE0798/20161025/15_00_00FM0811.mp3
-[2016-10-25 09:25:28.079] [INFO] console - ./app/public/historicalAudioData/D19FAEFD9519DC5F16A5828BF651DAD8/20161025/15_00_00FM0800.mp3
-[2016-10-25 09:25:28.080] [INFO] console - ./app/public/historicalAudioData/D19FAEFD9519DC5F16A5828BF651DAD8/20161024/15_00_00FM0800.mp3
-[2016-10-25 09:25:28.081] [INFO] console - ./app/public/historicalAudioData/D19FAEFD9519DC5F16A5828BF651DAD8/20161025/15_00_00FM0811.mp3
-[2016-10-25 09:25:28.083] [INFO] console - ./app/public/historicalAudioData/D19FAEFD9519DC5F16A5828BF651DAD8/20161024/15_00_00FM0811.mp3
-[2016-10-25 09:25:28.084] [INFO] console - ./app/public/historicalAudioData/2117119C385F38772770881F9158ADB7/20161024/15_00_00FM0800.mp3
-[2016-10-25 09:25:28.085] [INFO] console - ./app/public/historicalAudioData/2117119C385F38772770881F9158ADB7/20161024/15_00_00FM0811.mp3
-[2016-10-25 09:25:30.566] [INFO] console - 历史音频MP3文件播放列表json文件已生成!
+[2016-10-25 13:38:33.369] [INFO] console - <Buffer 5b 53 54 41 52 54 37 37 35 37 5d 7b 0a 20 20 20 22 61 75 64 69 6f 4c 65 76 65 6c 41 64 64 72 65 73 73 22 20 3a 20 22 22 2c 0a 20 20 20 22 61 75 64 69 ... >
+[2016-10-25 13:38:33.375] [INFO] console - mongo :: authenticated and connected to database - AM :: "shanxi"
+[2016-10-25 13:38:33.377] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
+[2016-10-25 13:38:33.378] [INFO] console - mongo :: authenticated and connected to database - SM :: "shanxi"
+[2016-10-25 13:38:33.378] [INFO] console - mongo :: authenticated and connected to database - ARM :: "shanxi"
+[2016-10-25 13:38:33.378] [INFO] console - mongo :: authenticated and connected to database - RP :: "shanxi"
+[2016-10-25 13:38:33.379] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
+[2016-10-25 13:38:33.682] [INFO] console - 已经监听 historicalAudioData 目录下的文件变化！
+[2016-10-25 13:38:36.284] [INFO] console - 历史音频MP3文件播放列表json文件已生成!
