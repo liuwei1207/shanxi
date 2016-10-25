@@ -110,7 +110,7 @@
 
             <li class="hover">
                 <a href="/user/configuration/sites">
-                    <i class="menu-icon fa fa-university"></i>
+                    <i class="menu-icon fa fa-map-marker"></i>
                     <span class="menu-text"> 站点管理 </span>
                 </a>
                 <b class="arrow"></b>
@@ -141,7 +141,7 @@
 
                         <li class="open">
                             <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
+                                <i class="menu-icon fa fa-cube"></i>
                                                 <span class="menu-text">
                                                     设备管理
                                                 </span>
@@ -151,7 +151,7 @@
 
                             <ul class="submenu nav-show" style="display: block;">
                                 <li class="">
-                                    <a href="/user/configuration/projects">
+                                    <a href="/user/configuration/devices">
                                         <i class="menu-icon fa fa-caret-right"></i>
                                         设备列表
                                     </a>
@@ -159,99 +159,9 @@
                                     <b class="arrow"></b>
                                 </li>
                                 <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
+                                    <a href="/user/configuration/devices/addDevice">
                                         <i class="menu-icon fa fa-caret-right"></i>
                                         添加设备
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    资源管理 - 端口
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        端口列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        新建端口
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    资源管理 - 设备类型
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        设备类型列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        新建设备类型
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    资源管理 - Tag
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        Tag列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        新建tag
                                     </a>
 
                                     <b class="arrow"></b>
@@ -301,7 +211,7 @@
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">删除用户</h4>
             </div>
-            <div class="modal-body">是否要删除该用户？</div>
+            <div class="modal-body">是否要删除该设备？</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-danger" id="btnDel">确认删除</button>
@@ -421,7 +331,7 @@
 
         function addButton(cellvalue, options, rowObject) {
 
-            var temp = '<a href="/user/configuration/devices/' + cellvalue + '/edit" class="btn btn-default btn-minier">编辑</a>&nbsp;<a href="/user/configuration/devices/' + cellvalue + '/del" class="btn btn-danger btn-minier J_del">删除</a>';
+            var temp = '<a href="/user/configuration/devices/' + cellvalue + '/view" class="btn btn-default btn-minier">查看</a>&nbsp;<a href="/user/configuration/devices/' + cellvalue + '/edit" class="btn btn-info btn-minier">编辑</a>&nbsp;<a href="/user/configuration/devices/' + cellvalue + '/del" class="btn btn-danger btn-minier J_del">删除</a>';
 
 
             return temp
@@ -430,26 +340,30 @@
         jQuery(grid_selector).jqGrid({
             datatype: "local",
             height: 500,
-            colNames: ['_id', 'DeviceID', 'SiteID', 'RegisterDeviceID', 'RegisterPortID', 'RegisterTagID', 'DeviceNO', '操作'],
+            colNames: ['_id', '所属站点', '设备ID', 'Tag值', '创建者', '操作'],
             colModel: [
                 {name: '_id', index: '_id', width: 60, editable: true, sorttype: "text"},
+                {name: 'SiteName', index: 'SiteName', width: 40, editable: true, sorttype: "text"},
                 {
                     name: 'DeviceID',
                     index: 'DeviceID',
-                    width: 120,
+                    width: 80,
+                    editable: true,
+                    sorttype: "text"
+                },
+                {
+                    name: 'RegisterTagID',
+                    index: 'RegisterTagID',
+                    width: 80,
                     editable: true,
                     sorttype: "text",
                     formatter: highlight
                 },
-                {name: 'SiteID', index: 'SiteID', width: 60, editable: true, sorttype: "text"},
-                {name: 'RegisterDeviceID', index: 'RegisterDeviceID', width: 60, editable: true, sorttype: "text"},
-                {name: 'RegisterPortID', index: 'RegisterPortID', width: 60, editable: true, sorttype: "text"},
-                {name: 'RegisterTagID', index: 'RegisterTagID', width: 60, editable: true, sorttype: "text"},
-                {name: 'DeviceNO', index: 'DeviceNO', width: 60, editable: true, sorttype: "text"},
+                {name: 'CreatorID', index: 'CreatorID', width: 60, editable: true, sorttype: "text"},
                 {
                     name: '_id',
                     index: '操作',
-                    width: 80,
+                    width: 40,
                     editable: false,
                     formatter: addButton
                 }
@@ -460,6 +374,8 @@
             rowList: [10, 20, 30],
             pager: pager_selector,
             altRows: true,
+            sortname: 'SiteName',
+            sortorder: 'asc',
             //toppager: true,
 
             multiselect: true,
@@ -477,7 +393,7 @@
                 }, 0);
             },
 
-            editurl: "/admin/user/updateAccount",
+            editurl: "",
             caption: "",
             reloadAfterSubmit: true,
             checkOnSubmit: true
@@ -770,10 +686,7 @@
 
         var msg = null;//删除列表项目右下角提示信息
 
-        //延时执行， 等待Dom先生成
-        setInterval(function () {
-            $(".J_del").on("click", J_del);
-        }, 20);
+        $("#grid-table").on("click", ".J_del", J_del);
 
         function J_del(event) {
             var WhetherToDelete = false;
@@ -786,7 +699,6 @@
                 WhetherToDelete = true;
                 $('#formInfoBox').modal('hide')
             });
-
             $('#formInfoBox').on('hidden.bs.modal', function (e) {
                 //确认删除
                 if (WhetherToDelete) {
@@ -820,9 +732,6 @@
                             //先清除， 再重新加载数据！
                             $("#grid-table").jqGrid("clearGridData");
                             fetchGridData();
-                            setTimeout(function () {
-                                $(".J_del").on("click", J_del);
-                            }, 20)
                         },
                         //调用出错执行的函数
                         error: function (e) {
@@ -838,7 +747,6 @@
                 }
 
             });
-
             return false;//阻止链接跳转
         }
     });

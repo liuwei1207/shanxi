@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/ui.jqgrid.min.css"/>
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger.css"/>
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger-theme-future.css"/>
+    <link rel="stylesheet" href="/stylesheets/customs/pages/application/alert.css"/>
 
     <!-- text fonts -->
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/fonts.googleapis.com.css"/>
@@ -60,215 +61,15 @@
         }
     </script>
 
-    <div id="sidebar" class="sidebar      h-sidebar                navbar-collapse collapse          ace-save-state">
-        <script type="text/javascript">
-            try {
-                ace.settings.loadState('sidebar')
-            } catch (e) {
-            }
-        </script>
-
-        <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-            <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-                <button class="btn btn-success">
-                    <i class="ace-icon fa fa-signal"></i>
-                </button>
-
-                <button class="btn btn-info">
-                    <i class="ace-icon fa fa-pencil"></i>
-                </button>
-
-                <button class="btn btn-warning">
-                    <i class="ace-icon fa fa-users"></i>
-                </button>
-
-                <button class="btn btn-danger">
-                    <i class="ace-icon fa fa-cogs"></i>
-                </button>
-            </div>
-
-            <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-                <span class="btn btn-success"></span>
-
-                <span class="btn btn-info"></span>
-
-                <span class="btn btn-warning"></span>
-
-                <span class="btn btn-danger"></span>
-            </div>
-        </div><!-- /.sidebar-shortcuts -->
-
-
-        <ul class="nav nav-list">
-            <li class="hover">
-                <a href="/user/configuration/projects">
-                    <i class="menu-icon fa fa-sitemap"></i>
-                    <span class="menu-text"> 项目管理 </span>
-                </a>
-                <b class="arrow"></b>
-            </li>
-
-            <li class="hover">
-                <a href="/user/configuration/sites">
-                    <i class="menu-icon fa fa-university"></i>
-                    <span class="menu-text"> 站点管理 </span>
-                </a>
-                <b class="arrow"></b>
-            </li>
-
-            <li class="active open hover">
-                <a href="/user/configuration/devices">
-                    <i class="menu-icon fa fa-cube"></i>
-                    <span class="menu-text"> 设备管理 </span>
-                </a>
-                <b class="arrow"></b>
-            </li>
-
-        </ul><!-- /.nav-list -->
-    </div>
-
     <div class="main-content">
         <div class="main-content-inner">
             <div class="page-content">
                 <% include ../includes/ace-settings-container.html %>
 
                 <div class="page-header">
-                    <h1>设备管理 </h1>
+                    <h1>报警列表 </h1>
                 </div><!-- /.page-header -->
-
-                <div id="sidebar2" class="sidebar responsive menu-min ace-save-state">
-                    <ul class="nav nav-list">
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    设备管理
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        设备列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        添加设备
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    资源管理 - 端口
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        端口列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        新建端口
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    资源管理 - 设备类型
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        设备类型列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        新建设备类型
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="open">
-                            <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-users"></i>
-                                                <span class="menu-text">
-                                                    资源管理 - Tag
-                                                </span>
-                            </a>
-
-                            <b class="arrow"></b>
-
-                            <ul class="submenu nav-show" style="display: block;">
-                                <li class="">
-                                    <a href="/user/configuration/projects">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        Tag列表
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                                <li class="">
-                                    <a href="/user/configuration/projects/addProjs">
-                                        <i class="menu-icon fa fa-caret-right"></i>
-                                        新建tag
-                                    </a>
-
-                                    <b class="arrow"></b>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul><!-- /.nav-list -->
-
-                    <div class="sidebar-toggle sidebar-collapse">
-                        <i id="sidebar3-toggle-icon"
-                           class="ace-icon fa fa-angle-double-right ace-save-state"
-                           data-icon1="ace-icon fa fa-angle-double-left"
-                           data-icon2="ace-icon fa fa-angle-double-right"></i>
-                    </div>
-                </div><!-- .sidebar -->
-
+                <div style="height:110px"></div>
                 <div class="row">
                     <div class="col-xs-12">
 
@@ -292,25 +93,11 @@
     </a>
 </div><!-- /.main-container -->
 
-<!-- 删除确认对话框 -->
-<div class="modal fade" id="formInfoBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">删除用户</h4>
-            </div>
-            <div class="modal-body">是否要删除该用户？</div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger" id="btnDel">确认删除</button>
-            </div>
-        </div>
-    </div>
-</div><!-- /删除确认对话框 -->
-
-<!-- basic scripts -->
+<div id="dialog-message" class="hide">
+    <p>
+        是否执行选中项
+    </p>
+</div>
 
 <!--[if !IE]> -->
 <script src="/javascripts/Ace_template_js/jquery-2.1.4.min.js"></script>
@@ -326,6 +113,7 @@
 <script src="/javascripts/Ace_template_js/bootstrap.min.js"></script>
 
 <!-- page specific plugin scripts -->
+<script src="/javascripts/Ace_template_js/jquery-ui.min.js"></script>
 <script src="/javascripts/Ace_template_js/jquery.jqGrid.min.js"></script>
 <script src="/javascripts/Ace_template_js/grid.locale-cn.js"></script>
 <script src="/bower_components/Messenger/js/messenger.min.js"></script>
@@ -350,7 +138,7 @@
 
         $(document).on('settings.ace.two_menu', function (e, event_name, event_val) {
             if (event_name == 'sidebar_fixed') {
-                if ($('#sidebar').hasClass('sidebar-fixed')) $('#sidebar2').addClass('sidebar-fixed')
+                if ($('#sidebar').hasClass('sidebar-fixed')) $('#sidebar2').addClass('sidebar-fixed');
                 else $('#sidebar2').removeClass('sidebar-fixed')
             }
         }).triggerHandler('settings.ace.two_menu', ['sidebar_fixed', $('#sidebar').hasClass('sidebar-fixed')]);
@@ -375,6 +163,12 @@
             $(grid_selector).jqGrid('setGridWidth', parent_column.width());
         }, 150);
 
+//        定时刷新表格
+        setInterval(function(){
+                    jQuery("#grid_id").trigger("reloadGrid");
+            console.log(1);
+                },60000);
+
         //resize to fit page size
         $(window).on('resize.jqGrid', function () {
             $(grid_selector).jqGrid('setGridWidth', parent_column.width());
@@ -390,97 +184,46 @@
             }
         });
 
-        //if your grid is inside another element, for example a tab pane, you should use its parent's width:
-        /**
-         $(window).on('resize.jqGrid', function () {
-					var parent_width = $(grid_selector).closest('.tab-pane').width();
-					$(grid_selector).jqGrid( 'setGridWidth', parent_width );
-				})
-         //and also set width when tab pane becomes visible
-         $('#myTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-				  if($(e.target).attr('href') == '#mygrid') {
-					var parent_width = $(grid_selector).closest('.tab-pane').width();
-					$(grid_selector).jqGrid( 'setGridWidth', parent_width );
-				  }
-				})
-         */
-
-
         function highlight(cellvalue, options, rowObject) {
-            var temp = "";
-            if (cellvalue == "超级管理员") {
-                temp = '<span class="label label-sm label-danger">' + cellvalue + '</span>';
-            } else if (cellvalue == "系统管理员") {
-                temp = '<span class="label label-sm label-warning">' + cellvalue + '</span>';
-            } else {
-                temp = '<span class="label label-sm label-info">' + cellvalue + '</span>';
-            }
+
+            temp = '<span class="label label-sm label-danger">' + cellvalue + '</span>';
 
             return temp
         }
 
-        function addButton(cellvalue, options, rowObject) {
-
-            var temp = '<a href="/user/configuration/devices/' + cellvalue + '/edit" class="btn btn-default btn-minier">编辑</a>&nbsp;<a href="/user/configuration/devices/' + cellvalue + '/del" class="btn btn-danger btn-minier J_del">删除</a>';
-
-
-            return temp
-        }
 
         jQuery(grid_selector).jqGrid({
             datatype: "json",
             url: "/api/user/alert/getAllRecords",
             height: 500,
             mtype: 'POST',
-            colNames: ['_id', '日志类型', '用户名', '用户角色', '登录时间', '操作', '用户IP', '浏览器名称', '浏览器版本', '浏览器内核', '操作系统'],
+            colNames: ['项目名称', '站点名称', '设备ID', '报警时间', '报警内容', '是否消警','消警方式', '消警时间', '是否处理', '处理时间', '处理人员', '处理记录', '消警', '处理'],
             colModel: [
-                {
-                    name: '_id',
-                    index: '_id',
-                    width: 80,
-                    sorttype: "text",
-                    hidden: true,
-                    editable: false,
-                    editrules: {edithidden: true},
-                    key: true
-                },
-                {
-                    name: 'name',
-                    index: 'name',
-                    width: 60,
-                    editable: true,
-                    sorttype: "text",
-                    editrules: {edithidden: true, required: true, email: true},
-                    editoptions: {minlength: 8, maxlength: 16}
-                },
-                {name: 'user', index: 'user', width: 120, editable: true},
-                {name: 'role', index: 'role', width: 80, editable: false, formatter: highlight},
-                {
-                    name: 'date',
-                    index: 'date',
-                    width: 150,
-                    datefmt: "MMMM Do YYYY, h:mm:ss a",
-                    editable: false,
-                    sorttype: "date"
-                },
-                {name: 'result.msg', index: 'result.msg', width: 100, editable: true},
-                {name: 'IP', index: 'IP', width: 100, editable: true},
-                {name: 'ua.browser.name', index: 'ua.browser.name', width: 100, editable: true},
-                {name: 'ua.browser.version', index: 'ua.browser.version', width: 100, editable: true},
-                {name: 'ua.engine.name', index: 'ua.engine.name', width: 100, editable: true},
-                {name: 'ua.os.name', index: 'ua.os.name', width: 100, editable: true}
+                {name: 'ProjName', index: 'ProjName', width: 70, sorttype: "text"},
+                {name: 'SiteName', index: 'SiteName', width: 70, sorttype: "text"},
+                {name: 'deviceID', index: 'deviceID', width: 160, sorttype: "text"},
+                {name: 'AlarmTime', index: 'AlarmTime', width: 80, align: "center", sorttype: "date", datefmt: "MMMM Do YYYY, h:mm:ss a"},
+                {name: 'AlarmContent', index: 'AlarmContent', width: 130, align: "center", sorttype: "text",formatter:highlight},
+                {name: 'IsRemove', index: 'IsRemove', width: 40, align: "center", sorttype: "text",formatter:remove},
+                {name: 'RemovedWays', index: 'RemovedWays', width: 60, sorttype: "text"},
+                {name: 'RemovedTime', index: 'RemovedTime', width: 80, align: "center", sorttype: "date"},
+                {name: 'IsHandle', index: 'IsHandle', width: 40, align: "center", sorttype: "text",formatter:handle},
+                {name: 'HandleTime', index: 'HandleTime', width: 80, sortable: "date"},
+                {name: 'HandleUserID', index: 'HandleUserID', width: 50, sorttype: "text"},
+                {name: 'HandleMark', index: 'HandleMark', width: 140, sorttype: "text"},
+                {name: 'IsRemove', index: 'IsRemove', width: 35,editable: false,formatter:removeAlarm},
+                {name: 'IsHandle', index: 'IsHandle', width: 35,editable: false,formatter:handleAlarm}
             ],
-
             viewrecords: true,
-            rowNum: 20,
-            rowList: [20, 50, 100],
+            rowNum: 50,
+            rowList: [50, 100, 200, 500],
             pager: pager_selector,
             emptyrecords: "Nothing to display",
-            sortname : 'date',
+            sortname : 'AlarmTime',
             sortorder: 'desc',
             altRows: true,
             //toppager: true,
-
+            autowidth:true,
             multiselect: false,
             //multikey: "ctrlKey",
             multiboxonly: true,
@@ -500,22 +243,50 @@
             reloadAfterSubmit: true,
             checkOnSubmit: true
 
-            //,autowidth: true,
-
-
-            /**
-             ,
-             grouping:true,
-             groupingView : {
-						 groupField : ['name'],
-						 groupDataSorted : true,
-						 plusicon : 'fa fa-chevron-down bigger-110',
-						 minusicon : 'fa fa-chevron-up bigger-110'
-					},
-             caption: "Grouping"
-             */
-
         });
+
+        //消警按钮设置
+        function removeAlarm(cellvalue, options, rowObject){
+
+            if(cellvalue=="1"){
+                var temp = '<a href="/user/alert' + rowObject._id + '/remove" class="btn btn-suceess btn-minier alert_btn">已消警</a>';
+            }else if(cellvalue=="0"){
+                var temp = '<a href="/user/alert' + rowObject._id + '/remove" class="btn btn-warning btn-minier alert_btn">未消警</a>';
+            }
+
+            return temp
+        }
+
+        //处理按钮设置
+        function handleAlarm(cellvalue, options, rowObject){
+
+            if(cellvalue=="1"){
+                var temp = '<a href="/user/alert' + rowObject._id + '/handle" class="btn btn-suceess btn-minier alert_btn">已处理</a>';
+            }else if(cellvalue=="0"){
+                var temp = '<a href="/user/alert' + rowObject._id + '/handle" class="btn btn-info btn-minier alert_btn">未处理</a>';
+            }
+            return temp;
+        }
+
+        //格式化处理
+        function handle(cellvalue, options, rowObject){
+            if(cellvalue=="1"){
+                var temp = '已处理';
+            }else if(cellvalue=="0"){
+                var temp = '未处理';
+            }
+            return temp;
+        }
+        function remove(cellvalue, options, rowObject){
+
+            if(cellvalue=="1"){
+                var temp = '已消警';
+            }else if(cellvalue=="0"){
+                var temp = '未消警';
+            }
+            return temp
+        }
+
         $(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
 
 
@@ -536,6 +307,7 @@
                     $("#grid-table")[0].grid.endReq();
                     // refresh the grid
                     $("#grid-table").trigger('reloadGrid');
+
                 }
             });
         }
@@ -545,15 +317,6 @@
         //jQuery(grid_selector).jqGrid('filterToolbar',{defaultSearch:true,stringResult:true})
         //jQuery(grid_selector).filterToolbar({});
 
-
-        //switch element when editing inline
-        function aceSwitch(cellvalue, options, cell) {
-            setTimeout(function () {
-                $(cell).find('input[type=checkbox]')
-                        .addClass('ace ace-switch ace-switch-5')
-                        .after('<span class="lbl"></span>');
-            }, 0);
-        }
 
         //enable datepicker
         function pickDate(cellvalue, options, cell) {
@@ -573,7 +336,7 @@
                     addicon: 'ace-icon fa fa-plus-circle purple',
                     del: false,
                     delicon: 'ace-icon fa fa-trash-o red',
-                    search: true,
+                    search: false,
                     searchicon: 'ace-icon fa fa-search orange',
                     refresh: true,
                     refreshicon: 'ace-icon fa fa-refresh green',
@@ -600,7 +363,7 @@
                     beforeShowForm: function (e) {
                         var form = $(e[0]);
                         form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                                .wrapInner('<div class="widget-header" />')
+                                .wrapInner('<div class="widget-header" />');
                         style_edit_form(form);
                     }
                 },
@@ -692,21 +455,6 @@
             buttons.find('.EditButton a[id*="_search"]').addClass('btn btn-sm btn-purple').find('.ui-icon').attr('class', 'ace-icon fa fa-search');
         }
 
-        function beforeDeleteCallback(e) {
-            var form = $(e[0]);
-            if (form.data('styled')) return false;
-
-            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-            style_delete_form(form);
-
-            form.data('styled', true);
-        }
-
-        function beforeEditCallback(e) {
-            var form = $(e[0]);
-            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-            style_edit_form(form);
-        }
 
 
         //it causes some flicker when reloading or navigating grid
@@ -788,76 +536,85 @@
 
         var msg = null;//删除列表项目右下角提示信息
 
-        //延时执行， 等待Dom先生成
-        setInterval(function () {
-            $(".J_del").on("click", J_del);
-        }, 20);
+//      “消警”、“处理”按钮点击事件
+        $("#grid-table").on("click",".alert_btn",alert_btn);
 
-        function J_del(event) {
+
+        function alert_btn(event) {
             var WhetherToDelete = false;
             var url = $(this).attr("href");
+            reg = /[^\/]*$/;
+            var fileName = reg.exec(url)[0];//通过正则匹配链接最后一位
 
-            $('#formInfoBox').modal();
+            //            判断点击的按钮消警还是处理以便模态框给出相应的提示
+            if(fileName=="remove"){
+                dialogRemove(); //        消警对话框内容
+            }else{
+                dialogHandle();//        处理对话框内容
+            }
 
-            $("#btnDel").on("click", function () {
-                //点击确认按钮开始删除用户
-                WhetherToDelete = true;
-                $('#formInfoBox').modal('hide')
-            });
 
-            $('#formInfoBox').on('hidden.bs.modal', function (e) {
-                //确认删除
-                if (WhetherToDelete) {
-                    $.ajax({
-                        //提交数据的类型 POST GET
-                        type: "POST",
-                        //提交的网址
-                        url: url,
-                        //提交的数据
-                        data: {oper: "del"},
-                        //返回数据的格式
-                        datatype: "json",//"xml", "html", "script", "json", "jsonp", "text".
-                        //在请求之前调用的函数
-                        beforeSend: function () {
-                            msg = Messenger().post({
-                                message: '处理中..',
-                                hideAfter: 5,
-                                id: "Only-one-message"
-                            });
-                        },
-                        //成功返回之后调用的函数
-                        success: function (data) {
-                            msg.update({
-                                message: '删除成功！',
-                                type: 'success',
-                                hideAfter: 5,
-                                id: "Only-one-message"
-                            });
-                        },
-                        complete: function (e) {
-                            //先清除， 再重新加载数据！
-                            $("#grid-table").jqGrid("clearGridData");
-                            fetchGridData();
-                            setTimeout(function () {
-                                $(".J_del").on("click", J_del);
-                            }, 20)
-                        },
-                        //调用出错执行的函数
-                        error: function (e) {
-                            msg.update({
-                                message: '删除失败！',
-                                type: 'error',
-                                hideAfter: 5,
-                                id: "Only-one-message"
-                            })
-                        }
-                    });
-                    WhetherToDelete = false;
-                }
 
-            });
 
             return false;//阻止链接跳转
+        }
+
+//        消警对话框内容
+        function dialogRemove(){
+            var dialog = $( "#dialog-message" ).removeClass('hide').dialog({
+                modal: true,
+                title: "是否手动消警",
+                title_html: true,
+                open:function(){
+                    $("#dialog-message p").html("<i class='pink fa fa-exclamation-triangle' aria-hidden='true'></i>是否消警处理?")
+                },
+                buttons: [
+                    {
+                        text: "取消",
+                        "class" : "btn btn-minier",
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    },
+                    {
+                        text: "确认",
+                        "class" : "btn btn-danger btn-minier",
+                        click: function() {
+
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                ]
+            });
+        }
+
+//        处理对话框内容
+        function dialogHandle(){
+            var dialog = $( "#dialog-message" ).removeClass('hide').dialog({
+                modal: true,
+                title: "消警处理",
+                title_html: true,
+                open:function(){
+                    $("#dialog-message p").html("<div class='content'> <div class='form-group'> <lable>ID号</lable><span></span></div> <div class='form-group'><lable>处理记录</lable><textarea></textarea></div></div>")
+                },
+                buttons: [
+                    {
+                        text: "取消",
+                        "class" : "btn btn-minier",
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    },
+                    {
+                        text: "确认",
+                        "class" : "btn btn-primary btn-minier",
+                        click: function() {
+                            $( this ).dialog( "close" );
+
+                        }
+                    }
+                ]
+            });
         }
     });
 

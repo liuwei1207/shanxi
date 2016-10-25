@@ -1,0 +1,13 @@
+/*对话框样式设置*/
+.ui-dialog-titlebar{
+    padding: 6px!important;
+}
+.ui-dialog-content{
+    font-size: 15px;
+}
+.ui-dialog-content p{
+    margin-top: 8px;
+}
+.ui-dialog-titlebar .ui-button-text{
+    display: none;
+}

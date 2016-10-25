@@ -16,12 +16,14 @@
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/jquery-ui.min.css"/>
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/bootstrap-datepicker3.min.css"/>
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/ui.jqgrid.min.css"/>
+    <link rel="stylesheet" href="/stylesheets/Ace_template_css/chosen.min.css"/>
 
     <!-- text fonts -->
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/fonts.googleapis.com.css"/>
 
     <!-- ace styles -->
-    <link rel="stylesheet" href="/stylesheets/Ace_template_css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
+    <link rel="stylesheet" href="/stylesheets/Ace_template_css/ace.min.css" class="ace-main-stylesheet"
+          id="main-ace-style"/>
 
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/ace-part2.min.css" class="ace-main-stylesheet"/>
@@ -34,7 +36,7 @@
     <![endif]-->
 
     <!-- inline styles related to this page -->
-    <link rel="stylesheet" href="/stylesheets/customs/pages/application/addProj.css"/>
+    <link rel="stylesheet" href="/stylesheets/customs/pages/application/addSite.css"/>
 
     <!-- ace settings handler -->
     <script src="/javascripts/Ace_template_js/ace-extra.min.js"></script>
@@ -97,7 +99,7 @@
         </div><!-- /.sidebar-shortcuts -->
 
         <ul class="nav nav-list">
-            <li class="active open hover">
+            <li class="hover">
                 <a href="/user/configuration/projects">
                     <i class="menu-icon fa fa-sitemap"></i>
                     <span class="menu-text"> 项目管理 </span>
@@ -113,9 +115,11 @@
                 <b class="arrow"></b>
             </li>
 
-            <li class="hover">
+            <li class="active open hover">
                 <a href="/user/configuration/devices">
                     <i class="menu-icon fa fa-cube"></i>
+
+
                     <span class="menu-text"> 设备管理 </span>
                 </a>
                 <b class="arrow"></b>
@@ -130,7 +134,7 @@
                 <% include ../includes/ace-settings-container.html %>
 
                 <div class="page-header">
-                    <h1> 项目管理 - 新建项目</h1>
+                    <h1>设备管理 - 新建设备 </h1>
                 </div><!-- /.page-header -->
 
                 <div id="sidebar2" class="sidebar responsive menu-min ace-save-state">
@@ -138,29 +142,27 @@
 
                         <li class="open">
                             <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-sitemap"></i>
+                                <i class="menu-icon fa fa-cube"></i>
                                                 <span class="menu-text">
-                                                    项目管理
+                                                    设备管理
                                                 </span>
-
-                                <b class="arrow fa fa-angle-down"></b>
                             </a>
 
                             <b class="arrow"></b>
 
                             <ul class="submenu nav-show" style="display: block;">
                                 <li class="">
-                                    <a href="/user/configuration/projects">
+                                    <a href="/user/configuration/devices">
                                         <i class="menu-icon fa fa-caret-right"></i>
-                                        项目列表
+                                        设备列表
                                     </a>
 
                                     <b class="arrow"></b>
                                 </li>
                                 <li class="">
-                                    <a href="/user/configuration/projects/addProj">
+                                    <a href="/user/configuration/devices/addDevice">
                                         <i class="menu-icon fa fa-caret-right"></i>
-                                        添加项目
+                                        添加设备
                                     </a>
 
                                     <b class="arrow"></b>
@@ -181,116 +183,69 @@
                 <div class="row">
                     <div class="col-xs-12">
 
-                        <form class="form-horizontal" role="form" id="addProjForm">
-
-                            <div class="clearfix form-actions">
-                                基本资料
+                        <div class="widget-box">
+                            <div class="widget-header">
+                                <h4 class="widget-title">查看项目</h4>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_ProjNum">
-                                    项目编号 </label>
+                            <div class="widget-body" style="display: block;">
+                                <div class="widget-main">
+                                    <form class="form-horizontal" role="form" id="addDeciceForm">
 
-                                <div class="col-sm-9 random-access">
-                                    <input type="text" id="ipt_ProjNum" name="ProjNum"
-                                           placeholder="8位随机数字"
-                                           class="col-xs-12 col-sm-5 ">
-                                    <span >
-                                        <button class="btn btn-sm btn-primary btn-reset Js_error_bnt" type="button">
-                                            随机取数
-                                        </button>
-                                    </span>
+                                        <div class="clearfix form-actions">
+                                            设备基本信息
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_DeviceID">
+                                                设备ID </label>
+
+                                            <div class="col-sm-9 random-access">
+                                                <input type="text" id="ipt_DeviceID" name="DeviceID"
+                                                       placeholder="请输入35位随机字符串"
+                                                       class="col-xs-12 col-sm-5" value="<%= DeviceObj.DeviceID %>" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="ipt_RegisterTagID">
+                                                Tag值 </label>
+
+                                            <div class="col-sm-9 random-access">
+                                                <input type="text" id="ipt_RegisterTagID" name="RegisterTagID"
+                                                       placeholder="请输入32位随机字符串"
+                                                       class="col-xs-12 col-sm-5" value="<%= DeviceObj.RegisterTagID %>" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"
+                                                   for="slt_SiteID">
+                                                所属站点 </label>
+
+                                            <div class="col-sm-9">
+                                                <div class="col-xs-12 col-sm-5" style="padding: 0;">
+                                                    <select class="chosen-select" id="slt_SiteID" name="SiteID" data-placeholder="请选择所属站点..."  disabled>
+                                                        <option value="<%= DeviceObj.SiteNum %>"> <%= DeviceObj.SiteName %></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clearfix form-actions">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                &nbsp; &nbsp; &nbsp;
+                                                <button class="btn" type="reset" id="btnGoBack">
+                                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                                    返回
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </form>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_ProjName">
-                                    项目名称 </label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" id="ipt_ProjName" name="ProjName"
-                                           placeholder=""
-                                           class="col-xs-12 col-sm-5">
-                                </div>
-                            </div>
-
-                            <div class="clearfix form-actions">
-                                联系人资料
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactName">
-                                    项目联系人 </label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" id="ipt_ContactName" name="ContactName"
-                                           placeholder=""
-                                           class="col-xs-12 col-sm-5">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactMobile">
-                                    联系人手机 </label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" id="ipt_ContactMobile" name="ContactMobile"
-                                           placeholder=""
-                                           class="col-xs-12 col-sm-5">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactTel">
-                                    联系人电话 </label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" id="ipt_ContactTel" name="ContactTel"
-                                           placeholder=""
-                                           class="col-xs-12 col-sm-5">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_ContactEmail">
-                                    联系人邮箱 </label>
-
-                                <div class="col-sm-9">
-                                    <input type="text" id="ipt_ContactEmail" name="ContactEmail"
-                                           placeholder=""
-                                           class="col-xs-12 col-sm-5">
-                                </div>
-                            </div>
-
-                            <div class="clearfix form-actions">
-                                项目备注
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label no-padding-right" for="ipt_OHNotes">
-                                    备注 </label>
-
-                                <div class="col-sm-9">
-                                    <textarea id="ipt_OHNotes" rows="2" class="col-xs-12 col-sm-5" name="OHNotes" maxlength="100" placeholder="描述..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="clearfix form-actions">
-                                <div class="col-md-offset-3 col-md-9">
-                                    <button class="btn btn-info" type="submit">
-                                        <i class="ace-icon fa fa-check bigger-110"></i>
-                                        添加
-                                    </button>
-
-                                    &nbsp; &nbsp; &nbsp;
-                                    <button class="btn" type="reset">
-                                        <i class="ace-icon fa fa-undo bigger-110"></i>
-                                        取消
-                                    </button>
-                                </div>
-                            </div>
-
-                        </form>
+                        </div>
 
                     </div>
                 </div>
@@ -306,7 +261,8 @@
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">提示信息</h4>
                 </div>
                 <div class="modal-body"></div>
@@ -340,6 +296,7 @@
 <!-- page specific plugin scripts -->
 <script src="/bower_components/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="/bower_components/jquery-validation/dist/localization/messages_zh.js"></script>
+<script src="/javascripts/Ace_template_js/chosen.jquery.min.js"></script>
 
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>
@@ -366,9 +323,52 @@
 
         $('#sidebar2[data-sidebar-hover=true]').ace_sidebar_hover('reset');
         $('#sidebar2[data-sidebar-scroll=true]').ace_sidebar_scroll('reset', true);
-    })
 
+        if (!ace.vars['touch']) {
+            $('.chosen-select').chosen({
+                no_results_text: "没有找到",
+                allow_single_deselect: true
+            });
+            //resize the chosen on window resize
+
+            setTimeout(function () {
+                $('.chosen-select').each(function () {
+                    var $this = $(this);
+                    $this.next().css({'width': $this.parent().width()});
+                })
+            }, 50);
+
+            $(window)
+                    .off('resize.chosen')
+                    .on('resize.chosen', function () {
+                        $('.chosen-select').each(function () {
+                            var $this = $(this);
+                            $this.next().css({'width': $this.parent().width()});
+                        })
+                    }).trigger('resize.chosen');
+            //resize chosen on sidebar collapse/expand
+            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                if (event_name != 'sidebar_collapsed') return;
+                $('.chosen-select').each(function () {
+                    var $this = $(this);
+                    $this.next().css({'width': $this.parent().width()});
+                })
+            });
+
+
+            $('#chosen-multiple-style .btn').on('click', function (e) {
+                var target = $(this).find('input[type=radio]');
+                var which = parseInt(target.val());
+                if (which == 2) $('#form-field-select-4').addClass('tag-input-style');
+                else $('#form-field-select-4').removeClass('tag-input-style');
+            });
+        }
+    })
+    $(document).ready(function () {
+        $("#btnGoBack").on("click", function () {
+            history.back();
+        })
+    })
 </script>
-<script src="/javascripts/customs/pages/application/addProj.js"></script>
 </body>
 </html>

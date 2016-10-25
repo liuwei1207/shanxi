@@ -36,6 +36,7 @@ module.exports = function () {
     console.log(dbURL);
     app.use(session({
             secret: 'faeb4453e5d14fe6f6d04637f78077c76c73d1b4',
+            cookie: {maxAge: 1000 * 60 * 60 * 8},
             proxy: true,
             resave: true,
             saveUninitialized: true,

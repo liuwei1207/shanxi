@@ -167,7 +167,8 @@
                                                 </li>
                                                 <li class="">
                                                     <a data-toggle="tab" href="#HM_<%=a.DeviceID%>"
-                                                       aria-expanded="false" name="历史音频监听"><i
+                                                       aria-expanded="false" name="历史音频监听"
+                                                       data-RegisterTagID="<%=a.RegisterTagID%>"><i
                                                             class="ace-icon fa fa-history"></i>
                                                         历史音频监听</a>
                                                 </li>
@@ -1164,22 +1165,22 @@
 
     $(document).ready(function () {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
             var deviceID = e.target.href.match(/#\w{2}_\w+$/)[0].replace(/#\w{2}_/, "");    //获取设备ID
+            var RegisterTagID = e.target.dataset.registertagid;
 
             //判断选中的tab 是否是 历史音频监听标签
             if ($(this).attr("name") === "历史音频监听") {
                 var pageSize = 5;
 
-                AJAX_LOAD_Mp3List(deviceID);    //初始化加载Mp3List数据;
+                AJAX_LOAD_Mp3List(RegisterTagID);    //初始化加载Mp3List数据;
 
-                function AJAX_LOAD_Mp3List(deviceID, num) {
+                function AJAX_LOAD_Mp3List(RegisterTagID, num) {
                     $.ajax({
                         type: "POST",
-                        url: '/api/monitors/getAllHistoricalAudioDataByDeviceID',
+                        url: '/api/monitors/getAllHistoricalAudioDataByRegisterTagID',
                         dataType: "JSON",
                         data: {
-                            "deviceID": deviceID,
+                            "RegisterTagID": RegisterTagID,
                             "currentPage": num || 1,
                             "pageSize": 5
                         },
@@ -1189,9 +1190,9 @@
                                 var pageTotal = result.pageTotal; //总条数
                                 var Mp3ListArry = result.Mp3ListArry;//音频文件地址数组
 
-                                setMp3ListData(deviceID, Mp3ListArry);
+                                setMp3ListData(deviceID, RegisterTagID, Mp3ListArry);
                                 //请求数据成功 - 设置分页器
-                                setPagination(deviceID, currentPage, pageSize, pageTotal);
+                                setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal);
 
 
                             } catch (err) {
@@ -1202,26 +1203,26 @@
                 }
 
                 //通过设备ID ， 设置table中的播放列表;
-                function setMp3ListData(deviceID, Mp3ListArry) {
+                function setMp3ListData(deviceID, RegisterTagID, Mp3ListArry) {
 
                     var str = '';
 
                     for (var i = 0; i < Mp3ListArry.length; i++) {
 
                         var name = Mp3ListArry[i].match(/\d{2}_\d{2}_\w{8}.mp3$/)[0];
-                        var path = Mp3ListArry[i].match(/\/\w{35}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+                        var path = Mp3ListArry[i].match(/\/\w{32}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
 
                         str += '<tr> <td> <input type="checkbox"/> </td> <td>' + (i + 1) + '</td> <td>' + name + '</td> <td> <a href="' + path + '" class="fa fa-play-circle-o Js_play" aria-hidden="true"></a> </td> <td> <a href="' + path + '" class="fa fa-cloud-download Js_download" aria-hidden="true"></a> </td> </tr>';
 
                     }
 
-                    $("#HM_" + deviceID).find(".Js_Mp3List").find("tbody").html(str);
+                    $("#HM_" + RegisterTagID).find(".Js_Mp3List").find("tbody").html(str);
 
                     fwLeftIfShow();//自适应宽度
                 }
 
                 //通过设备ID ， 分页其当前选中页码， 每一页条数， 数据总条数， 来控制历史音频数据
-                function setPagination(deviceID, currentPage, pageSize, pageTotal) {
+                function setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal) {
                     try {
                         var _pagination = $("#PN_" + deviceID);
 
@@ -1273,7 +1274,7 @@
                 setMp3LoadEvent();
             } else {
                 //若当前打开的不是历史音频， 清除页面元素缓存;
-                $("#HM_" + deviceID).find(".Js_Mp3List").html();
+                $("#HM_" + RegisterTagID).find(".Js_Mp3List").html();
             }
 
 

@@ -782,11 +782,11 @@ module.exports = function (app) {
      * 鉴权说明： 登陆校验
      * method: POST
      */
-    app.post('/api/monitors/getAllHistoricalAudioDataByDeviceID', auth, function (req, res) {
-        var deviceID = req.body['deviceID'];
+    app.post('/api/monitors/getAllHistoricalAudioDataByRegisterTagID', auth, function (req, res) {
+        var RegisterTagID = req.body['RegisterTagID'];
         var currentPage = req.body['currentPage'];
         var pageSize = req.body['pageSize'];
-        SM.getAllHistoricalAudioDataByDeviceID(deviceID, currentPage, pageSize, function (err, result) {
+        SM.getAllHistoricalAudioDataByRegisterTagID(RegisterTagID, currentPage, pageSize, function (err, result) {
             if (err) {
                 res.json("false");
                 res.end()
@@ -1275,6 +1275,71 @@ module.exports = function (app) {
     });
 
     /**
+     * 路由说明： 编辑站点数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/sites/editSite', auth, function (req, res) {
+        var _id = req.body['_id'];
+        var SiteNum = req.body['SiteNum'];
+        var ID = req.body['SiteNum'];
+        var SiteName = req.body['SiteName'];
+        var ProjectID = req.body['ProjectID'];
+        var ContactName = req.body['ContactName'];
+        var ContactMobile = req.body['ContactMobile'];
+        var ContactTel = req.body['ContactTel'];
+        var ContactEmail = req.body['ContactEmail'];
+        var SiteAddress = req.body['SiteAddress'];
+        var OHLongitude = req.body['OHLongitude'];
+        var OHLatitude = req.body['OHLatitude'];
+        var OHAltitude = req.body['OHAltitude'];
+        var OHNotes = req.body['OHNotes'];
+        var OHDetail = req.body['OHDetail'];
+        // get user-agent header
+        var ua = parser(req.headers['user-agent']);
+        // get use ip address
+        var ip = getClientIp(req);
+        SM.updateSite({
+            "_id": _id,
+            "SiteNum": SiteNum,
+            "ID": ID,
+            "SiteName": SiteName,
+            "ProjectID": ProjectID,
+            "ContactName": ContactName,
+            "ContactMobile": ContactMobile,
+            "ContactTel": ContactTel,
+            "ContactEmail": ContactEmail,
+            "SiteAddress": SiteAddress,
+            "OHLongitude": OHLongitude,
+            "OHLatitude": OHLatitude,
+            "OHAltitude": OHAltitude,
+            "OHNotes": OHNotes,
+            "OHDetail": OHDetail
+        }, function (err) {
+            if (err) {
+                res.json("false");
+                res.end();
+            } else {
+                LM.addLog({
+                    "type": "operation",
+                    "name": "操作日志",
+                    "user": req.session.user.user,
+                    "IP": ip,
+                    "role": req.session.user.role,
+                    "result": {
+                        "state": "true",
+                        "msg": "[" + req.session.user.user + "]编辑站点[" + _id + "]"
+                    },
+                    "ua": ua
+                });
+                res.json("true");
+                res.end();
+                updateMajorData();  //这个应该放在编辑页面里面
+            }
+        })
+    });
+
+    /**
      * 路由说明： 台站管理 - 获取设备列表
      * 鉴权说明： 登陆校验
      * method: POST
@@ -1284,6 +1349,225 @@ module.exports = function (app) {
             res.json(result);
             res.end();
         })
+    });
+
+    /**
+     * 路由说明： 检查RegisterTagID是否存在的数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/devices/checkRegisterTagID', auth, function (req, res) {
+        SM.getDeviceByRegisterTagID(req.body['RegisterTagID'], function (o) {
+            if (o) {
+                res.write("false");
+                res.end()
+            } else {
+                res.write("true");
+                res.end()
+            }
+        });
+    });
+
+    /**
+     * 路由说明： 检查DeviceID是否存在的数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/devices/checkDeviceID', auth, function (req, res) {
+        SM.getDeviceByDeviceID(req.body['DeviceID'], function (o) {
+            if (o) {
+                res.write("false");
+                res.end()
+            } else {
+                res.write("true");
+                res.end()
+            }
+        });
+    });
+
+    /**
+     * 路由说明： 新建设备数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/devices/addDevice', auth, function (req, res) {
+        var DeviceID = req.body['DeviceID'];
+        var RegisterTagID = req.body['RegisterTagID'];
+        var SiteID = req.body['SiteID'];
+        var CreatorID = req.session.user.user;
+        var CreatedTime = moment().format('YYYY MMMM Do, a h:mm:ss');
+
+        // get user-agent header
+        var ua = parser(req.headers['user-agent']);
+        // get use ip address
+        var ip = getClientIp(req);
+        SM.addNewDevice({
+            "DeviceID": DeviceID,
+            "RegisterTagID": RegisterTagID,
+            "SiteID": SiteID,
+            "SiteNum": SiteID,
+            "CreatorID": CreatorID,
+            "CreatedTime": CreatedTime,
+            "SiteName": ""
+        }, function (err) {
+            if (err) {
+                res.json("false");
+                res.end();
+            } else {
+
+                //创建报警规则
+                ARM.creatNewAlertRules(DeviceID, function (err) {
+                    //重新生成树形目录结构
+                    updateMajorData();
+                });
+
+                LM.addLog({
+                    "type": "operation",
+                    "name": "操作日志",
+                    "user": req.session.user.user,
+                    "IP": ip,
+                    "role": req.session.user.role,
+                    "result": {
+                        "state": "true",
+                        "msg": "[" + req.session.user.user + "]新建设备[" + DeviceID + "]"
+                    },
+                    "ua": ua
+                });
+                res.json("true");
+                res.end();
+            }
+        })
+    });
+
+    /**
+     * 路由说明： 删除设备资源数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/devices/:_id/del', auth, function (req, res) {
+        var oper = req.body['oper'];
+        var _id = req.params._id;
+        // get user-agent header
+        var ua = parser(req.headers['user-agent']);
+        // get use ip address
+        var ip = getClientIp(req);
+        if (oper == 'del') {
+            //进行删除操作
+            SM.deleteDevice(_id, function (e) {
+                if (e) {
+                    console.log(e)
+                } else {
+                    res.status(200).json("true");
+                    res.end();
+                    updateMajorData();  //这个应该放在编辑页面里面
+                    LM.addLog({
+                        "type": "operation",
+                        "name": "操作日志",
+                        "user": req.session.user.user,
+                        "IP": ip,
+                        "role": req.session.user.role,
+                        "result": {
+                            "state": "true",
+                            "msg": "[" + req.session.user.user + "]删除了_id为[" + _id + "]的设备"
+                        },
+                        "ua": ua
+                    });
+                }
+            })
+        }
+        else {
+            res.status(400).json("false");
+        }
+    });
+
+    /**
+     * 路由说明： 编辑设备数据API
+     * 鉴权说明： 登陆校验
+     * method: post
+     */
+    app.post('/user/configuration/devices/editDevice', auth, function (req, res) {
+        var _id = req.body['_id'];
+        var DeviceID = req.body['DeviceID'];
+        var RegisterTagID = req.body['RegisterTagID'];
+        var SiteID = req.body['SiteID'];
+
+        // get user-agent header
+        var ua = parser(req.headers['user-agent']);
+        // get use ip address
+        var ip = getClientIp(req);
+        SM.updateDevice({
+            "_id": _id,
+            "DeviceID": DeviceID,
+            "RegisterTagID": RegisterTagID,
+            "SiteID": SiteID
+        }, function (err) {
+            if (err) {
+                res.json("false");
+                res.end();
+            } else {
+                LM.addLog({
+                    "type": "operation",
+                    "name": "操作日志",
+                    "user": req.session.user.user,
+                    "IP": ip,
+                    "role": req.session.user.role,
+                    "result": {
+                        "state": "true",
+                        "msg": "[" + req.session.user.user + "]编辑设备[" + _id + "]"
+                    },
+                    "ua": ua
+                });
+                res.json("true");
+                res.end();
+                //创建报警规则
+                ARM.creatNewAlertRules(DeviceID, function (err) {
+                    //重新生成树形目录结构
+                    updateMajorData();
+                });
+            }
+        })
+    });
+
+    /**
+     * 路由说明： 台站配置页面 - 设备管理 - 查看设备
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/configuration/devices/:_id/view', auth, function (req, res) {
+        var _id = req.params._id;
+        var pathname = "/user/" + "configuration";
+        SM.getDeviceBy_id(_id, function (DeviceObj) {
+            res.render('./application/configuration-checkDevice', {
+                title: "山西-吉兆 -- 查看项目",
+                udata: req.session.user,
+                topNavData: topNavData,
+                topNavSelected: pathname,
+                DeviceObj: DeviceObj
+            });
+        })
+    });
+
+    /**
+     * 路由说明： 台站配置页面 - 项目管理 - 编辑设备
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/configuration/devices/:_id/edit', auth, function (req, res) {
+        var _id = req.params._id;
+        var pathname = "/user/" + "configuration";
+
+        SM.getAllDeviceInfoName(function (err, Sites) {
+            SM.getDeviceBy_id(_id, function (DeviceObj) {
+                res.render('./application/configuration-editDevice', {
+                    title: "山西-吉兆 -- 编辑站点",
+                    udata: req.session.user,
+                    topNavData: topNavData,
+                    topNavSelected: pathname,
+                    DeviceObj: DeviceObj,
+                    Sites: Sites
+                });
+            })
+        });
     });
 
     /**
@@ -1830,7 +2114,7 @@ module.exports = function (app) {
 
         SM.getAllProjInfoName(function (err, Projs) {
             res.render('./application/configuration-addSite', {
-                title: "山西-吉兆 -- 新建项目",
+                title: "山西-吉兆 -- 新建站点",
                 udata: req.session.user,
                 topNavData: topNavData,
                 topNavSelected: pathname,
@@ -1859,19 +2143,55 @@ module.exports = function (app) {
     });
 
     /**
+     * 路由说明： 台站配置页面 - 项目管理 - 编辑站点
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/configuration/sites/:_id/edit', auth, function (req, res) {
+        var _id = req.params._id;
+        var pathname = "/user/" + "configuration";
+        SM.getSiteBy_id(_id, function (SiteObj) {
+            res.render('./application/configuration-editSite', {
+                title: "山西-吉兆 -- 编辑站点",
+                udata: req.session.user,
+                topNavData: topNavData,
+                topNavSelected: pathname,
+                SiteObj: SiteObj
+            });
+        })
+    });
+
+    /**
      * 路由说明： 台站配置页面 - 设备管理
      * 鉴权说明： 登陆校验, 页面访问权限校验
      * method: GET
      */
     app.get('/user/configuration/devices', auth, function (req, res) {
-
         var pathname = "/user/" + "configuration";
-
         res.render('./application/configuration-devices', {
-            title: "山西-吉兆 -- 设备管理",
+            title: "山西-吉兆 -- 设备列表",
             udata: req.session.user,
             topNavData: topNavData,
             topNavSelected: pathname
+        });
+    });
+
+    /**
+     * 路由说明： 台站配置页面 - 设备管理 - 新建设备
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/configuration/devices/addDevice', auth, function (req, res) {
+        var pathname = "/user/" + "configuration";
+
+        SM.getAllDeviceInfoName(function (err, Sites) {
+            res.render('./application/configuration-addDevice', {
+                title: "山西-吉兆 -- 新建设备",
+                udata: req.session.user,
+                topNavData: topNavData,
+                topNavSelected: pathname,
+                Sites: Sites
+            });
         });
     });
 

@@ -110,7 +110,7 @@
 
             <li class="active open hover">
                 <a href="/user/configuration/sites">
-                    <i class="menu-icon fa fa-university"></i>
+                    <i class="menu-icon fa fa-map-marker"></i>
                     <span class="menu-text"> 站点管理 </span>
                 </a>
                 <b class="arrow"></b>
@@ -143,7 +143,7 @@
 
                         <li class="open">
                             <a href="#" class="dropdown-toggle">
-                                <i class="menu-icon fa fa-university"></i>
+                                <i class="menu-icon fa fa-map-marker"></i>
                                                 <span class="menu-text">
                                                     站点管理
                                                 </span>
@@ -215,7 +215,7 @@
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">删除用户</h4>
             </div>
-            <div class="modal-body">是否要删除该用户？</div>
+            <div class="modal-body">是否要删除该站点？</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-danger" id="btnDel">确认删除</button>
@@ -344,14 +344,14 @@
         jQuery(grid_selector).jqGrid({
             datatype: "local",
             height: 500,
-            colNames: ['_id', '站点名称', '站点编号', '所属项目编号', '站点坐标（经度）', '站点坐标（纬度）', '操作'],
+            colNames: ['_id', '站点名称', '站点编号', '所属项目编号', '站点联系人', '备注', '操作'],
             colModel: [
                 {name: '_id', index: '_id', width: 60, editable: true, sorttype: "text"},
-                {name: 'SiteName', index: '站点名称', width: 60, editable: true, sorttype: "text", formatter: highlight},
-                {name: 'SiteNum', index: '站点编号', width: 60, editable: true, sorttype: "text"},
-                {name: 'ProjectID', index: '所属项目编号', width: 60, editable: true, sorttype: "text"},
-                {name: 'OHLongitude', index: '站点坐标（经度）', width: 60, editable: true, sorttype: "text"},
-                {name: 'OHLatitude', index: '站点坐标（纬度）', width: 60, editable: true, sorttype: "text"},
+                {name: 'SiteName', index: 'SiteName', width: 60, editable: true, sorttype: "text", formatter: highlight},
+                {name: 'SiteNum', index: 'SiteNum', width: 60, editable: true, sorttype: "text"},
+                {name: 'ProjectID', index: 'ProjectID', width: 60, editable: true, sorttype: "text"},
+                {name: 'ContactName', index: 'ContactName', width: 60, editable: true, sorttype: "text"},
+                {name: 'OHNotes', index: 'OHNotes', width: 60, editable: true, sorttype: "text"},
                 {
                     name: '_id',
                     index: '操作',
@@ -366,6 +366,8 @@
             rowList: [10, 20, 30],
             pager: pager_selector,
             altRows: true,
+            sortname : 'SiteName',
+            sortorder: 'asc',
             //toppager: true,
 
             multiselect: true,

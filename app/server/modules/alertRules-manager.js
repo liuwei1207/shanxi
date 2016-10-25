@@ -39,6 +39,9 @@ db.open(function (e, d) {
 var alertRules = db.collection('alertRules');
 var alertData = db.collection('alertData');
 var historicalData = db.collection('historicalData');
+var NsOHBasicProject = db.collection('NsOHBasicProject');
+var NsOHBasicSite = db.collection('NsOHBasicSite');
+var NsOHBasicDevice = db.collection('NsOHBasicDevice');
 
 
 exports.getAlertRulesByDeviceID = function (deviceID, callback) {
@@ -58,76 +61,168 @@ exports.addDataToHistoricalDatabase = function (data) {
     historicalData.insert(data);
 
     //每一条入库数据 -- 监测4个参数的报警状态 - 判断报警状态并入库
+    var deviceID = data.deviceID;
     var FMReviceRSSI_Status = data.deviceData.FMReviceRSSI.alarmStatus;
     var FMReviceSNR_Status = data.deviceData.FMReviceSNR.alarmStatus;
     var RoomHum_Status = data.deviceData.RoomHum.alarmStatus;
     var RoomTemp_Status = data.deviceData.RoomTemp.alarmStatus;
-    var deviceID = data.deviceID;
     var normal = 1;   //正常
     var warning = 2;   //警告
     var danger = 3;   //异常
     var offline = 4;   //掉线
 
-    if (FMReviceRSSI_Status == danger) {
-        alertData.insert({
-            AlarmTime: _Date,
-            deviceID: deviceID,
-            AlarmContent: "设备参数【场强】值 异常！",
-            IsRemove: "0",
-            RemovedWays: "",
-            RemovedTime: "",
-            IsHandle: "0",
-            HandleTime: "",
-            HandleUserID: "",
-            HandleMark: "",
-            remove: "0"
-        })
-    }
-    if (FMReviceSNR_Status == danger) {
-        alertData.insert({
-            AlarmTime: _Date,
-            deviceID: deviceID,
-            AlarmContent: "设备参数【信噪比】值 异常！",
-            IsRemove: "0",
-            RemovedWays: "",
-            RemovedTime: "",
-            IsHandle: "0",
-            HandleTime: "",
-            HandleUserID: "",
-            HandleMark: "",
-            remove: "0"
-        })
-    }
-    if (RoomHum_Status == danger) {
-        alertData.insert({
-            AlarmTime: _Date,
-            deviceID: deviceID,
-            AlarmContent: "设备参数【湿度】值 异常！",
-            IsRemove: "0",
-            RemovedWays: "",
-            RemovedTime: "",
-            IsHandle: "0",
-            HandleTime: "",
-            HandleUserID: "",
-            HandleMark: "",
-            remove: "0"
-        })
-    }
-    if (RoomTemp_Status == danger) {
-        alertData.insert({
-            AlarmTime: _Date,
-            deviceID: deviceID,
-            AlarmContent: "设备参数【温度】值 异常！",
-            IsRemove: "0",
-            RemovedWays: "",
-            RemovedTime: "",
-            IsHandle: "0",
-            HandleTime: "",
-            HandleUserID: "",
-            HandleMark: "",
-            remove: "0"
-        })
-    }
+    NsOHBasicDevice.find({"DeviceID": deviceID}, {_id: 0, SiteID: 1}).toArray(function (err, oSiteID) {
+        try {
+            if (err) {
+                console.log(err)
+            } else {
+                NsOHBasicSite.find({"SiteNum": oSiteID[0].SiteID}, {
+                    _id: 0,
+                    SiteName: 1,
+                    ProjectID: 1
+                }).toArray(function (err, oSite) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        var SiteName = oSite[0].SiteName;
+                        var ProjectID = oSite[0].ProjectID;
+                        NsOHBasicProject.find({"ProjNum": ProjectID}, {
+                            _id: 0,
+                            ProjName: 1
+                        }).toArray(function (err, oProj) {
+                            if (err) {
+                                console.log(err)
+                            } else {
+                                var ProjName = oProj[0].ProjName;
+
+                                if (FMReviceRSSI_Status == danger) {
+
+
+                                    alertData.update(
+                                        {
+                                            "deviceID": deviceID,
+                                            "_type": "realTime",
+                                            "type": "FMReviceRSSI"
+                                        },
+                                        {
+                                            $set: {
+                                                "AlarmTime": _Date,
+                                                "deviceID": deviceID,
+                                                "type": "FMReviceRSSI",
+                                                "SiteName": SiteName,
+                                                "ProjName": ProjName,
+                                                "AlarmContent": "设备【场强】异常！",
+                                                "IsRemove": "0",
+                                                "RemovedWays": "未消警",
+                                                "RemovedTime": "",
+                                                "IsHandle": "0",
+                                                "HandleTime": "",
+                                                "HandleUserID": "",
+                                                "HandleMark": "",
+                                                "remove": "0"
+                                            }
+                                        },
+                                        {
+                                            upsert: true
+                                        });
+                                }
+                                if (FMReviceSNR_Status == danger) {
+                                    alertData.update(
+                                        {
+                                            "deviceID": deviceID,
+                                            "_type": "realTime",
+                                            "type": "FMReviceSNR"
+                                        },
+                                        {
+                                            $set: {
+                                                "AlarmTime": _Date,
+                                                "deviceID": deviceID,
+                                                "type": "FMReviceSNR",
+                                                "SiteName": SiteName,
+                                                "ProjName": ProjName,
+                                                "AlarmContent": "设备【信噪比】异常！",
+                                                "IsRemove": "0",
+                                                "RemovedWays": "未消警",
+                                                "RemovedTime": "",
+                                                "IsHandle": "0",
+                                                "HandleTime": "",
+                                                "HandleUserID": "",
+                                                "HandleMark": "",
+                                                "remove": "0"
+                                            }
+                                        },
+                                        {
+                                            upsert: true
+                                        });
+                                }
+                                if (RoomHum_Status == danger) {
+                                    alertData.update(
+                                        {
+                                            "deviceID": deviceID,
+                                            "_type": "realTime",
+                                            "type": "RoomHum"
+                                        },
+                                        {
+                                            $set: {
+                                                "AlarmTime": _Date,
+                                                "deviceID": deviceID,
+                                                "type": "RoomHum",
+                                                "SiteName": SiteName,
+                                                "ProjName": ProjName,
+                                                "AlarmContent": "设备【湿度】异常！",
+                                                "IsRemove": "0",
+                                                "RemovedWays": "未消警",
+                                                "RemovedTime": "",
+                                                "IsHandle": "0",
+                                                "HandleTime": "",
+                                                "HandleUserID": "",
+                                                "HandleMark": "",
+                                                "remove": "0"
+                                            }
+                                        },
+                                        {
+                                            upsert: true
+                                        });
+                                }
+                                if (RoomTemp_Status == danger) {
+                                    alertData.update(
+                                        {
+                                            "deviceID": deviceID,
+                                            "_type": "realTime",
+                                            "type": "RoomTemp"
+                                        },
+                                        {
+                                            $set: {
+                                                "AlarmTime": _Date,
+                                                "deviceID": deviceID,
+                                                "type": "RoomTemp",
+                                                "SiteName": SiteName,
+                                                "ProjName": ProjName,
+                                                "AlarmContent": "设备【温度】异常！",
+                                                "IsRemove": "0",
+                                                "RemovedWays": "未消警",
+                                                "RemovedTime": "",
+                                                "IsHandle": "0",
+                                                "HandleTime": "",
+                                                "HandleUserID": "",
+                                                "HandleMark": "",
+                                                "remove": "0"
+                                            }
+                                        },
+                                        {
+                                            upsert: true
+                                        });
+                                }
+
+                            }
+                        });
+                    }
+                });
+            }
+        } catch (err) {
+
+        }
+    });
 };
 
 exports.updateAlertRulesByDeviceID = function (newData, callback) {
@@ -203,4 +298,52 @@ exports.getAllRecords = function (newData, callback) {
             });
         }
     });
+};
+
+exports.creatNewAlertRules = function (deviceID, callback) {
+    alertRules.update({
+        'deviceID': deviceID
+    }, {
+        $set: {
+            "deviceID": deviceID,
+            "FMReceiveFQY": {
+                "name": "接收频率",
+                "value": [
+                    "87",
+                    "108"
+                ]
+            },
+            "FMReviceSNR": {
+                "name": "信噪比",
+                "value": [
+                    "0",
+                    "9999"
+                ]
+            },
+            "FMReviceRSSI": {
+                "name": "场强",
+                "value": [
+                    "0",
+                    "9999"
+                ]
+            },
+            "RoomHum": {
+                "name": "湿度",
+                "value": [
+                    "0",
+                    "100"
+                ]
+            },
+            "RoomTemp": {
+                "name": "温度",
+                "value": [
+                    "-30",
+                    "40"
+                ]
+            }
+        }
+    }, {upsert: true}, function (e) {
+        if (e) callback(e);
+        else callback(null);
+    })
 };

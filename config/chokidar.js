@@ -1,3 +1,5 @@
+var HM = require('../app/server/modules/historicalAudioData-manager.js');
+
 var fs = require('fs');
 var util = require('util');
 var config = require("./config");
@@ -67,9 +69,7 @@ function explorer(path) {
             console.log('error:\n' + err);
             return;
         }
-
         files.forEach(function (file) {
-
             try {
                 fs.stat(path + '/' + file, function (err, stat) {
                     if (err) {
@@ -83,20 +83,12 @@ function explorer(path) {
                     } else {
                         // 读出所有的文件
                         var allPath = path + '/' + file;
-
                         console.log(allPath)
-
-                        var deviceID = allPath.match(/\w{35}/)[0];
-                        var mp3Path = allPath.match(/\/\w{35}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
-
-                        if (!isArray(fileJsonTemp[deviceID])) {
-                            fileJsonTemp[deviceID] = [];
-                            fileJsonTemp[deviceID].push(mp3Path);
-                            fileJsonTemp.time = +new Date();
-                        } else {
-                            fileJsonTemp[deviceID].push(mp3Path);
-                            fileJsonTemp.time = +new Date();
-                        }
+                        var RegisterTagID = allPath.match(/\w{32}/)[0];
+                        var mp3Path = allPath.match(/\/\w{32}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+                        var date = allPath.match(/\/\d{8}\//)[0].substring(1, 9);
+                        var mp3Name = allPath.match(/\/\d{2}_\d{2}_\w{8}.mp3$/)[0].substring(1);
+                        HM.updateMp3List(RegisterTagID, date, mp3Path, mp3Name);
                     }
                 });
             } catch (err) {

@@ -111,7 +111,7 @@
 
             <li class="hover">
                 <a href="/user/configuration/sites">
-                    <i class="menu-icon fa fa-university"></i>
+                    <i class="menu-icon fa fa-map-marker"></i>
                     <span class="menu-text"> 站点管理 </span>
                 </a>
                 <b class="arrow"></b>
@@ -214,7 +214,7 @@
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">删除用户</h4>
             </div>
-            <div class="modal-body">是否要删除该用户？</div>
+            <div class="modal-body">是否要删除该项目？</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-danger" id="btnDel">确认删除</button>
@@ -355,9 +355,9 @@
                     editrules: {edithidden: true},
                     key: true
                 },
-                {name: 'ProjName', index: '项目名称', width: 60, editable: false, sorttype: "text", formatter: highlight},
-                {name: 'ContactName', index: '项目联系人', width: 60, editable: true, sorttype: "text"},
-                {name: 'OHNotes', index: '备注', width: 120, editable: true, sorttype: "text"},
+                {name: 'ProjName', index: 'ProjName', width: 60, editable: false, sorttype: "text", formatter: highlight},
+                {name: 'ContactName', index: 'ContactName', width: 60, editable: true, sorttype: "text"},
+                {name: 'OHNotes', index: 'OHNotes', width: 120, editable: true, sorttype: "text"},
                 {
                     name: '_id',
                     index: '操作',

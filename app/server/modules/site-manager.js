@@ -91,7 +91,17 @@ exports.updateMajorDatas = function (newData, callback) {
 };
 
 exports.getAllProjInfoName = function (callback) {
-    NsOHBasicProject.find({}, {"_id": 0, ProjName: 1, ProjNum: 1}).toArray(function (err, o) {
+    NsOHBasicProject.find({}, {"_id": 0, ProjName: 1, ProjNum: 1}).sort({"ProjName": 1}).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(err, o);
+        }
+    })
+};
+
+exports.getAllDeviceInfoName = function (callback) {
+    NsOHBasicSite.find({}, {"_id": 0, SiteName: 1, SiteNum: 1}).sort({"SiteName": 1}).toArray(function (err, o) {
         if (err) {
             callback(err, null);
         } else {
@@ -302,51 +312,55 @@ exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) 
 
 
 //传入当前选中站点的项目ID 和 站点 ID 用来查出对应的所有设备数据
-exports.getAllHistoricalAudioDataByDeviceID = function (deviceID, currentPage, pageSize, callback) {
+exports.getAllHistoricalAudioDataByRegisterTagID = function (RegisterTagID, currentPage, pageSize, callback) {
 
     var filePath = './config/historicalAudioMp3List.json';//历史音频目录下所有设备ID对应的音频播放列表文件;
-
     var resultObj = {};
 
-    resultObj.deviceID = deviceID;
+    resultObj.RegisterTagID = RegisterTagID;
 
     fs.readFile(filePath, function (err, data) {
         if (err) {
-            resultObj.deviceID = deviceID;
+            resultObj.RegisterTagID = RegisterTagID;
             resultObj.currentPage = currentPage;
             resultObj.pageTotal = 0;
             resultObj.Mp3ListArry = [];
             callback(err, resultObj);
         } else {
             var jsonObj = JSON.parse(data);
-
             try {
 
-                if (jsonObj[deviceID]) {
+                if (jsonObj[RegisterTagID]) {
 
-                    resultObj.deviceID = deviceID;
+                    resultObj.RegisterTagID = RegisterTagID;
                     resultObj.currentPage = currentPage;
 
-                    var pageTotal = jsonObj[deviceID].length;
+                    var pageTotal = jsonObj[RegisterTagID].length;
                     resultObj.pageTotal = pageTotal;
 
-                    var DeviceMp3ListAll = jsonObj[deviceID];
+                    var DeviceMp3ListAll = jsonObj[RegisterTagID];
 
                     if (pageTotal <= pageSize) {
                         resultObj.Mp3ListArry = DeviceMp3ListAll;
+                        console.log(resultObj)
                         callback(null, resultObj);
                     } else {
                         var startIndex = (currentPage - 1) * pageSize;
 
                         if (currentPage == (Math.floor(pageTotal / pageSize) + 1)) {
                             resultObj.Mp3ListArry = DeviceMp3ListAll.slice(startIndex);
+                            console.log(resultObj)
                             callback(null, resultObj);
                         } else {
                             resultObj.Mp3ListArry = DeviceMp3ListAll.slice(startIndex, startIndex + pageSize);
+                            console.log(resultObj)
                             callback(null, resultObj);
                         }
                     }
 
+                } else {
+                    console.log('该设备ID对应的历史音频数据不存在！');
+                    callback(err, []);
                 }
 
             } catch (err) {
@@ -384,8 +398,43 @@ exports.getAllDevicesRecords = function (callback) {
         });
 };
 
+exports.getAllDevicesTagRecords = function (callback) {
+    NsOHBasicDevice.aggregate([
+        {
+            $match: {
+                "RegisterTagID": {$exists: true}
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                RegisterTagID: {$push: "$RegisterTagID"}
+            }
+        }
+    ]).toArray(function (err, o) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(err, o);
+        }
+    });
+
+};
+
 exports.getProjectByProjNum = function (ProjNum, callback) {
     NsOHBasicProject.findOne({ProjNum: ProjNum}, function (e, o) {
+        callback(o);
+    });
+}
+
+exports.getDeviceByDeviceID = function (DeviceID, callback) {
+    NsOHBasicDevice.findOne({DeviceID: DeviceID}, function (e, o) {
+        callback(o);
+    });
+}
+
+exports.getDeviceByRegisterTagID = function (RegisterTagID, callback) {
+    NsOHBasicDevice.findOne({RegisterTagID: RegisterTagID}, function (e, o) {
         callback(o);
     });
 }
@@ -424,8 +473,37 @@ exports.addNewSite = function (newData, callback) {
     });
 }
 
+exports.updateSite = function (newData, callback) {
+    NsOHBasicSite.findOne({_id: ObjectId(newData._id)}, function (e, o) {
+        o.ID = newData.ID;
+        o.SiteNum = newData.SiteNum;
+        o.SiteName = newData.SiteName;
+        o.ProjectID = newData.ProjectID;
+        o.ContactName = newData.ContactName;
+        o.ContactMobile = newData.ContactMobile;
+        o.ContactTel = newData.ContactTel;
+        o.ContactEmail = newData.ContactEmail;
+        o.SiteAddress = newData.SiteAddress;
+        o.OHLongitude = newData.OHLongitude;
+        o.OHLatitude = newData.OHLatitude;
+        o.OHAltitude = newData.OHAltitude;
+        o.OHNotes = newData.OHNotes;
+        o.OHDetail = newData.OHDetail;
+        NsOHBasicSite.save(o, {safe: true}, function (e) {
+            if (e) callback(e);
+            else callback(null, o);
+        });
+    });
+}
+
 exports.getProjectBy_id = function (_id, callback) {
     NsOHBasicProject.findOne({_id: ObjectId(_id)}, function (e, o) {
+        callback(o);
+    });
+}
+
+exports.getDeviceBy_id = function (_id, callback) {
+    NsOHBasicDevice.findOne({_id: ObjectId(_id)}, function (e, o) {
         callback(o);
     });
 }
@@ -472,6 +550,13 @@ exports.deleteProj = function (_id, callback) {
     NsOHBasicProject.remove({_id: ObjectId(_id)}, callback);
 }
 
+exports.deleteDevice = function (_id, callback) {
+    NsOHBasicDevice.remove({_id: ObjectId(_id)}, callback);
+}
+exports.deleteRole = function (id, callback) {
+    Role.remove({_id: ObjectId(id)}, callback);
+};
+
 exports.deleteSite = function (_id, callback) {
     NsOHBasicSite.remove({_id: ObjectId(_id)}, callback);
 }
@@ -512,4 +597,58 @@ exports.updateProj = function (newData, callback) {
             else callback(null, o);
         });
     });
+};
+
+exports.updateDevice = function (newData, callback) {
+    NsOHBasicDevice.findOne({_id: ObjectId(newData._id)}, function (e, o) {
+        o.DeviceID = newData.DeviceID;
+        o.RegisterTagID = newData.RegisterTagID;
+        o.SiteID = newData.SiteID;
+
+        NsOHBasicDevice.save(o, {safe: true}, function (e) {
+            if (e) callback(e);
+            else callback(null, o);
+        });
+    });
+};
+
+exports.addNewDevice = function (newData, callback) {
+    var SiteNum = newData.SiteNum;
+    if (SiteNum) {
+        NsOHBasicSite.findOne({SiteNum: SiteNum}, function (err, oSite) {
+            if (err) {
+                console.log(err);
+            } else {
+                if (oSite) {
+                    newData.SiteName = oSite.SiteName;
+                }
+                newData.SiteName = oSite.SiteName ? oSite.SiteName : "";
+                NsOHBasicDevice.findOne({
+                    $or: [
+                        {DeviceID: newData.DeviceID},
+                        {RegisterTagID: newData.RegisterTagID}
+                    ]
+                }, function (err, o) {
+                    if (o) {
+                        callback('Project-taken');
+                    } else {
+                        NsOHBasicDevice.insert(newData, {safe: true}, callback);
+                    }
+                });
+            }
+        });
+    } else {
+        NsOHBasicDevice.findOne({
+            $or: [
+                {DeviceID: newData.DeviceID},
+                {RegisterTagID: newData.RegisterTagID}
+            ]
+        }, function (err, o) {
+            if (o) {
+                callback('Project-taken');
+            } else {
+                NsOHBasicProject.insert(newData, {safe: true}, callback);
+            }
+        });
+    }
 }
