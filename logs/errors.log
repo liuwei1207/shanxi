@@ -1,9 +1,14 @@
-[2016-10-25 13:38:33.369] [INFO] console - <Buffer 5b 53 54 41 52 54 37 37 35 37 5d 7b 0a 20 20 20 22 61 75 64 69 6f 4c 65 76 65 6c 41 64 64 72 65 73 73 22 20 3a 20 22 22 2c 0a 20 20 20 22 61 75 64 69 ... >
-[2016-10-25 13:38:33.375] [INFO] console - mongo :: authenticated and connected to database - AM :: "shanxi"
-[2016-10-25 13:38:33.377] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
-[2016-10-25 13:38:33.378] [INFO] console - mongo :: authenticated and connected to database - SM :: "shanxi"
-[2016-10-25 13:38:33.378] [INFO] console - mongo :: authenticated and connected to database - ARM :: "shanxi"
-[2016-10-25 13:38:33.378] [INFO] console - mongo :: authenticated and connected to database - RP :: "shanxi"
-[2016-10-25 13:38:33.379] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
-[2016-10-25 13:38:33.682] [INFO] console - 已经监听 historicalAudioData 目录下的文件变化！
-[2016-10-25 13:38:36.284] [INFO] console - 历史音频MP3文件播放列表json文件已生成!
+[2016-10-25 14:04:32.322] [INFO] console - 处理程序异常 ：
+[2016-10-25 14:04:32.323] [INFO] console - [SyntaxError: Unexpected token []
+SyntaxError: Unexpected token [
+    at Object.parse (native)
+    at testDataType (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:203:36)
+    at testDataLength (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:193:13)
+    at splicingRealDataPackage (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:157:9)
+    at Socket.<anonymous> (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:44:9)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at readableAddChunk (_stream_readable.js:153:18)
+    at Socket.Readable.push (_stream_readable.js:111:10)
+    at TCP.onread (net.js:536:20)
+[2016-10-25 14:04:32.324] [INFO] console - <Buffer 61 74 75 73 22 20 3a 20 22 2d 31 22 2c 0a 20 20 20 20 20 20 20 20 20 22 76 61 6c 75 65 22 20 3a 20 22 31 22 0a 20 20 20 20 20 20 7d 2c 0a 20 20 20 20 ... >

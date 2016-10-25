@@ -325,7 +325,8 @@
                                                                     id="PN_<%=a.DeviceID%>"></ul>
                                                             </div>
                                                             <div class="pull-right date-wrap">
-                                                                <input class="datepicker drop-date-picker" type="text"/>
+                                                                <input data-tag="<%=a.RegisterTagID%>"
+                                                                       class="datepicker drop-date-picker" type="text"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -612,19 +613,19 @@
                 start: function (event, ui) {
                     //when an element is moved, it's parent becomes empty with almost zero height.
                     //we set a min-height for it to be large enough so that later we can easily drop elements back onto it
-                    ui.item.parent().css({'min-height': ui.item.height()})
+                    ui.item.parent().css({'min-height': ui.item.height()});
                     //ui.sender.css({'min-height':ui.item.height() , 'background-color' : '#F5F5F5'})
                 },
                 update: function (event, ui) {
-                    ui.item.parent({'min-height': ''})
+                    ui.item.parent({'min-height': ''});
                     //p.style.removeProperty('background-color');
 
 
                     //save widget positions
-                    var widget_order = {}
+                    var widget_order = {};
                     $('.widget-container-col').each(function () {
                         var container_id = $(this).attr('id');
-                        widget_order[container_id] = []
+                        widget_order[container_id] = [];
 
 
                         $(this).find('> .widget-box').each(function () {
@@ -1174,6 +1175,60 @@
     });
 
     $(document).ready(function () {
+
+        var query = {};
+
+        history_datepicker();
+        function history_datepicker() {
+            //初始化部分
+            $('.datepicker').pickadate({
+                // Strings and translations
+                monthsFull: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthsShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                weekdaysFull: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                weekdaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                showMonthsShort: true,
+
+                // Buttons
+                today: '今天',
+                clear: false,
+                close: '关闭',
+
+                // Accessibility labels
+                labelMonthNext: '下一月',
+                labelMonthPrev: '上一月',
+                labelMonthSelect: '选择月份',
+                labelYearSelect: '选择年份',
+
+                // Formats
+                format: '选择：yyyy/mm/dd',
+                formatSubmit: 'yyyy/mm/dd',
+                hiddenPrefix: undefined,
+                hiddenSuffix: '_submit',
+                hiddenName: undefined,
+
+                // First day of the week
+                firstDay: '周一',
+
+                // Date limits
+                min: [2016, 8, 1],
+                max: true
+
+            });
+
+            //控制部分
+            var $input = $('.datepicker').pickadate();  //      实例化日期参数
+            $input.each(function () {
+                var picker = $(this).pickadate('picker');
+                picker.on("set", function () {
+                    var date = picker.get('select', 'yyyymmdd');
+                    var RegisterTagID = this.$node[0].dataset.tag;
+                    query[RegisterTagID].date = date;
+                    AJAX_LOAD_Mp3List(query[RegisterTagID].deviceID, query[RegisterTagID].RegisterTagID, query[RegisterTagID].date);    //初始化加载Mp3List数据;
+                });
+            });
+        }
+
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             var deviceID = e.target.href.match(/#\w{2}_\w+$/)[0].replace(/#\w{2}_/, "");    //获取设备ID
             var RegisterTagID = e.target.dataset.registertagid;
@@ -1182,95 +1237,7 @@
             if ($(this).attr("name") === "历史音频监听") {
                 var pageSize = 5;
 
-                AJAX_LOAD_Mp3List(deviceID, RegisterTagID);    //初始化加载Mp3List数据;
-
-                function AJAX_LOAD_Mp3List(deviceID, RegisterTagID, num) {
-                    $.ajax({
-                        type: "POST",
-                        url: '/api/monitors/getAllHistoricalAudioDataByRegisterTagID',
-                        dataType: "JSON",
-                        data: {
-                            "RegisterTagID": RegisterTagID,
-                            "date": "20161024",
-                            "currentPage": num || 1,
-                            "pageSize": 5
-                        },
-                        success: function (result) {
-                            try {
-                                var currentPage = result.currentPage;//当前页码
-                                var pageTotal = result.total; //总条数
-                                var Mp3ListArry = result.rows;//音频文件地址数组
-                                setMp3ListData(deviceID, RegisterTagID, Mp3ListArry);
-                                //请求数据成功 - 设置分页器
-                                setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal);
-                            } catch (err) {
-                                console.log(err);
-                            }
-                        }
-                    });
-                }
-
-                //通过设备ID ， 设置table中的播放列表;
-                function setMp3ListData(deviceID, RegisterTagID, Mp3ListArry) {
-                    var str = '';
-                    for (var i = 0; i < Mp3ListArry.length; i++) {
-                        var name = Mp3ListArry[i].mp3Name;
-                        var path = Mp3ListArry[i].mp3Path;
-                        str += '<tr> <td> <input type="checkbox"/> </td> <td>' + (i + 1) + '</td> <td>' + name + '</td> <td> <a href="' + path + '" class="fa fa-play-circle-o Js_play" aria-hidden="true"></a> </td> <td> <a href="' + path + '" class="fa fa-cloud-download Js_download" aria-hidden="true"></a> </td> </tr>';
-
-                    }
-                    $("#HM_" + deviceID).find(".Js_Mp3List").find("tbody").html(str);
-                    fwLeftIfShow();//自适应宽度
-                }
-
-                //通过设备ID ， 分页其当前选中页码， 每一页条数， 数据总条数， 来控制历史音频数据
-                function setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal) {
-                    try {
-                        var _pagination = $("#PN_" + deviceID);
-                        if (_pagination) {
-                            var pagetotal = pageTotal;  //总页数
-                            var pagesize = pageSize;   //一页上的数据条数
-                            var currentpage = currentPage;//当前页码
-                            var counts, pagehtml = "";
-
-                            if (pagetotal % pagesize == 0) {
-                                counts = parseInt(pagetotal / pagesize);
-                            } else {
-                                counts = parseInt(pagetotal / pagesize) + 1;
-                            }
-                            //只有一页内容
-                            if (pagetotal <= pagesize) {
-                                pagehtml = '<li>仅1页</li>';
-                            }
-                            //大于一页内容
-                            if (pagetotal > pagesize) {
-                                if (currentpage > 1) {
-                                    pagehtml += '<li><a class="" href="/index/' + (currentpage - 1) + '">上一页</a></li>';
-                                }
-                                for (var i = 0; i < counts; i++) {
-                                    if (i >= (currentpage - 3) && i < (currentpage + 3)) {
-                                        if (i == currentpage - 1) {
-                                            pagehtml += '<li class="active"><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
-                                        } else {
-                                            pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
-                                        }
-
-                                    }
-                                }
-                                if (currentpage < counts) {
-                                    pagehtml += '<li><a class="" href="/index/' + (parseInt(currentpage) + 1) + '">下一页</a></li>';
-                                }
-                            }
-                            _pagination.html(pagehtml);    //将计算好的分页写入页面
-
-                            _pagination.on('click', function () {
-                                return false;//阻止链接跳转
-                            })
-                        }
-                    } catch (err) {
-                        console.log(err)
-                    }
-                }
+                AJAX_LOAD_Mp3List(deviceID, RegisterTagID, "20161024");    //初始化加载Mp3List数据;
 
                 setMp3LoadEvent();
             }
@@ -1278,16 +1245,105 @@
                 //若当前打开的不是历史音频， 清除页面元素缓存;
                 $("#HM_" + deviceID).find(".Js_Mp3List").html();
             }
-
-            function setMp3LoadEvent() {
-                $(".Js_pagination").on("click", "a", function () {
-                    var deviceID = $(this).closest(".Js_pagination").attr("id").replace(/^\w{2}\_/, "");
-                    var RegisterTagID = $(this).closest(".widget-box-audioMonitoring").find("a[name='历史音频监听']").data("registertagid");
-                    var selectNum = $(this).attr("href").replace(/^\/index\//, "");
-                    AJAX_LOAD_Mp3List(deviceID, RegisterTagID, selectNum);
-                })
-            }
         });
+
+
+        function AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date, num) {
+            $.ajax({
+                type: "POST",
+                url: '/api/monitors/getAllHistoricalAudioDataByRegisterTagID',
+                dataType: "JSON",
+                data: {
+                    "RegisterTagID": RegisterTagID,
+                    "date": date || query[RegisterTagID],
+                    "currentPage": num || 1,
+                    "pageSize": 5
+                },
+                success: function (result) {
+                    try {
+                        var currentPage = result.currentPage;//当前页码
+                        var pageTotal = result.total; //总条数
+                        var Mp3ListArry = result.rows;//音频文件地址数组
+                        setMp3ListData(deviceID, RegisterTagID, Mp3ListArry);
+                        //请求数据成功 - 设置分页器
+                        setPagination(deviceID, RegisterTagID, currentPage, 5, pageTotal);
+                        query[RegisterTagID] = {};
+                        query[RegisterTagID].deviceID = deviceID;
+                        query[RegisterTagID].RegisterTagID = RegisterTagID;
+                        query[RegisterTagID].date = date;
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+            });
+        }
+        //通过设备ID ， 设置table中的播放列表;
+        function setMp3ListData(deviceID, RegisterTagID, Mp3ListArry) {
+            var str = '';
+            for (var i = 0; i < Mp3ListArry.length; i++) {
+                var name = Mp3ListArry[i].mp3Name;
+                var path = Mp3ListArry[i].mp3Path;
+                str += '<tr> <td> <input type="checkbox"/> </td> <td>' + (i + 1) + '</td> <td>' + name + '</td> <td> <a href="' + path + '" class="fa fa-play-circle-o Js_play" aria-hidden="true"></a> </td> <td> <a href="' + path + '" class="fa fa-cloud-download Js_download" aria-hidden="true"></a> </td> </tr>';
+
+            }
+            $("#HM_" + deviceID).find(".Js_Mp3List").find("tbody").html(str);
+            fwLeftIfShow();//自适应宽度
+        }
+        //通过设备ID ， 分页其当前选中页码， 每一页条数， 数据总条数， 来控制历史音频数据
+        function setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal) {
+            try {
+                var _pagination = $("#PN_" + deviceID);
+                if (_pagination) {
+                    var pagetotal = pageTotal;  //总页数
+                    var pagesize = pageSize;   //一页上的数据条数
+                    var currentpage = currentPage;//当前页码
+                    var counts, pagehtml = "";
+
+                    if (pagetotal % pagesize == 0) {
+                        counts = parseInt(pagetotal / pagesize);
+                    } else {
+                        counts = parseInt(pagetotal / pagesize) + 1;
+                    }
+                    //只有一页内容
+                    if (pagetotal <= pagesize) {
+                        pagehtml = '<li><a class="">首页</a></li>';
+                    }
+                    //大于一页内容
+                    if (pagetotal > pagesize) {
+                        if (currentpage > 1) {
+                            pagehtml += '<li disabled="true"><a class="" href="/index/' + (currentpage - 1) + '">上一页</a></li>';
+                        }
+                        for (var i = 0; i < counts; i++) {
+                            if (i >= (currentpage - 3) && i < (currentpage + 3)) {
+                                if (i == currentpage - 1) {
+                                    pagehtml += '<li class="active"><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                } else {
+                                    pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                }
+
+                            }
+                        }
+                        if (currentpage < counts) {
+                            pagehtml += '<li><a class="" href="/index/' + (parseInt(currentpage) + 1) + '">下一页</a></li>';
+                        }
+                    }
+                    _pagination.html(pagehtml);    //将计算好的分页写入页面
+
+                    _pagination.on('click', function () {
+                        return false;//阻止链接跳转
+                    })
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        function setMp3LoadEvent() {
+            $(".Js_pagination").on("click", "a", function () {
+                var RegisterTagID = $(this).closest(".widget-box-audioMonitoring").find("a[name='历史音频监听']").data("registertagid");
+                var selectNum = $(this).attr("href").replace(/^\/index\//, "");
+                AJAX_LOAD_Mp3List(query[RegisterTagID].deviceID, RegisterTagID, query[RegisterTagID].date, selectNum);
+            })
+        }
     });
     //<![CDATA[
     $(document).ready(function () {
@@ -1388,61 +1444,6 @@
         })
 
     });
-</script>
-
-<script>
-    $(document).ready(function () {
-        history_datepicker();
-        function history_datepicker() {
-            //初始化部分
-            $('.datepicker').pickadate({
-                // Strings and translations
-                monthsFull: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                monthsShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                weekdaysFull: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                weekdaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                showMonthsShort: true,
-
-                // Buttons
-                today: '今天',
-                clear: false,
-                close: '关闭',
-
-                // Accessibility labels
-                labelMonthNext: '下一月',
-                labelMonthPrev: '上一月',
-                labelMonthSelect: '选择月份',
-                labelYearSelect: '选择年份',
-
-                // Formats
-                format: '选择：yyyy/mm/dd',
-                formatSubmit: 'yyyy/mm/dd',
-                hiddenPrefix: undefined,
-                hiddenSuffix: '_submit',
-                hiddenName: undefined,
-
-                // First day of the week
-                firstDay: '周一',
-
-                // Date limits
-                min: [2016, 8, 1],
-                max: true
-
-            });
-
-            //控制部分
-            var get_date = "";  //得到日期
-            var $input = $('.datepicker').pickadate();  //      实例化日期参数
-            var picker = $input.pickadate('picker');
-            picker.on("set", function () {
-                get_date = picker.get('select', 'yyyymmdd');
-
-
-            });
-
-
-        }
-    })
 </script>
 </body>
 </html>
