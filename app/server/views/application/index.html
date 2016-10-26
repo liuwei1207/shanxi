@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="/bower_components/jPlayer/dist/skin/blue.monday/css/jplayer.blue.monday.min.css"/>
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger.css"/>
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger-theme-future.css"/>
-    <link href="/bower_components/pickadate/css/default.css" type="text/css" rel="stylesheet"/>
-    <link href="/bower_components/pickadate/css/default.date.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/bower_components/pickadate/css/classic.css"  />
+    <link rel="stylesheet" href="/bower_components/pickadate/css/classic.date.css" />
 
     <!-- text fonts -->
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/fonts.googleapis.com.css"/>
@@ -324,12 +324,13 @@
                                                                 <ul class="pagination pagination-sm no-margin Js_pagination position-absolute"
                                                                     id="PN_<%=a.DeviceID%>"></ul>
                                                             </div>
-                                                            <div class="pull-right date-wrap">
+                                                            <div class="pull-right date-wrap position-absolute">
                                                                 <input data-tag="<%=a.RegisterTagID%>"
-                                                                       class="datepicker drop-date-picker" type="text"/>
+                                                                       class="datepicker drop-date-picker " type="text"/>
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </div><!-- /tab-content -->
                                             </div>
                                         </div>
@@ -488,7 +489,7 @@
     function fwLeftIfShow() {
         var box_width = $(".widget-container-col>.widget-box").width();
         var td_none = $(".history-time-data td:first-child,.history-time-data td:nth-child(2)");
-        var td_padding = $(".history-time-data td");
+        var td_padding = $(".history-time-data>#Js_Mp3List td");
         if (box_width > 320) {
             $(".fw-left").css("display", "block");
             $(".fw-right-content").css("margin-left", "110px");
@@ -1201,7 +1202,7 @@
                 labelYearSelect: '选择年份',
 
                 // Formats
-                format: '选择：yyyy/mm/dd',
+                format: 'yyyy/mm/dd',
                 formatSubmit: 'yyyy/mm/dd',
                 hiddenPrefix: undefined,
                 hiddenSuffix: '_submit',
@@ -1213,13 +1214,14 @@
                 // Date limits
                 min: [2016, 8, 1],
                 max: true
-
             });
 
             //控制部分
             var $input = $('.datepicker').pickadate();  //      实例化日期参数
             $input.each(function () {
                 var picker = $(this).pickadate('picker');
+                var myDate = new Date();
+                picker.set('select',myDate.toLocaleDateString());
                 picker.on("set", function () {
                     var date = picker.get('select', 'yyyymmdd');
                     var RegisterTagID = this.$node[0].dataset.tag;
@@ -1227,6 +1229,7 @@
                     AJAX_LOAD_Mp3List(query[RegisterTagID].deviceID, query[RegisterTagID].RegisterTagID, query[RegisterTagID].date);    //初始化加载Mp3List数据;
                 });
             });
+
         }
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -1277,6 +1280,7 @@
                 }
             });
         }
+
         //通过设备ID ， 设置table中的播放列表;
         function setMp3ListData(deviceID, RegisterTagID, Mp3ListArry) {
             var str = '';
@@ -1289,6 +1293,7 @@
             $("#HM_" + deviceID).find(".Js_Mp3List").find("tbody").html(str);
             fwLeftIfShow();//自适应宽度
         }
+
         //通过设备ID ， 分页其当前选中页码， 每一页条数， 数据总条数， 来控制历史音频数据
         function setPagination(deviceID, RegisterTagID, currentPage, pageSize, pageTotal) {
             try {
@@ -1314,11 +1319,19 @@
                             pagehtml += '<li disabled="true"><a class="" href="/index/' + (currentpage - 1) + '">上一页</a></li>';
                         }
                         for (var i = 0; i < counts; i++) {
-                            if (i >= (currentpage - 3) && i < (currentpage + 3)) {
+                            if (i >= (currentpage - 2) && i < (currentpage + 2)) {
                                 if (i == currentpage - 1) {
                                     pagehtml += '<li class="active"><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
                                 } else {
-                                    pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                    if (i <= 1) {
+                                        pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                    }
+                                    if (i == currentpage && i != counts - 1) {
+                                        pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">...</a></li>';
+                                    }
+                                    if (i == counts - 1) {
+                                        pagehtml += '<li><a class="" href="/index/' + (i + 1) + '">' + (i + 1) + '</a></li>';
+                                    }
                                 }
 
                             }
@@ -1337,6 +1350,7 @@
                 console.log(err)
             }
         }
+
         function setMp3LoadEvent() {
             $(".Js_pagination").on("click", "a", function () {
                 var RegisterTagID = $(this).closest(".widget-box-audioMonitoring").find("a[name='历史音频监听']").data("registertagid");

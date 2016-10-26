@@ -45,11 +45,13 @@ watcher
     });
 
 var lazyRunout = _.debounce(function () {
-    explorer(mp3File);
-    var lazyWriteFile = _.debounce(function () {
-        writeFile(fileJsonTemp);
-    }, 2500);
-    lazyWriteFile();
+    HM.clearMP3Souce(function(err, result) {
+        if(err) {
+            console.log(err)
+        }else {
+            explorer(mp3File);
+        }
+    });
 }, 100);
 
 /**
@@ -91,22 +93,4 @@ function explorer(path) {
             }
         });
     });
-}
-
-function writeFile(data) {
-
-    var fileName = './config/historicalAudioMp3List.json';//历史音频目录下所有设备ID对应的音频播放列表
-
-    fs.writeFile(fileName, JSON.stringify(data), {flag: 'w'}, function (err) {
-        if (err) throw err;
-        console.log("历史音频MP3文件播放列表json文件已生成!");
-        fileJsonTemp = {
-            "time": ""
-        };
-    });
-}
-
-//判断是否为数组， 是 返回true
-function isArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
 }

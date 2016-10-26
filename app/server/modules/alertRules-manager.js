@@ -58,6 +58,7 @@ exports.addDataToHistoricalDatabase = function (data) {
     //实时数据入库
     var _Date = moment().format('YYYY-MM-DD HH:mm:ss'); //2014-09-24 23:36:09
     data.insertDate = _Date;
+    data.createdAt = new Date();
     historicalData.insert(data);
 
     //每一条入库数据 -- 监测4个参数的报警状态 - 判断报警状态并入库

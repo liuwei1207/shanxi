@@ -184,10 +184,18 @@
 .history-time-data .pagination{
     bottom: 37px;
 }
-
+.history-time-data .date-wrap{
+    bottom: 37px;
+    right: 0;
+}
 .history-time-data .datepicker{
     height: 30px;
-    max-width: 130px;
+    max-width: 100px;
+}
+.history-time-data .picker__holder{
+    min-width: 280px;
+    top: -285px;
+    left: -175px;
 }
 /*实时音频监听状态*/
 [data-state='1']{

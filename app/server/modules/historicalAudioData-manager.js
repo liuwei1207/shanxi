@@ -77,3 +77,13 @@ exports.getAllHistoricalAudioDataByRegisterTagID = function (RegisterTagID, date
         }
     })
 };
+
+exports.clearMP3Souce = function(callback) {
+    historicalAudioData.remove({},function(err) {
+        if(err) {
+            callback(err)
+        }else {
+            callback();
+        }
+    });
+};
