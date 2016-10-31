@@ -1398,7 +1398,6 @@ module.exports = function (app) {
         var SiteID = req.body['SiteID'];
         var CreatorID = req.session.user.user;
         var CreatedTime = moment().format('YYYY MMMM Do, a h:mm:ss');
-
         // get user-agent header
         var ua = parser(req.headers['user-agent']);
         // get use ip address
@@ -1419,6 +1418,8 @@ module.exports = function (app) {
 
                 //创建报警规则
                 ARM.creatNewAlertRules(DeviceID, function (err) {
+                    //设备配置参数下发
+                    nodeServer.write('[START0110]{"type":"config","tagNum":"' + RegisterTagID + '","deviceID":"' + DeviceID + '"}[END]');   // server login
                     //重新生成树形目录结构
                     updateMajorData();
                 });
@@ -1438,7 +1439,7 @@ module.exports = function (app) {
                 res.json("true");
                 res.end();
             }
-        })
+        });
     });
 
     /**
@@ -1523,11 +1524,13 @@ module.exports = function (app) {
                 res.end();
                 //创建报警规则
                 ARM.creatNewAlertRules(DeviceID, function (err) {
+                    //设备配置参数下发
+                    nodeServer.write('[START0110]{"type":"config","tagNum":"' + RegisterTagID + '","deviceID":"' + DeviceID + '"}[END]');   // server login
                     //重新生成树形目录结构
                     updateMajorData();
                 });
             }
-        })
+        });
     });
 
     /**
@@ -1614,14 +1617,21 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/monitor/', auth, function (req, res) {
-
-        var pathname = URL.parse(req.url).pathname.replace("/user/", "").replace("/", "");
-        pathname = "/user/" + pathname;
-        //console.log(pathname)
-
         SM.findLeftNavDatas(function (e) {
             leftNavDatas = e;
             res.redirect('/user/monitor/all/all');
+        });
+    });
+
+    /**
+     * 路由说明： 监控页面（值班室大屏）主路径跳转路由
+     * 鉴权说明： 登陆校验
+     * method: GET
+     */
+    app.get('/user/monitor2/', auth, function (req, res) {
+        SM.findLeftNavDatas(function (e) {
+            leftNavDatas = e;
+            res.redirect('/user/monitor2/all/all');
         });
     });
 
@@ -1689,7 +1699,61 @@ module.exports = function (app) {
                 })
             });
         });
+    });
 
+    /**
+     * 路由说明： 监控主页（监控室大屏） - 设备总览
+     * 鉴权说明： 登陆校验, 页面访问权限校验
+     * method: GET
+     */
+    app.get('/user/monitor2/:ProjectID/:SiteID', auth, function (req, res, next) {
+        var pathname = URL.parse(req.url).pathname.replace("/user/", "").replace(/\/.*/g, "");
+        pathname = "/user/" + pathname;
+        //查询初始化信息
+        SM.findLeftNavDatas(function (leftNavDatas) {
+            var currentProjectID = req.params.ProjectID;
+            var currentSiteID = req.params.SiteID;
+
+            if (currentSiteID === 'all') {
+                SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (mainDatas) {
+                    SM.getAllDeviceInfoByProjIDandSiteID(currentProjectID, currentSiteID, function (deviceData) {
+                        res.render('./application/index-big.html', {
+                            title: '山西-吉兆 -- 监控主页',
+                            currentProjectID: currentProjectID,
+                            currentSiteID: currentSiteID,
+                            leftNavDatas: leftNavDatas,
+                            topNavSelected: pathname,
+                            mainDatas: mainDatas,
+                            topNavData: topNavData,
+                            deviceData: {
+                                currentProjectID: currentProjectID,
+                                deviceData: deviceData
+                            },
+                            udata: req.session.user
+                        });
+                    })
+                });
+            } else {
+                SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (mainDatas) {
+                    SM.getAllDeviceInfoByProjIDandSiteID(currentProjectID, currentSiteID, function (deviceData) {
+                        res.render('./application/index-big-single.html', {
+                            title: '山西-吉兆 -- 监控主页',
+                            currentProjectID: currentProjectID,
+                            currentSiteID: currentSiteID,
+                            leftNavDatas: leftNavDatas,
+                            topNavSelected: pathname,
+                            mainDatas: mainDatas,
+                            topNavData: topNavData,
+                            deviceData: {
+                                currentProjectID: currentProjectID,
+                                deviceData: deviceData
+                            },
+                            udata: req.session.user
+                        });
+                    })
+                });
+            }
+        });
     });
 
     /**

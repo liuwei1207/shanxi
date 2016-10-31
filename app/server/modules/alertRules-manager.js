@@ -215,6 +215,34 @@ exports.addDataToHistoricalDatabase = function (data) {
                                         });
                                 }
 
+                                if (FMReviceRSSI_Status == normal) {
+                                    alertData.remove({
+                                        "deviceID": deviceID,
+                                        "_type": "realTime",
+                                        "type": "FMReviceRSSI"
+                                    });
+                                }
+                                if (FMReviceSNR_Status == normal) {
+                                    alertData.remove({
+                                        "deviceID": deviceID,
+                                        "_type": "realTime",
+                                        "type": "FMReviceSNR"
+                                    });
+                                }
+                                if (RoomHum_Status == normal) {
+                                    alertData.remove({
+                                        "deviceID": deviceID,
+                                        "_type": "realTime",
+                                        "type": "RoomHum"
+                                    });
+                                }
+                                if (RoomTemp_Status == normal) {
+                                    alertData.remove({
+                                        "deviceID": deviceID,
+                                        "_type": "realTime",
+                                        "type": "RoomTemp"
+                                    });
+                                }
                             }
                         });
                     }

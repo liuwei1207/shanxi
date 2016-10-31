@@ -23,14 +23,13 @@ module.exports = function () {
     app.set('view engine', 'html');
     app.engine('.html', require('ejs').__express);
 
-
     // use middleware
+    app.use(favicon(path.join(__dirname, '../app/public', 'favicon.ico')));
     app.locals.pretty = true;
     app.use(cookieParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(express.static('./app/public'));
-    app.use('/GISMap', express.static('./app/public/GISMap'));
     // mongoDB database
     var dbURL = 'mongodb://' + config.mongodb.DB_USER + ':' + config.mongodb.DB_PASS + '@' + config.mongodb.dbHost + ':' + config.mongodb.dbPort + '/' + config.mongodb.dbName;
     console.log(dbURL);

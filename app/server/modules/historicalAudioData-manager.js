@@ -59,7 +59,7 @@ exports.getAllHistoricalAudioDataByRegisterTagID = function (RegisterTagID, date
     historicalAudioData.find({
         "RegisterTagID": RegisterTagID,
         "date": date
-    }).sort({"insertTime": -1}).skip((currentPage - 1) * pageSize).limit(parseInt(pageSize)).toArray(function (err, o) {
+    }).sort({"date": -1}).skip((currentPage - 1) * pageSize).limit(parseInt(pageSize)).toArray(function (err, o) {
         if (err) {
             callback(err, null);
         } else {

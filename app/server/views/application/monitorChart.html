@@ -80,8 +80,8 @@
         </div>
 
         <div class="navbar-header pull-left">
-            <h3 style="color: #fff;height: 100%;margin: 0;padding: 0;line-height: 75px;font-weight: bold;">设备ID —— [<%=
-                deviceID %>] —— 场强信噪比当日趋势图</h3>
+            <a>设备ID —— [<%=
+                deviceID %>] —— 场强、信噪比、温度、湿度 历史趋势图</a>
         </div>
     </div><!-- /template topNav -->
 </div>
@@ -236,7 +236,6 @@
             //    关闭设置日期的时候得到日期
             picker.on("set", function () {
                 get_date = picker.get('select', 'yyyy-mm-dd');
-                console.log(get_date)
                 Ajax_Load_Chart("<%=deviceID %>", get_date);
             });
 
@@ -251,8 +250,6 @@
         //生成图标代码， 传入由后台请求得到的数据
         function setEcharts(strObj, date) {
 
-            console.log(date)
-
             // 基于准备好的dom，初始化echarts实例
             myChart_sitePage = echarts.init(document.getElementById('Js_charts'));
             var timeData = strObj.date;
@@ -262,7 +259,7 @@
             var FMReceiveSNR = strObj.FMReviceSNR;
             var option = {
                 title: {
-                    text: '场强信噪比当日趋势图',
+                    text: '场强、信噪比、温度、湿度 历史趋势图',
                     subtext: date,
                     x: 'center'
                 },
@@ -273,7 +270,7 @@
                     }
                 },
                 legend: {
-                    data: ['湿度', '温度', '场强', '信噪比'],
+                    data: ['场强', '信噪比','湿度', '温度'],
                     x: 'left',
                     top: 40
                 },
@@ -334,60 +331,76 @@
                 ],
                 yAxis: [
                     {
+                        name: '场强 dBuV',
+                        type: 'value',
+                        scale: true,
+                        min: 0,
+                        max: 50,
+                        nameTextStyle: {
+                            color: '#ff705e',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    {
+                        gridIndex: 1,
                         name: '湿度 %',
                         type: 'value',
                         scale: true,
                         min: -40,
                         max: 80,
                         nameTextStyle: {
-                            color: '#91c7ae',
+                            color: '#0e6ac1',
                             fontWeight: 'bold'
                         }
                     },
                     {
-                        gridIndex: 1,
-                        name: '场强 N/C',
-                        type: 'value',
-                        scale: true,
-                        min: 0,
-                        max: 25,
-                        nameTextStyle: {
-                            color: '#69a5ac',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    {
-                        name: '温度 ℃',
-                        type: 'value',
-                        scale: true,
-                        min: -40,
-                        max: 80,
-                        nameTextStyle: {
-                            color: '#d48265',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    {
-                        gridIndex: 1,
                         name: '信噪比 dB',
                         type: 'value',
                         scale: true,
                         min: 0,
                         max: 5,
                         nameTextStyle: {
-                            color: '#CC0033',
+                            color: '#32caca',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    {
+                        gridIndex: 1,
+                        name: '温度 ℃',
+                        type: 'value',
+                        scale: true,
+                        min: -40,
+                        max: 80,
+                        nameTextStyle: {
+                            color: '#fda537',
                             fontWeight: 'bold'
                         }
                     }
                 ],
                 series: [
                     {
-                        name: '湿度',
+                        name: '场强',
                         type: 'line',
                         symbolSize: 8,
                         itemStyle: {
                             normal: {
-                                color: '#91c7ae',
+                                color: '#ff705e',
+                                witch: 1,
+                                opacity: 1
+                            }
+                        },
+                        hoverAnimation: false,
+                        data: FMReceiveRSSI
+                    },
+                    {
+                        name: '湿度',
+                        type: 'line',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        symbolSize: 8,
+                        itemStyle: {
+                            normal: {
+                                color: '#0e6ac1',
                                 witch: 1,
                                 opacity: 1
                             }
@@ -396,50 +409,36 @@
                         data: RoomHum
                     },
                     {
-                        name: '场强',
-                        type: 'line',
-                        xAxisIndex: 1,
-                        yAxisIndex: 1,
-                        symbolSize: 8,
-                        itemStyle: {
-                            normal: {
-                                color: '#69a5ac',
-                                witch: 1,
-                                opacity: 0.2
-                            }
-                        },
-                        hoverAnimation: false,
-                        data: FMReceiveRSSI
-                    },
-                    {
-                        name: '温度',
-                        type: 'line',
-                        symbolSize: 8,
-                        itemStyle: {
-                            normal: {
-                                color: '#d48265',
-                                witch: 1,
-                                opacity: 0.2
-                            }
-                        },
-                        hoverAnimation: false,
-                        data: RoomTemp
-                    },
-                    {
                         name: '信噪比',
                         type: 'line',
-                        xAxisIndex: 1,
-                        yAxisIndex: 1,
+
                         symbolSize: 8,
                         itemStyle: {
                             normal: {
-                                color: '#CC0033',
+                                color: '#32caca',
                                 witch: 1,
-                                opacity: 0.2
+                                opacity: 1
                             }
                         },
                         hoverAnimation: false,
                         data: FMReceiveSNR
+                    },
+                    {
+
+                        name: '温度',
+                        type: 'line',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        symbolSize: 8,
+                        itemStyle: {
+                            normal: {
+                                color: '#fda537',
+                                witch: 1,
+                                opacity: 1
+                            }
+                        },
+                        hoverAnimation: false,
+                        data: RoomTemp
                     }
                 ]
             };

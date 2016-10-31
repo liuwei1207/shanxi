@@ -1,3 +1,4 @@
+
 /* *****************************- 顶部导航条a标签的默认效果  -******************************** */
 .navbar .navbar-nav>li>a {
     background: transparent;
@@ -120,6 +121,7 @@
     animation-play-state:paused;
     -webkit-animation-play-state:paused;
 }
+
 /* *****************************- 音频面板  -******************************** */
 .widget-main .main-left{float: left;  width: 150px;}
 .widget-main .main-right{margin-left: 150px;/*==等于左边栏宽度==*/}
@@ -239,4 +241,27 @@
  .flexible-width{
      width: 50%;
  }
+}
+
+.flexible-invisible{
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-wrap: wrap;
+    -webkit-justify-content: space-between; /* 间距平分 */
+}
+
+.flexible-invisible .widget-container-col{
+    width: 200px;
+}
+
+.flexible-invisible .widget-box-audioMonitoring .widget-main {
+    height: 660px;
+}
+
+.flexible-invisible .widget-box-audioMonitoring .widget-main .form-actions{
+    width: 100%;
+}
+
+.flexible-invisible .widget-box-audioMonitoring .widget-main .form-actions .btn{
+    width: 100%;
 }

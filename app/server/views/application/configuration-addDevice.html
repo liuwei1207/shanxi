@@ -237,9 +237,9 @@
                                     </button>
 
                                     &nbsp; &nbsp; &nbsp;
-                                    <button class="btn" type="reset">
+                                    <button class="btn" type="button" id="btnGoBack">
                                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                                        重置
+                                        返回
                                     </button>
                                 </div>
                             </div>
@@ -362,6 +362,12 @@
                 else $('#form-field-select-4').removeClass('tag-input-style');
             });
         }
+    })
+
+    $(document).ready(function () {
+        $("#btnGoBack").on("click", function () {
+            history.back();
+        })
     })
 
 </script>

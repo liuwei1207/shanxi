@@ -52,10 +52,138 @@
     <script src="/javascripts/Ace_template_js/html5shiv.min.js"></script>
     <script src="/javascripts/Ace_template_js/respond.min.js"></script>
     <![endif]-->
+
+    <style>
+        /* 两列右侧自适应布局 */
+        .g-bd1 {
+            margin: 0 0 10px;
+        }
+
+        .g-sd1 {
+            position: relative;
+            float: left;
+            width: 200px;
+            margin-right: -200px;
+        }
+
+        .g-mn1 {
+            float: right;
+            width: 100%;
+        }
+
+        .g-mn1c {
+            margin-left: 225px;
+        }
+
+        .widget-body,
+        .widget-main {
+            overflow: hidden;
+        }
+
+        .left-top,
+        .right-top,
+        .mid-bottom {
+            height: 315px;
+        }
+
+        .left-meter {
+            height: 688px;;
+        }
+
+        .left-meter-main {
+            padding: 0;
+        }
+
+        .chart-dom {
+            width: 100%;
+            height: 291px;
+        }
+        .meter-body{
+            width: 100%;
+        }
+        .meter-body>img{
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 
 <body class="no-skin">
-<% include ../includes/topNav.html %>
+<!-- template topNav -->
+<div id="navbar" class="navbar navbar-default ace-save-state">
+    <div class="navbar-container ace-save-state" id="navbar-container">
+        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+
+        <div class="navbar-header pull-left">
+            <a href="/menu" class="navbar-brand">
+                <!--<small>-->
+                <!--<i class="fa fa-cloud"></i>-->
+                <!--山西-吉兆 FM监听系统-->
+                <!--</small>-->
+                <img src="/images/customs/application/logo.png" alt=""/>
+            </a>
+        </div>
+
+        <div class="navbar-header pull-left">
+            <ul class="nav navbar-nav">
+                <li class="">
+                    <a href="/menu">监控主页（值班室大屏）</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+
+            <% if (udata) { %>
+            <ul class="nav ace-nav">
+                <li class="dropdown-modal">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<span class="user-info">
+									<small>你好,</small>
+									<%= udata.name %>
+								</span>
+
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+
+                    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a href="#">
+                                <i class="ace-icon fa fa-cog"></i>
+                                设置
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="">
+                                <i class="ace-icon fa fa-user"></i>
+                                个人信息
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="/logout">
+                                <i class="ace-icon fa fa-power-off"></i>
+                                注销
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <% } %>
+        </div>
+    </div><!-- /template topNav -->
+</div><!-- /template topNav -->
 
 <div class="main-container ace-save-state" id="main-container">
     <script type="text/javascript">
@@ -65,7 +193,7 @@
         }
     </script>
 
-    <% include ../includes/sideBar.html %>
+    <% include ../includes/sideBar2.html %>
 
     <div class="main-content">
         <div class="main-content-inner">
@@ -73,302 +201,360 @@
             <div class="page-content">
                 <% include ../includes/ace-settings-container.html %>
 
-
-                <div class="page-header">
-                    <h1>
-                        <%= mainDatas[0].ProjName %>
-                        <small>
-                            <i class="ace-icon fa fa-angle-double-right"></i>
-                            <%= mainDatas[0].sites[0].SiteName %>
-                        </small>
-                    </h1>
-                    <!-- MP3 Player -->
-                    <div class="m-MP3player player-music draggable">
-                        <div class="subtitles-box">
-                            <div class="subtitles Js_Mp3Info">
-                                <div class="deviceName">[播放状态：暂停]</div>
-                                <div class="deviceType">[数据来源：未知]</div>
-                            </div>
+                <!-- MP3 Player -->
+                <div class="m-MP3player player-music draggable">
+                    <div class="subtitles-box">
+                        <div class="subtitles Js_Mp3Info">
+                            <div class="deviceName">[播放状态：暂停]</div>
+                            <div class="deviceType">[数据来源：未知]</div>
                         </div>
+                    </div>
 
-                        <div class="">
-                            <div id="monitorJplayer" class="jp-jplayer"></div>
-                            <div id="jp_container_1" class="jp-audio" role="application"
-                                 aria-label="media player">
-                                <div class="jp-type-single">
-                                    <div class="jp-gui jp-interface">
-                                        <div class="jp-controls">
-                                            <button class="jp-play" role="button" tabindex="0">play</button>
-                                            <button class="jp-stop" role="button" tabindex="0">stop</button>
+                    <div class="">
+                        <div id="monitorJplayer" class="jp-jplayer"></div>
+                        <div id="jp_container_1" class="jp-audio" role="application"
+                             aria-label="media player">
+                            <div class="jp-type-single">
+                                <div class="jp-gui jp-interface">
+                                    <div class="jp-controls">
+                                        <button class="jp-play" role="button" tabindex="0">play</button>
+                                        <button class="jp-stop" role="button" tabindex="0">stop</button>
+                                    </div>
+                                    <div class="jp-progress">
+                                        <div class="jp-seek-bar">
+                                            <div class="jp-play-bar"></div>
                                         </div>
-                                        <div class="jp-progress">
-                                            <div class="jp-seek-bar">
-                                                <div class="jp-play-bar"></div>
-                                            </div>
+                                    </div>
+                                    <div class="jp-volume-controls">
+                                        <button class="jp-mute" role="button" tabindex="0">mute</button>
+                                        <button class="jp-volume-max" role="button" tabindex="0">max volume
+                                        </button>
+                                        <div class="jp-volume-bar">
+                                            <div class="jp-volume-bar-value"></div>
                                         </div>
-                                        <div class="jp-volume-controls">
-                                            <button class="jp-mute" role="button" tabindex="0">mute</button>
-                                            <button class="jp-volume-max" role="button" tabindex="0">max volume
+                                    </div>
+                                    <div class="jp-time-holder">
+                                        <div class="jp-current-time" role="timer" aria-label="time">
+                                            &nbsp;</div>
+                                        <div class="jp-duration" role="timer" aria-label="duration">
+                                            &nbsp;</div>
+                                        <div class="jp-toggles">
+                                            <button class="jp-repeat" role="button" tabindex="0">repeat
                                             </button>
-                                            <div class="jp-volume-bar">
-                                                <div class="jp-volume-bar-value"></div>
-                                            </div>
-                                        </div>
-                                        <div class="jp-time-holder">
-                                            <div class="jp-current-time" role="timer" aria-label="time">
-                                                &nbsp;</div>
-                                            <div class="jp-duration" role="timer" aria-label="duration">
-                                                &nbsp;</div>
-                                            <div class="jp-toggles">
-                                                <button class="jp-repeat" role="button" tabindex="0">repeat
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="jp-no-solution">
-                                        <span>Update Required</span>
-                                        To play the media you will need to either update your browser to a
-                                        recent
-                                        version or update your <a href="http://get.adobe.com/flashplayer/"
-                                                                  target="_blank">Flash plugin</a>.
-                                    </div>
+                                <div class="jp-no-solution">
+                                    <span>Update Required</span>
+                                    To play the media you will need to either update your browser to a
+                                    recent
+                                    version or update your <a href="http://get.adobe.com/flashplayer/"
+                                                              target="_blank">Flash plugin</a>.
                                 </div>
                             </div>
                         </div>
-                    </div><!-- /MP3 Player -->
-
-                </div><!-- /.page-header -->
+                    </div>
+                </div><!-- /MP3 Player -->
 
                 <div class="row">
-                    <div class="col-xs-12">
-                        <!-- PAGE CONTENT BEGINS -->
-                        <div class="invisible" id="main-widget-container">
 
-                            <% if(deviceData.deviceData.length == 0) { %>
-                            <div class="well well-lg">
-                                该站点没有配置相应的站点设备...
+                    <div class="widget-box ui-sortable-handle" id="widget-box-1">
+                        <div class="widget-header">
+                            <h5 class="pull-left">
+                                <%= mainDatas[0].ProjName %>
+                                <small>
+                                    <i class="ace-icon fa fa-angle-double-right"></i>
+                                    <%= mainDatas[0].sites[0].SiteName %>
+                                </small>
+                            </h5>
+
+                            <div class="widget-toolbar">
+                                <a href="#" data-action="fullscreen" class="blue" data-rel="tooltip" title="全屏监听">
+                                    <i class="ace-icon fa fa-expand"></i>
+                                </a>
                             </div>
-                            <% } %>
+                        </div>
 
-                            <% try{deviceData.deviceData.forEach(function(a, index){ %>
+                        <div class="widget-body">
+                            <div class="widget-main clearfix">
+                                <div class="col-xs-12">
+                                    <!-- PAGE CONTENT BEGINS -->
+                                    <div class="invisible flexible-invisible" id="main-widget-container">
 
-                            <!-- real-time: 实时数据 --> <!-- historical: 实时数据 -->
-
-                            <div class="col-md-6 flexible-width  col-lg-3 widget-container-col" id="WC_<%=a.DeviceID%>">
-                                <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>">
-                                    <div class="widget-header">
-                                        <div class="widget-toolbar no-border pull-left">
-
-                                            <!-- nav-tabs -->
-                                            <ul class="nav nav-tabs" id="myTab">
-                                                <li class="active">
-                                                    <a data-toggle="tab" href="#NM_<%=a.DeviceID%>" aria-expanded="true"
-                                                       name="实时音频监听"><i class="ace-icon fa fa-exchange"></i>
-                                                        实时音频监听</a>
-                                                </li>
-                                                <li class="">
-                                                    <a data-toggle="tab" href="#HM_<%=a.DeviceID%>"
-                                                       aria-expanded="false" name="历史音频监听"
-                                                       data-RegisterTagID="<%=a.RegisterTagID%>"><i
-                                                            class="ace-icon fa fa-history"></i>
-                                                        历史音频监听</a>
-                                                </li>
-                                            </ul><!-- /nav-tabs -->
+                                        <% if(deviceData.deviceData.length == 0) { %>
+                                        <div class="well well-lg">
+                                            该站点没有配置相应的站点设备...
                                         </div>
+                                        <% } %>
 
-                                        <div class="widget-toolbar">
+                                        <% try{deviceData.deviceData.forEach(function(a, index){ %>
 
-                                            <a href="/user/chart/<%=a.DeviceID%>" data-action="chart"
-                                               class="Js_chart" data-rel="tooltip"
-                                               title="统计图表查看">
-                                                <i class="ace-icon fa fa-area-chart"></i>
-                                            </a>
+                                        <!-- real-time: 实时数据 --> <!-- historical: 实时数据 -->
 
-                                            <a data-action="alertRules" class="purple Js_setAlertRules"
-                                               data-rel="tooltip"
-                                               title="报警规则设置">
-                                                <i class="ace-icon fa fa-exclamation-circle"></i>
-                                            </a>
-
-                                            <a href="#" data-action="fullscreen" class="pink" data-rel="tooltip"
-                                               title="切换全屏显示">
-                                                <i class="ace-icon fa fa-expand"></i>
-                                            </a>
-
-                                            <a href="#" data-action="collapse" data-rel="tooltip"
-                                               title="折叠 / 收缩">
-                                                <i class="ace-icon fa fa-chevron-up"></i>
-                                            </a>
-                                        </div>
-                                    </div>
+                                        <div class="Js_DeviceID" id="WC_<%=a.DeviceID%>" style="width: 100%;">
 
 
-                                    <div class="widget-body">
-                                        <div class="widget-main padding-6">
-                                            <!-- tab-content -->
-                                            <div class="tab-content">
-                                                <div id="NM_<%=a.DeviceID%>" class="tab-pane active">
-                                                    <div class="fixed-width-l clearfix">
-                                                        <div class="fw-left" href="#" title="音频左右声道">
-                                                            <img src="/images/customs/application/rule.png"
-                                                                 alt="...">
-                                                            <div class="strapping" id="meter_<%=a.DeviceID%>">
-                                                                <canvas style="width: 100%;height: 100%;"></canvas>
+                                            <div class="g-bd1 f-cb">
+                                                <div class="g-sd1">
+                                                    <!--<p>左侧定宽</p>-->
+                                                    <div class="widget-box widget-box-audioMonitoring"
+                                                         id="WB_<%=a.DeviceID%>">
+                                                        <div class="widget-header">
+                                                            <h5 class="widget-title"><%=a.SiteName%></h5>
+                                                        </div>
+                                                        <div class="widget-body left-meter">
+                                                            <div class="widget-main left-meter-main">
+                                                                <div id="NM_<%=a.DeviceID%>">
+                                                                    <div class="clearfix meter-body">
+                                                                        <img src="/images/customs/application/meter.png"
+                                                                             alt="...">
+                                                                        <div class="strapping" id="meter_<%=a.DeviceID%>">
+                                                                            <canvas></canvas>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clearfix">
+                                                                        <div class="col-xs-12">
+                                                                            <a href="/user/chart/<%=a.DeviceID%>"
+                                                                               target="_blank" data-action="chart"
+                                                                               class="Js_chartLink btn btn-minier btn-primary"
+                                                                               data-rel="tooltip"
+                                                                               title="查看统计图表">
+                                                                                <span class="bigger-110">统计图表</span> <i
+                                                                                    class="ace-icon fa fa-area-chart"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="space-12"></div>
+                                                                        <div class="col-xs-12">
+                                                                            <a data-action="alertRules"
+                                                                               class="Js_setAlertRules btn btn-minier btn-danger"
+                                                                               data-rel="tooltip"
+                                                                               title="设置报警规则">
+                                                                                <span class="bigger-110">报警规则</span> <i
+                                                                                    class="ace-icon fa fa-exclamation-circle"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="fw-right">
-                                                            <div class="fw-right-content">
-                                                                <div class="real-time-data">
-                                                                    <table class="table table-bordered no-margin-bottom Js_realTimeDataTabel"
-                                                                           style="">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <td>所属设备</td>
-                                                                            <td>
+                                                    </div>
+                                                </div>
+                                                <div class="g-mn1">
+                                                    <div class="g-mn1c">
+                                                        <!--<p>右侧自适应</p>-->
+
+                                                        <div class="row">
+                                                            <div class="col-xs-6">
+                                                                <div class="widget-box ui-sortable-handle"
+                                                                     id="widget-box-realData">
+                                                                    <div class="widget-header">
+                                                                        <h5 class="widget-title">实时音频监听</h5>
+                                                                    </div>
+
+                                                                    <div class="widget-body">
+                                                                        <div class="widget-main left-top">
+                                                                            <div class="fw-right">
+                                                                                <div class="fw-right-content">
+                                                                                    <div class="real-time-data">
+                                                                                        <table class="table table-bordered no-margin-bottom Js_realTimeDataTabel"
+                                                                                               style="">
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <td>所属设备</td>
+                                                                                                <td>
                                                                                 <span class="text-primary bigger-110">
                                                                                     <i class="menu-icon fa fa-map-marker"></i>
                                                                                     <%=a.SiteName%>
                                                                                 </span>
-                                                                            </td>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <tr>
-                                                                            <td>采集时间</td>
-                                                                            <td>
-                                                                                暂无数据
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr>
+                                                                                                <td>采集时间</td>
+                                                                                                <td>
+                                                                                                    暂无数据
                                                                                 <span class="site-states"
                                                                                       data-state="1">
                                                                                 </span>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>频率</td>
-                                                                            <td class="position-relative"
-                                                                                title="<%= a.RegisterDeviceID %>">
-                                                                                <%= a.RegisterDeviceID %> MHz
-                                                                                <div class="tb-tail">
-                                                                                    <button class="btn btn-minier btn-yellow ">
-                                                                                        <i class="ace-icon fa fa-cog"></i>设置
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td>频率</td>
+                                                                                                <td class="position-relative"
+                                                                                                    title="<%= a.RegisterDeviceID %>">
+                                                                                                    <%=
+                                                                                                    a.RegisterDeviceID
+                                                                                                    %> MHz
+                                                                                                    <div class="tb-tail">
+                                                                                                        <button class="btn btn-minier btn-yellow ">
+                                                                                                            <i class="ace-icon fa fa-cog"></i>设置
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            </tr>
+
+                                                                                            <tr>
+                                                                                                <td>温度</td>
+                                                                                                <td class="position-relative">
+                                                                                                    <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
+                                                                                                    loading..
+                                                                                                    <span class="tb-tail"> ℃</span>
+                                                                                                </td>
+                                                                                            </tr>
+
+                                                                                            <tr>
+                                                                                                <td>湿度</td>
+                                                                                                <td class="position-relative">
+                                                                                                    <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
+                                                                                                    loading..
+                                                                                                    <span class="tb-tail"> %</span>
+                                                                                                </td>
+                                                                                            </tr>
+
+                                                                                            <tr>
+                                                                                                <td>场强</td>
+                                                                                                <td class="position-relative">
+                                                                                                    <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
+                                                                                                    loading..
+                                                                                                    <span class="tb-tail"> dBuV</span>
+                                                                                                </td>
+                                                                                            </tr>
+
+                                                                                            <tr>
+                                                                                                <td>信噪比</td>
+                                                                                                <td class="position-relative">
+                                                                                                    <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
+                                                                                                    loading..
+                                                                                                    <span class="tb-tail"> dB</span>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                    <button class="btn btn-block btn-info btn-sm Js_player_realTime"
+                                                                                            title="实时音频监听"
+                                                                                            data-mp3="http://123.57.215.156:10011/<%= a.RegisterTagID %>.mp3">
+                                                                                        <i class="fa fa-play"
+                                                                                           aria-hidden="true"></i> 开始监听
                                                                                     </button>
                                                                                 </div>
-                                                                            </td>
-                                                                        </tr>
-
-                                                                        <tr>
-                                                                            <td>温度</td>
-                                                                            <td class="position-relative">
-                                                                                <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
-                                                                                loading..
-                                                                                <span class="tb-tail"> ℃</span></td>
-                                                                        </tr>
-
-                                                                        <tr>
-                                                                            <td>湿度</td>
-                                                                            <td class="position-relative">
-                                                                                <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
-                                                                                loading..
-                                                                                <span class="tb-tail"> %</span></td>
-                                                                        </tr>
-
-                                                                        <tr>
-                                                                            <td>场强</td>
-                                                                            <td class="position-relative">
-                                                                                <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
-                                                                                loading..
-                                                                                <span class="tb-tail"> dBuV</span></td>
-                                                                        </tr>
-
-                                                                        <tr>
-                                                                            <td>信噪比</td>
-                                                                            <td class="position-relative">
-                                                                                <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>
-                                                                                loading..
-                                                                                <span class="tb-tail"> dB</span></td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                <button class="btn btn-block btn-info btn-sm Js_player_realTime"
-                                                                        title="实时音频监听"
-                                                                        data-mp3="http://123.57.215.156:10011/<%= a.RegisterTagID %>.mp3">
-                                                                    <i class="fa fa-play" aria-hidden="true"></i> 开始监听
-                                                                </button>
                                                             </div>
 
+                                                            <div class="col-xs-6">
+                                                                <div class="widget-box ui-sortable-handle"
+                                                                     id="widget-box-historyData">
+                                                                    <div class="widget-header">
+                                                                        <h5 class="widget-title">历史音频监听</h5>
+                                                                    </div>
+
+                                                                    <div class="widget-body">
+                                                                        <div class="widget-main right-top">
+                                                                            <div id="HM_<%=a.DeviceID%>"
+                                                                                 class="tab-pane">
+                                                                                <div class="history-time-data">
+                                                                                    <table class="table table-hover Js_Mp3List">
+
+                                                                                        <thead>
+                                                                                        <tr>
+                                                                                            <td> 选项</td>
+                                                                                            <td>序号</td>
+                                                                                            <td>文件名</td>
+                                                                                            <td>播放</td>
+                                                                                            <td>下载</td>
+                                                                                        </tr>
+                                                                                        </thead>
+
+                                                                                        <!-- 历史音频播放地址列表 -->
+                                                                                        <tbody class="Js_Mp3ListTable"></tbody>
+
+                                                                                    </table>
+                                                                                    <div class="clearfix">
+                                                                                        <div class="pull-left">
+                                                                                            <ul class="pagination pagination-sm no-margin Js_pagination position-absolute"
+                                                                                                id="PN_<%=a.DeviceID%>"></ul>
+                                                                                        </div>
+                                                                                        <div class="pull-right date-wrap position-absolute">
+                                                                                            <input data-tag="<%=a.RegisterTagID%>"
+                                                                                                   class="datepicker drop-date-picker Js_RegisterTagID"
+                                                                                                   type="text"/>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
+
+                                                        <div class="space-6"></div>
+
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="widget-box ui-sortable-handle"
+                                                                     id="widget-box-chartData">
+                                                                    <div class="widget-header">
+                                                                        <h5 class="widget-title">场强、信噪比、温度、湿度</h5>
+                                                                    </div>
+
+                                                                    <div class="widget-body">
+                                                                        <div class="widget-main mid-bottom">
+                                                                            <div class="chart-dom" id="Js_charts">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
                                                 </div>
-
-                                                <div id="HM_<%=a.DeviceID%>" class="tab-pane">
-                                                    <div class="history-time-data">
-                                                        <table class="table table-hover Js_Mp3List">
-
-                                                            <thead>
-                                                            <tr>
-                                                                <td> 选项</td>
-                                                                <td>序号</td>
-                                                                <td>文件名</td>
-                                                                <td>播放</td>
-                                                                <td>下载</td>
-                                                            </tr>
-                                                            </thead>
-
-                                                            <!-- 历史音频播放地址列表 -->
-                                                            <tbody class="Js_Mp3ListTable"></tbody>
-
-                                                        </table>
-                                                        <div class="clearfix">
-                                                            <div class="pull-left">
-                                                                <ul class="pagination pagination-sm no-margin Js_pagination position-absolute"
-                                                                    id="PN_<%=a.DeviceID%>"></ul>
-                                                            </div>
-                                                            <div class="pull-right date-wrap position-absolute">
-                                                                <input data-tag="<%=a.RegisterTagID%>"
-                                                                       class="datepicker drop-date-picker "
-                                                                       type="text"/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div><!-- /tab-content -->
                                             </div>
+
+
                                         </div>
+
+                                        <% })}catch(err) {console.log(err)} %>
+
                                     </div>
-                                </div>
+
+                                    <div class="space-10"></div>
+
+                                    <div class="row">
+
+
+                                    </div>
+
+
+                                    <div class="space-10"></div>
+
+                                    <div class="row">
+
+                                    </div>
+
+                                    <div class="space-24"></div>
+
+                                    <hr/>
+                                    <div class="text-center">
+                                        <button type="reset" id="reset-widgets"
+                                                class="btn btn-danger btn-white btn-bold btn-round">重置页面布局
+                                        </button>
+                                    </div>
+
+                                    <div class="space-32"></div>
+
+                                </div><!-- PAGE CONTENT ENDS -->
                             </div>
-
-                            <% })}catch(err) {console.log(err)} %>
-
                         </div>
+                    </div>
 
-                        <div class="space-10"></div>
-
-                        <div class="row">
-
-
-                        </div>
-
-
-                        <div class="space-10"></div>
-
-                        <div class="row">
-
-                        </div>
-
-                        <div class="space-24"></div>
-
-                        <hr/>
-                        <div class="text-center">
-                            <button type="reset" id="reset-widgets"
-                                    class="btn btn-danger btn-white btn-bold btn-round">重置页面布局
-                            </button>
-                        </div>
-
-                        <div class="space-32"></div>
-
-                    </div><!-- PAGE CONTENT ENDS -->
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.page-content -->
@@ -471,6 +657,8 @@
 <script src="/bower_components/socket.io/socket.io-1.4.5.js"></script>
 <script src="/bower_components/Messenger/js/messenger.min.js"></script>
 <script src="/bower_components/Messenger/js/messenger-theme-future.js"></script>
+<script src="/bower_components/eCharts/3.2.3/echarts.min.js"></script>
+<script src="/bower_components/moment/moment.js"></script>
 <script src="/bower_components/pickadate/js/legacy.js"></script>
 <script src="/bower_components/pickadate/js/picker.js"></script>
 <script src="/bower_components/pickadate/js/picker.date.js"></script>
@@ -570,37 +758,9 @@
                         .parent().toggleClass('btn-toolbar')
             });
 
-            /**
-             //or use slimScroll plugin
-             $('.slim-scrollable').each(function () {
-					var $this = $(this);
-					$this.slimScroll({
-						height: $this.data('height') || 100,
-						railVisible:true
-					});
-				});
-             */
 
-
-            /**$('.widget-box').on('setting.ace.widget' , function(e) {
-					e.preventDefault();
-				});*/
-
-            /**
-             $('.widget-box').on('show.ace.widget', function(e) {
-					//e.preventDefault();
-					//this = the widget-box
-				});
-             $('.widget-box').on('reload.ace.widget', function(e) {
-					//this = the widget-box
-				});
-             */
-
-                //$('#my-widget-box').widget_box('hide');
-
-
-                // widget boxes
-                // widget box drag & drop example
+            // widget boxes
+            // widget box drag & drop example
             $('.widget-container-col').sortable({
                 connectWith: '.widget-container-col',
                 items: '> .widget-box',
@@ -801,17 +961,17 @@
     caps.timer = {};
 
     function Meter(id, levels) {
-        var width = 80;
-        var height = 240;
+        var width = 186;
+        var height = 540;
         var canvas = document.getElementById(id).childNodes[1];
         var ctx = canvas.getContext("2d");
         var Dots = caps[id] ? caps[id].value : [{cap: 236}, {cap: 236}];
 
         function draw(arr) {
             ctx.clearRect(0, 0, width, height);
-            var w = 42;
-            var cw = 38;
-            var capH = 4;
+            var w = 78;
+            var cw = 76;
+            var capH = 9;
 
             for (var i = 0; i < arr.length; i++) {
                 var oo = Dots[i];
@@ -862,12 +1022,12 @@
         canvas.height = height;
         //渐变色
         var line = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        line.addColorStop(0, "#B74635");
-        line.addColorStop(.1, "#B74635");
-        line.addColorStop(.1, "#FDFE00");
-        line.addColorStop(.2, "#FDFE00");
-        line.addColorStop(.2, "#09FD00");
-        line.addColorStop(1, "#09FD00");
+        line.addColorStop(0, "#FF0000");
+        line.addColorStop(.1, "#FF0000");
+        line.addColorStop(.1, "#FDFD00");
+        line.addColorStop(.2, "#FDFD00");
+        line.addColorStop(.2, "#55FF00");
+        line.addColorStop(1, "#55FF00");
         ctx.fillStyle = line;
 
         draw(levels);
@@ -1225,9 +1385,9 @@
                 picker.set('select', myDate.toLocaleDateString());
                 picker.on("set", function () {
                     var date = picker.get('select', 'yyyymmdd');
-                    var RegisterTagID = this.$node[0].dataset.tag;
-                    query[RegisterTagID].date = date;
-                    AJAX_LOAD_Mp3List(query[RegisterTagID].deviceID, query[RegisterTagID].RegisterTagID, query[RegisterTagID].date);    //初始化加载Mp3List数据;
+                    var deviceID = $(".Js_DeviceID").attr("id").match(/WC_\w+$/)[0].replace(/WC_/, "");    //获取设备ID；
+                    var RegisterTagID = $(".Js_RegisterTagID").data("tag");
+                    AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date);    //初始化加载Mp3List数据;
                 });
             });
 
@@ -1266,23 +1426,31 @@
             return format;
         }
 
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            var deviceID = e.target.href.match(/#\w{2}_\w+$/)[0].replace(/#\w{2}_/, "");    //获取设备ID
-            var RegisterTagID = e.target.dataset.registertagid;
+        $(document).ready(function () {
+            var date = new Date().format("yyyyMMdd");
+            var deviceID = $(".Js_DeviceID").attr("id").match(/WC_\w+$/)[0].replace(/WC_/, "");    //获取设备ID；
+            var RegisterTagID = $(".Js_RegisterTagID").data("tag");
+            AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date);    //初始化加载Mp3List数据;
+            setMp3LoadEvent();
+        })
 
-            //判断选中的tab 是否是 历史音频监听标签
-            if ($(this).attr("name") === "历史音频监听") {
-                var pageSize = 5;
-                var date = new Date().format("yyyyMMdd");
-                AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date);    //初始化加载Mp3List数据;
-
-                setMp3LoadEvent();
-            }
-            else {
-                //若当前打开的不是历史音频， 清除页面元素缓存;
-                $("#HM_" + deviceID).find(".Js_Mp3List").html();
-            }
-        });
+//        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+//            var deviceID = e.target.href.match(/#\w{2}_\w+$/)[0].replace(/#\w{2}_/, "");    //获取设备ID
+//            var RegisterTagID = e.target.dataset.registertagid;
+//
+//            //判断选中的tab 是否是 历史音频监听标签
+//            if ($(this).attr("name") === "历史音频监听") {
+//                var date = new Date().format("yyyyMMdd");
+//                console.log(date)
+//                AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date);    //初始化加载Mp3List数据;
+//
+//                setMp3LoadEvent();
+//            }
+//            else {
+//                //若当前打开的不是历史音频， 清除页面元素缓存;
+//                $("#HM_" + deviceID).find(".Js_Mp3List").html();
+//            }
+//        });
 
         function AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date, num) {
             $.ajax({
@@ -1452,9 +1620,10 @@
     });
     //]]>
     $(document).ready(function () {
-        $(".Js_chart").on("click", function () {
+        $(".Js_chartLink").on("click", function () {
             var href = $(this).attr("href");
             window.open(href);
+            return false;
         })
     });
 
@@ -1487,6 +1656,292 @@
             return false;
         })
 
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        var deviceID = $(".Js_DeviceID").attr("id").match(/WC_\w+$/)[0].replace(/WC_/, "");    //获取设备ID；
+
+        Ajax_Load_Chart(deviceID, moment().format("YYYY-MM-DD"));
+
+        datepicker();
+
+        var myChart_sitePage = null;
+
+        //日期控件
+        function datepicker() {
+            //初始化部分
+            $('.datepicker').pickadate({
+                // Strings and translations
+                monthsFull: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthsShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                weekdaysFull: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                weekdaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                showMonthsShort: true,
+
+                // Buttons
+                today: '今天',
+                clear: false,
+                close: '关闭',
+
+                // Accessibility labels
+                labelMonthNext: '下一月',
+                labelMonthPrev: '上一月',
+                labelMonthSelect: '选择月份',
+                labelYearSelect: '选择年份',
+
+                // Formats
+                format: '选择：yyyy/mm/dd',
+                formatSubmit: 'yyyy/mm/dd',
+                hiddenPrefix: undefined,
+                hiddenSuffix: '_submit',
+                hiddenName: undefined,
+
+                // First day of the week
+                firstDay: '周一',
+
+                // Date limits
+                min: [2016, 8, 1],
+                max: true
+
+            });
+
+            //控制部分
+            var get_date = "";  //得到日期
+            var $input = $('.datepicker').pickadate();  //      实例化日期参数
+            var picker = $input.pickadate('picker');
+            picker.set('select', moment());
+            //    点击“今天”、“昨天”按钮时得到日期
+            $(".search-area label").on("click", (function () { // 在页面任意位置点击而触发此事件
+                var _value = $(this).children().val();       // e.target表示被点击的目标
+                var date = "";
+                if (_value == "2") {
+                    date = moment().format("YYYY-MM-DD");
+                }
+                else if (_value == "1") {
+                    date = moment().subtract(1, 'days').format("YYYY-MM-DD");
+                    picker.set('select', date);
+                    myChart_sitePage.clear();
+                }
+                //处理过的日期送入AJAX模块
+                Ajax_Load_Chart(deviceID, date);
+            }));
+
+            //    关闭设置日期的时候得到日期
+            picker.on("set", function () {
+                get_date = picker.get('select', 'yyyy-mm-dd');
+                Ajax_Load_Chart(deviceID, get_date);
+            });
+
+            //    点击日历按钮时日期插件打开
+            $(".Js_selectDate").on("click", (function () {
+                setTimeout(function () {
+                    picker.open();
+                }, 20)
+            }));
+        }
+
+        //生成图标代码， 传入由后台请求得到的数据
+        function setEcharts(strObj, date) {
+
+            // 基于准备好的dom，初始化echarts实例
+            myChart_sitePage = echarts.init(document.getElementById('Js_charts'));
+            var timeData = strObj.date;
+            var RoomHum = strObj.RoomHum;
+            var FMReceiveRSSI = strObj.FMReviceRSSI;
+            var RoomTemp = strObj.RoomTemp;
+            var FMReceiveSNR = strObj.FMReviceSNR;
+            var option = {
+
+                dataZoom: [
+                    {
+                        show: true,
+                        realtime: true,
+                        orient: 'horizontal',
+                        start: 0,
+                        end: 100,
+                        xAxisIndex: [0, 1]
+                    },
+                    {
+                        type: 'inside',
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        xAxisIndex: [0, 1]
+                    }
+                ],
+                grid: [{
+                    left: 60,
+                    right: 50,
+                    top: 50,
+                    height: '34%'
+                }, {
+                    left: 60,
+                    right: 50,
+                    top: '56%',
+                    height: '34%'
+                }],
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {onZero: true},
+                        data: timeData
+                    },
+                    {
+                        gridIndex: 1,
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {onZero: true},
+                        data: timeData
+                    }
+                ],
+                yAxis: [
+                    {
+                        name: '场强 dBuV',
+                        type: 'value',
+                        scale: true,
+                        min: 0,
+                        max: 50,
+                        nameTextStyle: {
+                            color: '#ff705e',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    {
+                        gridIndex: 1,
+                        name: '湿度 %',
+                        type: 'value',
+                        scale: true,
+                        min: -40,
+                        max: 80,
+                        nameTextStyle: {
+                            color: '#0e6ac1',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    {
+                        name: '信噪比 dB',
+                        type: 'value',
+                        scale: true,
+                        min: 0,
+                        max: 5,
+                        nameTextStyle: {
+                            color: '#32caca',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    {
+                        gridIndex: 1,
+                        name: '温度 ℃',
+                        type: 'value',
+                        scale: true,
+                        min: -40,
+                        max: 80,
+                        nameTextStyle: {
+                            color: '#fda537',
+                            fontWeight: 'bold'
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '场强',
+                        type: 'line',
+                        symbolSize: 8,
+                        itemStyle: {
+                            normal: {
+                                color: '#ff705e',
+                                witch: 1,
+                                opacity: 1
+                            }
+                        },
+                        hoverAnimation: false,
+                        data: FMReceiveRSSI
+                    },
+                    {
+                        name: '湿度',
+                        type: 'line',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        symbolSize: 8,
+                        itemStyle: {
+                            normal: {
+                                color: '#0e6ac1',
+                                witch: 1,
+                                opacity: 1
+                            }
+                        },
+                        hoverAnimation: false,
+                        data: RoomHum
+                    },
+                    {
+                        name: '信噪比',
+                        type: 'line',
+
+                        symbolSize: 8,
+                        itemStyle: {
+                            normal: {
+                                color: '#32caca',
+                                witch: 1,
+                                opacity: 1
+                            }
+                        },
+                        hoverAnimation: false,
+                        data: FMReceiveSNR
+                    },
+                    {
+
+                        name: '温度',
+                        type: 'line',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        symbolSize: 8,
+                        itemStyle: {
+                            normal: {
+                                color: '#fda537',
+                                witch: 1,
+                                opacity: 1
+                            }
+                        },
+                        hoverAnimation: false,
+                        data: RoomTemp
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart_sitePage.setOption(option);
+            window.onresize = myChart_sitePage.resize;
+        }
+
+        //ajax请求， 传入设备ID， 传入选择日期
+        function Ajax_Load_Chart(deviceID, date) {
+            $.ajax({
+                type: "POST",
+                url: "/api/charts/getChartDataByDeviceID",
+                data: {deviceID: deviceID, date: date},
+                dataType: "json",
+                success: function (data) {
+                    if (data[0]) {
+                        setEcharts(data[0], date);
+                    } else {
+
+                        var strObj = {
+                            "date": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],//场强
+                            "RoomHum": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],//湿度
+                            "FMReceiveRSSI": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],//场强
+                            "RoomTemp": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],//温度
+                            "FMReceiveSNR": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"]//信噪比
+                        };
+
+
+                        setEcharts(strObj, date);
+                    }
+                }
+            });
+        }
     });
 </script>
 </body>

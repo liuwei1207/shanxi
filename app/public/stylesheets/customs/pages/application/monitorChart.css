@@ -1,3 +1,11 @@
+/*导航*/
+.navbar .navbar-header a{
+    height: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+}
+
 /*搜索条样式设置*/
 .header-seach{
     margin-left: -8px;

@@ -283,9 +283,9 @@
                                     </button>
 
                                     &nbsp; &nbsp; &nbsp;
-                                    <button class="btn" type="reset">
+                                    <button class="btn" type="button" id="btnGoBack">
                                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                                        取消
+                                        返回
                                     </button>
                                 </div>
                             </div>
@@ -368,6 +368,11 @@
         $('#sidebar2[data-sidebar-scroll=true]').ace_sidebar_scroll('reset', true);
     })
 
+    $(document).ready(function () {
+        $("#btnGoBack").on("click", function () {
+            history.back();
+        })
+    })
 </script>
 <script src="/javascripts/customs/pages/application/addProj.js"></script>
 </body>

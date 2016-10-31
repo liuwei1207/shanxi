@@ -1,12 +1,10 @@
-[2016-10-25 17:35:37.630] [INFO] console - 用户未登陆
-[2016-10-25 17:36:23.894] [INFO] console - 57ee466939022254316981b0
-[2016-10-25 18:40:44.112] [INFO] console - server is listen on 8050
-[2016-10-25 18:40:44.152] [INFO] console - CONNECTED TO: 123.57.215.156:8904
-[2016-10-25 18:40:44.153] [INFO] console - levels connect to: 123.57.215.156:8905
-[2016-10-25 18:40:45.524] [INFO] console - mongo :: authenticated and connected to database - AM :: "shanxi"
-[2016-10-25 18:40:45.525] [INFO] console - mongo :: authenticated and connected to database - RP :: "shanxi"
-[2016-10-25 18:40:45.526] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
-[2016-10-25 18:40:45.527] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
-[2016-10-25 18:40:45.527] [INFO] console - mongo :: authenticated and connected to database - SM :: "shanxi"
-[2016-10-25 18:40:45.528] [INFO] console - mongo :: authenticated and connected to database - ARM :: "shanxi"
-[2016-10-25 18:40:45.835] [INFO] console - 已经监听 historicalAudioData 目录下的文件变化！
+[2016-10-31 13:47:00.586] [INFO] console - server is listen on 8050
+[2016-10-31 13:47:00.628] [INFO] console - levels connect to: 123.57.215.156:8905
+[2016-10-31 13:47:00.629] [INFO] console - CONNECTED TO: 123.57.215.156:8904
+[2016-10-31 13:47:02.327] [INFO] console - mongo :: authenticated and connected to database - AM :: "shanxi"
+[2016-10-31 13:47:02.328] [INFO] console - mongo :: authenticated and connected to database - RP :: "shanxi"
+[2016-10-31 13:47:02.329] [INFO] console - mongo :: authenticated and connected to database - ARM :: "shanxi"
+[2016-10-31 13:47:02.330] [INFO] console - mongo :: authenticated and connected to database - SM :: "shanxi"
+[2016-10-31 13:47:02.331] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
+[2016-10-31 13:47:02.335] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
+[2016-10-31 13:47:02.778] [INFO] console - 已经监听 historicalAudioData 目录下的文件变化！

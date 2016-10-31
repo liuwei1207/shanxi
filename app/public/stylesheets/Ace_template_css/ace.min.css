@@ -20828,3 +20828,8 @@ input.typeahead.scrollable ~ .tt-menu {
  .widget-header{
     color: #438EB9;
 }
+
+/*悬浮皮肤样式等切换按钮*/
+.ace-settings-container{
+    display: none
+}
