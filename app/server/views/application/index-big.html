@@ -244,32 +244,38 @@
                                                     <h5 class="widget-title"><%=a.SiteName%></h5>
                                                 </div>
                                                 <div class="widget-body">
-                                                    <div class="widget-main padding-6">
+                                                    <div class="widget-main left-meter-main">
                                                         <div id="NM_<%=a.DeviceID%>">
-                                                            <div class="fixed-width-l clearfix">
+                                                            <div class="clearfix meter-body">
                                                                 <img src="/images/customs/application/meter.png"
-                                                                     alt="..." style="position: absolute;z-index: 1024;">
-                                                                <div class="strapping" id="meter_<%=a.DeviceID%>">
-                                                                    <canvas style="position: absolute;z-index: 999;"></canvas>
+                                                                     alt="...">
+                                                                <div class="strapping-2"
+                                                                     id="meter_<%=a.DeviceID%>">
+                                                                    <canvas class="Js_canvas"></canvas>
                                                                 </div>
                                                             </div>
-                                                            <div class="clearfix form-actions">
-                                                                <div class="col-xs-12">
-                                                                    <a href="/user/chart/<%=a.DeviceID%>" target="_blank" data-action="chart"
-                                                                       class="Js_chart btn btn-minier btn-primary" data-rel="tooltip"
-                                                                       title="查看统计图表">
-                                                                        <span class="bigger-110">统计图表</span> <i class="ace-icon fa fa-area-chart"></i>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="space-12"></div>
-                                                                <div class="col-xs-12">
-                                                                    <a data-action="alertRules"
-                                                                       class="Js_setAlertRules btn btn-minier btn-danger"
-                                                                       data-rel="tooltip"
-                                                                       title="设置报警规则">
-                                                                        <span class="bigger-110">报警规则</span> <i class="ace-icon fa fa-exclamation-circle"></i>
-                                                                    </a>
-                                                                </div>
+                                                        </div>
+
+                                                        <div class="clearfix form-actions">
+                                                            <div class="col-xs-12">
+                                                                <a href="/user/chart/<%=a.DeviceID%>"
+                                                                   target="_blank" data-action="chart"
+                                                                   class="Js_chartLink btn btn-minier btn-primary"
+                                                                   data-rel="tooltip"
+                                                                   title="查看完整的统计图表">
+                                                                    <span class="bigger-110">统计图表</span> <i
+                                                                        class="ace-icon fa fa-area-chart"></i>
+                                                                </a>
+                                                            </div>
+                                                            <div class="space-12"></div>
+                                                            <div class="col-xs-12">
+                                                                <a data-action="alertRules"
+                                                                   class="Js_setAlertRules btn btn-minier btn-danger"
+                                                                   data-rel="tooltip"
+                                                                   title="设置报警规则">
+                                                                    <span class="bigger-110">报警规则</span> <i
+                                                                        class="ace-icon fa fa-exclamation-circle"></i>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -716,7 +722,7 @@
 
     function Meter(id, levels) {
         var width = 186;
-        var height = 540;
+        var height = 549;
         var canvas = document.getElementById(id).childNodes[1];
         var ctx = canvas.getContext("2d");
         var Dots = caps[id] ? caps[id].value : [{cap: 236}, {cap: 236}];
@@ -776,8 +782,8 @@
         canvas.height = height;
         //渐变色
         var line = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        line.addColorStop(0, "#FF0000");
-        line.addColorStop(.1, "#FF0000");
+        line.addColorStop(0, "#E93C39");
+        line.addColorStop(.1, "#E93C39");
         line.addColorStop(.1, "#FDFD00");
         line.addColorStop(.2, "#FDFD00");
         line.addColorStop(.2, "#55FF00");

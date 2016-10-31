@@ -52,60 +52,6 @@
     <script src="/javascripts/Ace_template_js/html5shiv.min.js"></script>
     <script src="/javascripts/Ace_template_js/respond.min.js"></script>
     <![endif]-->
-
-    <style>
-        /* 两列右侧自适应布局 */
-        .g-bd1 {
-            margin: 0 0 10px;
-        }
-
-        .g-sd1 {
-            position: relative;
-            float: left;
-            width: 200px;
-            margin-right: -200px;
-        }
-
-        .g-mn1 {
-            float: right;
-            width: 100%;
-        }
-
-        .g-mn1c {
-            margin-left: 225px;
-        }
-
-        .widget-body,
-        .widget-main {
-            overflow: hidden;
-        }
-
-        .left-top,
-        .right-top,
-        .mid-bottom {
-            height: 315px;
-        }
-
-        .left-meter {
-            height: 688px;;
-        }
-
-        .left-meter-main {
-            padding: 0;
-        }
-
-        .chart-dom {
-            width: 100%;
-            height: 291px;
-        }
-        .meter-body{
-            width: 100%;
-        }
-        .meter-body>img{
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
 </head>
 
 <body class="no-skin">
@@ -309,31 +255,33 @@
                                                                     <div class="clearfix meter-body">
                                                                         <img src="/images/customs/application/meter.png"
                                                                              alt="...">
-                                                                        <div class="strapping" id="meter_<%=a.DeviceID%>">
-                                                                            <canvas></canvas>
+                                                                        <div class="strapping-2"
+                                                                             id="meter_<%=a.DeviceID%>">
+                                                                            <canvas class="Js_canvas"></canvas>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="clearfix">
-                                                                        <div class="col-xs-12">
-                                                                            <a href="/user/chart/<%=a.DeviceID%>"
-                                                                               target="_blank" data-action="chart"
-                                                                               class="Js_chartLink btn btn-minier btn-primary"
-                                                                               data-rel="tooltip"
-                                                                               title="查看统计图表">
-                                                                                <span class="bigger-110">统计图表</span> <i
-                                                                                    class="ace-icon fa fa-area-chart"></i>
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="space-12"></div>
-                                                                        <div class="col-xs-12">
-                                                                            <a data-action="alertRules"
-                                                                               class="Js_setAlertRules btn btn-minier btn-danger"
-                                                                               data-rel="tooltip"
-                                                                               title="设置报警规则">
-                                                                                <span class="bigger-110">报警规则</span> <i
-                                                                                    class="ace-icon fa fa-exclamation-circle"></i>
-                                                                            </a>
-                                                                        </div>
+                                                                </div>
+
+                                                                <div class="clearfix form-actions">
+                                                                    <div class="col-xs-12">
+                                                                        <a href="/user/chart/<%=a.DeviceID%>"
+                                                                           target="_blank" data-action="chart"
+                                                                           class="Js_chartLink btn btn-minier btn-primary"
+                                                                           data-rel="tooltip"
+                                                                           title="查看完整的统计图表">
+                                                                            <span class="bigger-110">统计图表</span> <i
+                                                                                class="ace-icon fa fa-area-chart"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="space-12"></div>
+                                                                    <div class="col-xs-12">
+                                                                        <a data-action="alertRules"
+                                                                           class="Js_setAlertRules btn btn-minier btn-danger"
+                                                                           data-rel="tooltip"
+                                                                           title="设置报警规则">
+                                                                            <span class="bigger-110">报警规则</span> <i
+                                                                                class="ace-icon fa fa-exclamation-circle"></i>
+                                                                        </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -501,7 +449,7 @@
                                                                 <div class="widget-box ui-sortable-handle"
                                                                      id="widget-box-chartData">
                                                                     <div class="widget-header">
-                                                                        <h5 class="widget-title">场强、信噪比、温度、湿度</h5>
+                                                                        <h5 class="widget-title">场强、信噪比、温度、湿度 当日趋势图</h5>
                                                                     </div>
 
                                                                     <div class="widget-body">
@@ -962,7 +910,7 @@
 
     function Meter(id, levels) {
         var width = 186;
-        var height = 540;
+        var height = 549;
         var canvas = document.getElementById(id).childNodes[1];
         var ctx = canvas.getContext("2d");
         var Dots = caps[id] ? caps[id].value : [{cap: 236}, {cap: 236}];
@@ -1022,8 +970,8 @@
         canvas.height = height;
         //渐变色
         var line = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        line.addColorStop(0, "#FF0000");
-        line.addColorStop(.1, "#FF0000");
+        line.addColorStop(0, "#E93C39");
+        line.addColorStop(.1, "#E93C39");
         line.addColorStop(.1, "#FDFD00");
         line.addColorStop(.2, "#FDFD00");
         line.addColorStop(.2, "#55FF00");
@@ -1666,82 +1614,7 @@
 
         Ajax_Load_Chart(deviceID, moment().format("YYYY-MM-DD"));
 
-        datepicker();
-
         var myChart_sitePage = null;
-
-        //日期控件
-        function datepicker() {
-            //初始化部分
-            $('.datepicker').pickadate({
-                // Strings and translations
-                monthsFull: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                monthsShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                weekdaysFull: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                weekdaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                showMonthsShort: true,
-
-                // Buttons
-                today: '今天',
-                clear: false,
-                close: '关闭',
-
-                // Accessibility labels
-                labelMonthNext: '下一月',
-                labelMonthPrev: '上一月',
-                labelMonthSelect: '选择月份',
-                labelYearSelect: '选择年份',
-
-                // Formats
-                format: '选择：yyyy/mm/dd',
-                formatSubmit: 'yyyy/mm/dd',
-                hiddenPrefix: undefined,
-                hiddenSuffix: '_submit',
-                hiddenName: undefined,
-
-                // First day of the week
-                firstDay: '周一',
-
-                // Date limits
-                min: [2016, 8, 1],
-                max: true
-
-            });
-
-            //控制部分
-            var get_date = "";  //得到日期
-            var $input = $('.datepicker').pickadate();  //      实例化日期参数
-            var picker = $input.pickadate('picker');
-            picker.set('select', moment());
-            //    点击“今天”、“昨天”按钮时得到日期
-            $(".search-area label").on("click", (function () { // 在页面任意位置点击而触发此事件
-                var _value = $(this).children().val();       // e.target表示被点击的目标
-                var date = "";
-                if (_value == "2") {
-                    date = moment().format("YYYY-MM-DD");
-                }
-                else if (_value == "1") {
-                    date = moment().subtract(1, 'days').format("YYYY-MM-DD");
-                    picker.set('select', date);
-                    myChart_sitePage.clear();
-                }
-                //处理过的日期送入AJAX模块
-                Ajax_Load_Chart(deviceID, date);
-            }));
-
-            //    关闭设置日期的时候得到日期
-            picker.on("set", function () {
-                get_date = picker.get('select', 'yyyy-mm-dd');
-                Ajax_Load_Chart(deviceID, get_date);
-            });
-
-            //    点击日历按钮时日期插件打开
-            $(".Js_selectDate").on("click", (function () {
-                setTimeout(function () {
-                    picker.open();
-                }, 20)
-            }));
-        }
 
         //生成图标代码， 传入由后台请求得到的数据
         function setEcharts(strObj, date) {

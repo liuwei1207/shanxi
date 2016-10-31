@@ -265,3 +265,80 @@
 .flexible-invisible .widget-box-audioMonitoring .widget-main .form-actions .btn{
     width: 100%;
 }
+
+/* 值班大屏幕的页面样式修改 */
+.g-bd1 {
+    margin: 0 0 10px;
+}
+
+.g-sd1 {
+    position: relative;
+    float: left;
+    width: 200px;
+    margin-right: -200px;
+}
+
+.g-mn1 {
+    float: right;
+    width: 100%;
+}
+
+.g-mn1c {
+    margin-left: 225px;
+}
+
+.widget-body,
+.widget-main {
+    overflow: hidden;
+}
+
+.left-top,
+.right-top{
+    height: 315px;
+}
+.mid-bottom{
+    height: 346px;
+}
+
+.left-meter {
+    height: 720px;;
+}
+
+.left-meter-main {
+    height: 100% !important;
+    padding: 6px;
+}
+.left-meter-main .form-actions{
+    margin: 10px 0 0 0;
+}
+
+.chart-dom {
+    width: 100%;
+    height: 322px;
+}
+
+.meter-body {
+    width: 100%;
+    position: relative;
+}
+
+.meter-body > img {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1024;
+}
+
+.Js_canvas {
+    position: absolute;
+    top: 35px;
+    left: 7px;
+    z-index: 999;
+}
+
+.strapping-2 {
+    width: 100%;
+    height: 608px;
+    background: #A5A5A5;
+}
