@@ -268,18 +268,18 @@
                                                                            target="_blank" data-action="chart"
                                                                            class="Js_chartLink btn btn-minier btn-primary"
                                                                            data-rel="tooltip"
-                                                                           title="查看完整的统计图表">
-                                                                            <span class="bigger-110">统计图表</span> <i
+                                                                           title="查看历史趋势图">
+                                                                            <span class="bigger-110">历史趋势图</span> <i
                                                                                 class="ace-icon fa fa-area-chart"></i>
                                                                         </a>
                                                                     </div>
                                                                     <div class="space-12"></div>
                                                                     <div class="col-xs-12">
                                                                         <a data-action="alertRules"
-                                                                           class="Js_setAlertRules btn btn-minier btn-danger"
+                                                                           class="Js_setAlertRules btn btn-minier btn-warning"
                                                                            data-rel="tooltip"
                                                                            title="设置报警规则">
-                                                                            <span class="bigger-110">报警规则</span> <i
+                                                                            <span class="bigger-110">设置报警规则</span> <i
                                                                                 class="ace-icon fa fa-exclamation-circle"></i>
                                                                         </a>
                                                                     </div>
@@ -449,7 +449,7 @@
                                                                 <div class="widget-box ui-sortable-handle"
                                                                      id="widget-box-chartData">
                                                                     <div class="widget-header">
-                                                                        <h5 class="widget-title">场强、信噪比、温度、湿度 当日趋势图</h5>
+                                                                        <h5 class="widget-title">场强、信噪比、温度、湿度 -- 当日趋势图</h5>
                                                                     </div>
 
                                                                     <div class="widget-body">
@@ -513,8 +513,7 @@
 
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-</a>
-</div><!-- /.main-container -->
+</a><!-- /.main-container -->
 
 <!-- 实时音频频率设置模态框 -->
 <div id="dialog-message-1" class="hide">
@@ -578,7 +577,6 @@
                 <td>暂无数据</td>
             </tr>
             </tbody>
-
         </table>
     </form>
 </div><!-- 报警规则设置模态框 -->
@@ -621,11 +619,11 @@
 
     var socket = io.connect();
     var currentDeviceID = "";
-    //common
+
     //        根据面板大小判断彩条是否显示
     function fwLeftIfShow() {
         var box_width = $(".widget-container-col>.widget-box").width();
-        var td_none = $(".history-time-data td:first-child,.history-time-data td:nth-child(2)");
+        var td_none = $(".history-time-data>table td:first-child,.history-time->table td:nth-child(2)");
         var td_padding = $(".history-time-data>#Js_Mp3List td");
         if (box_width > 320) {
             $(".fw-left").css("display", "block");
@@ -1071,7 +1069,7 @@
 
         //        频率设置弹出框
 
-        var Dom = $(".widget-box-audioMonitoring");
+        var Dom = $("#widget-box-1");
 
 
         Dom.on('click', ".Js_setRate", function () {
@@ -1380,25 +1378,7 @@
             var RegisterTagID = $(".Js_RegisterTagID").data("tag");
             AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date);    //初始化加载Mp3List数据;
             setMp3LoadEvent();
-        })
-
-//        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-//            var deviceID = e.target.href.match(/#\w{2}_\w+$/)[0].replace(/#\w{2}_/, "");    //获取设备ID
-//            var RegisterTagID = e.target.dataset.registertagid;
-//
-//            //判断选中的tab 是否是 历史音频监听标签
-//            if ($(this).attr("name") === "历史音频监听") {
-//                var date = new Date().format("yyyyMMdd");
-//                console.log(date)
-//                AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date);    //初始化加载Mp3List数据;
-//
-//                setMp3LoadEvent();
-//            }
-//            else {
-//                //若当前打开的不是历史音频， 清除页面元素缓存;
-//                $("#HM_" + deviceID).find(".Js_Mp3List").html();
-//            }
-//        });
+        });
 
         function AJAX_LOAD_Mp3List(deviceID, RegisterTagID, date, num) {
             $.ajax({
@@ -1626,54 +1606,30 @@
             var FMReceiveRSSI = strObj.FMReviceRSSI;
             var RoomTemp = strObj.RoomTemp;
             var FMReceiveSNR = strObj.FMReviceSNR;
-            var option = {
 
-                dataZoom: [
-                    {
-                        show: true,
-                        realtime: true,
-                        orient: 'horizontal',
-                        start: 0,
-                        end: 100,
-                        xAxisIndex: [0, 1]
-                    },
-                    {
-                        type: 'inside',
-                        realtime: true,
-                        start: 0,
-                        end: 100,
-                        xAxisIndex: [0, 1]
-                    }
-                ],
-                grid: [{
-                    left: 60,
-                    right: 50,
-                    top: 50,
-                    height: '34%'
-                }, {
-                    left: 60,
-                    right: 50,
-                    top: '56%',
-                    height: '34%'
-                }],
-                xAxis: [
-                    {
-                        type: 'category',
-                        boundaryGap: false,
-                        axisLine: {onZero: true},
-                        data: timeData
-                    },
-                    {
-                        gridIndex: 1,
-                        type: 'category',
-                        boundaryGap: false,
-                        axisLine: {onZero: true},
-                        data: timeData
-                    }
-                ],
+            var option = {
+                legend: {
+                    data: ['场强', '信噪比','湿度', '温度'],
+                    x: 'left',
+                    top: 0
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                grid: {
+                    left: 25,
+                    right: 25,
+                    top: 40,
+                    height: '80%'
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {onZero: true},
+                    data: timeData
+                },
                 yAxis: [
                     {
-                        name: '场强 dBuV',
                         type: 'value',
                         scale: true,
                         min: 0,
@@ -1684,37 +1640,12 @@
                         }
                     },
                     {
-                        gridIndex: 1,
-                        name: '湿度 %',
-                        type: 'value',
-                        scale: true,
-                        min: -40,
-                        max: 80,
-                        nameTextStyle: {
-                            color: '#0e6ac1',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    {
-                        name: '信噪比 dB',
                         type: 'value',
                         scale: true,
                         min: 0,
                         max: 5,
                         nameTextStyle: {
                             color: '#32caca',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    {
-                        gridIndex: 1,
-                        name: '温度 ℃',
-                        type: 'value',
-                        scale: true,
-                        min: -40,
-                        max: 80,
-                        nameTextStyle: {
-                            color: '#fda537',
                             fontWeight: 'bold'
                         }
                     }
@@ -1737,8 +1668,7 @@
                     {
                         name: '湿度',
                         type: 'line',
-                        xAxisIndex: 1,
-                        yAxisIndex: 1,
+
                         symbolSize: 8,
                         itemStyle: {
                             normal: {
@@ -1769,8 +1699,6 @@
 
                         name: '温度',
                         type: 'line',
-                        xAxisIndex: 1,
-                        yAxisIndex: 1,
                         symbolSize: 8,
                         itemStyle: {
                             normal: {
@@ -1784,6 +1712,7 @@
                     }
                 ]
             };
+
             // 使用刚指定的配置项和数据显示图表。
             myChart_sitePage.setOption(option);
             window.onresize = myChart_sitePage.resize;

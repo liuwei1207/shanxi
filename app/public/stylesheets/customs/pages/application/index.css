@@ -140,7 +140,8 @@
     height: 240px;
 }
 .widget-main  .real-time-data{
-    margin-bottom: 8px;;
+    position: relative;
+    margin-bottom: 8px;
     height: 250px;
 }
 .real-time-data tr td:first-child{
@@ -176,6 +177,7 @@
     height: 320px;
 }
 .history-time-data{
+    position: relative;
     height: 308px;
 }
 .history-time-data td a{
@@ -211,7 +213,7 @@
 .site-states{
     padding: 1px 2px;
     position: absolute;
-    right: 15px;
+    right: 5px;
     font-size: 12px;
 }
 
