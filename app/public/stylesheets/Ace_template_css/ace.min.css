@@ -1837,7 +1837,7 @@ pre.prettyprint {
     }
 
     .navbar-buttons >.ace-nav > li.dropdown-modal > .user-menu > li > a{
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
 }
 
@@ -20832,4 +20832,112 @@ input.typeahead.scrollable ~ .tt-menu {
 /*悬浮皮肤样式等切换按钮*/
 .ace-settings-container{
     display: none
+}
+/* *****************************- 音乐播放器  -******************************** */
+.m-MP3player{
+    padding: 3px 6px;
+    background: #eee;
+    border: 1px solid #ccc;
+    opacity: .75;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+    z-index: 1025;
+}
+.player-music{
+    position: relative;
+    top: 9.5px;
+    right: 0px;
+    overflow: hidden;
+    z-index: 1025;
+}
+.player-music .jp-interface, .player-music .jp-audio,
+.player-music .jp-audio-stream, .jp-video{
+    background: transparent;
+}
+.player-music .jp-audio, .jp-audio-stream, .jp-video{
+    border: none;
+}
+.player-music .jp-audio .jp-interface, .jp-audio-stream .jp-interface{
+    height: 48px;
+}
+.player-music .jp-audio .jp-controls {
+    width: 380px;
+    padding: 0 10px 0;
+}
+.player-music .jp-audio .jp-progress,
+.player-music .jp-volume-controls{
+    top: 17px;
+}
+.player-music .jp-audio .jp-time-holder{
+    top: 32px;
+}
+@-webkit-keyframes scrollText2 {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-204px);
+    }
+    100%{
+        transform: translateX(-408px);
+    }
+
+}
+@keyframes scrollText2 {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-304px);
+    }
+    100%{
+        transform: translateX(-608px);
+    }
+
+}
+ .subtitles-box{
+    position: absolute;
+    top: 0;
+    left: 110px;
+    width: 300px;
+    height: 15px;
+    overflow: hidden;
+    z-index: 1026;
+
+}
+ .subtitles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1000px;
+     line-height: 1.5;
+    -webkit-animation:scrollText2 10s infinite  cubic-bezier(1,0,0.5,0) ;
+    animation:scrollText2 10s infinite  cubic-bezier(1,0,0.5,0) ;
+}
+ .subtitles div{
+    height: 15px;
+    width: 300px;
+    overflow: hidden;
+    display: inline-block;
+}
+ .subtitles:hover{
+    animation-play-state:paused;
+    -webkit-animation-play-state:paused;
+}
+@media (max-width: 1221px) {
+    .player-music .jp-volume-controls{
+        display: none;
+    }
+    .player-music .jp-audio{
+        width: 300px;
+
+    }
+    .player-music .subtitles-box{
+        width: 200px;
+        left: 120px;
+    }
+}
+@media (max-width: 1023px){
+    .player-music{
+        display: none;
+    }
 }

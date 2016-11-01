@@ -86,6 +86,7 @@
             </ul>
         </div>
 
+
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
 
             <% if (udata) { %>
@@ -128,6 +129,65 @@
             </ul>
             <% } %>
         </div>
+
+        <div class="navbar-header pull-right">
+            <!-- MP3 Player -->
+            <div class="m-MP3player player-music draggable">
+                <div class="subtitles-box">
+                    <div class="subtitles Js_Mp3Info">
+                        <div class="deviceName">[播放状态：暂停]</div>
+                        <div class="deviceType">[数据来源：未知]</div>
+                    </div>
+                </div>
+
+                <div class="">
+                    <div id="monitorJplayer" class="jp-jplayer"></div>
+                    <div id="jp_container_1" class="jp-audio" role="application"
+                         aria-label="media player">
+                        <div class="jp-type-single">
+                            <div class="jp-gui jp-interface">
+                                <div class="jp-controls">
+                                    <button class="jp-play" role="button" tabindex="0">play</button>
+                                    <button class="jp-stop" role="button" tabindex="0">stop</button>
+                                </div>
+                                <div class="jp-progress">
+                                    <div class="jp-seek-bar">
+                                        <div class="jp-play-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-volume-controls">
+                                    <button class="jp-mute" role="button" tabindex="0">mute</button>
+                                    <button class="jp-volume-max" role="button" tabindex="0">max volume
+                                    </button>
+                                    <div class="jp-volume-bar">
+                                        <div class="jp-volume-bar-value"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-time-holder">
+                                    <div class="jp-current-time" role="timer" aria-label="time">
+                                        &nbsp;</div>
+                                    <div class="jp-duration" role="timer" aria-label="duration">
+                                        &nbsp;</div>
+                                    <div class="jp-toggles">
+                                        <button class="jp-repeat" role="button" tabindex="0">repeat
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="jp-no-solution">
+                                <span>Update Required</span>
+                                To play the media you will need to either update your browser to a
+                                recent
+                                version or update your <a href="http://get.adobe.com/flashplayer/"
+                                                          target="_blank">Flash plugin</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /MP3 Player -->
+        </div>
+
     </div><!-- /template topNav -->
 </div><!-- /template topNav -->
 
@@ -147,61 +207,6 @@
             <div class="page-content">
                 <% include ../includes/ace-settings-container.html %>
 
-                <!-- MP3 Player -->
-                <div class="m-MP3player player-music draggable">
-                    <div class="subtitles-box">
-                        <div class="subtitles Js_Mp3Info">
-                            <div class="deviceName">[播放状态：暂停]</div>
-                            <div class="deviceType">[数据来源：未知]</div>
-                        </div>
-                    </div>
-
-                    <div class="">
-                        <div id="monitorJplayer" class="jp-jplayer"></div>
-                        <div id="jp_container_1" class="jp-audio" role="application"
-                             aria-label="media player">
-                            <div class="jp-type-single">
-                                <div class="jp-gui jp-interface">
-                                    <div class="jp-controls">
-                                        <button class="jp-play" role="button" tabindex="0">play</button>
-                                        <button class="jp-stop" role="button" tabindex="0">stop</button>
-                                    </div>
-                                    <div class="jp-progress">
-                                        <div class="jp-seek-bar">
-                                            <div class="jp-play-bar"></div>
-                                        </div>
-                                    </div>
-                                    <div class="jp-volume-controls">
-                                        <button class="jp-mute" role="button" tabindex="0">mute</button>
-                                        <button class="jp-volume-max" role="button" tabindex="0">max volume
-                                        </button>
-                                        <div class="jp-volume-bar">
-                                            <div class="jp-volume-bar-value"></div>
-                                        </div>
-                                    </div>
-                                    <div class="jp-time-holder">
-                                        <div class="jp-current-time" role="timer" aria-label="time">
-                                            &nbsp;</div>
-                                        <div class="jp-duration" role="timer" aria-label="duration">
-                                            &nbsp;</div>
-                                        <div class="jp-toggles">
-                                            <button class="jp-repeat" role="button" tabindex="0">repeat
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="jp-no-solution">
-                                    <span>Update Required</span>
-                                    To play the media you will need to either update your browser to a
-                                    recent
-                                    version or update your <a href="http://get.adobe.com/flashplayer/"
-                                                              target="_blank">Flash plugin</a>.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- /MP3 Player -->
 
                 <div class="row">
 
@@ -220,6 +225,13 @@
                                     <i class="ace-icon fa fa-expand"></i>
                                 </a>
                             </div>
+
+                            <div class="widget-toolbar no-border">
+                                <button class="btn btn-block btn-info btn-minier Js_player_realTime" title="轮询监听音频">
+                                    <i class="fa fa-play-circle" aria-hidden="true"></i> 轮询监听
+                                </button>
+                            </div>
+
                         </div>
 
                         <div class="widget-body">
@@ -239,9 +251,18 @@
                                         <!-- real-time: 实时数据 --> <!-- historical: 实时数据 -->
 
                                         <div class="widget-container-col" id="WC_<%=a.DeviceID%>">
-                                            <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>">
+                                            <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>" data-RegisterTagID="<%=a.RegisterTagID%>">
                                                 <div class="widget-header">
                                                     <h5 class="widget-title"><%=a.SiteName%></h5>
+                                                    <div class="widget-toolbar">
+                                                        <% if(currentProjectID!=='all') { %>
+                                                        <a href="/user/monitor2/<%= mainDatas[0].ProjNum %>/<%=a.SiteNum%>" target="_blank" data-rel="tooltip" title="详细参数页面">
+                                                            <i class="ace-icon fa fa-table"></i>
+                                                        </a>
+                                                        <% } else { %>
+
+                                                        <% } %>
+                                                    </div>
                                                 </div>
                                                 <div class="widget-body">
                                                     <div class="widget-main left-meter-main">
@@ -249,8 +270,7 @@
                                                             <div class="clearfix meter-body">
                                                                 <img src="/images/customs/application/meter.png"
                                                                      alt="...">
-                                                                <div class="strapping-2"
-                                                                     id="meter_<%=a.DeviceID%>">
+                                                                <div class="strapping-2" id="meter_<%=a.DeviceID%>">
                                                                     <canvas class="Js_canvas"></canvas>
                                                                 </div>
                                                             </div>
@@ -263,8 +283,7 @@
                                                                    class="Js_chartLink btn btn-minier btn-primary"
                                                                    data-rel="tooltip"
                                                                    title="查看历史趋势图">
-                                                                    <span class="bigger-110">历史趋势图</span> <i
-                                                                        class="ace-icon fa fa-area-chart"></i>
+                                                                    <span class="bigger-110">历史趋势图</span> <i class="ace-icon fa fa-area-chart"></i>
                                                                 </a>
                                                             </div>
                                                             <div class="space-12"></div>
@@ -1311,7 +1330,6 @@
     });
     //<![CDATA[
     $(document).ready(function () {
-        var loadURL = $("#loadURL");
         var url = "";
         var currentURL = $("#currentURL");
         currentURL.html("当前的播放地址为: " + url);
@@ -1319,7 +1337,6 @@
         $("#monitorJplayer").jPlayer({
             ready: function () {
                 $(this).jPlayer("setMedia", {
-                    title: "Bubble",
                     mp3: url
                 });
             },

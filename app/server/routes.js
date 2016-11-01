@@ -1297,6 +1297,8 @@ module.exports = function (app) {
         var OHAltitude = req.body['OHAltitude'];
         var OHNotes = req.body['OHNotes'];
         var OHDetail = req.body['OHDetail'];
+        var CoordinateOffset_X = req.body['CoordinateOffset_X'];
+        var CoordinateOffset_X = req.body['OHDetail'];
         // get user-agent header
         var ua = parser(req.headers['user-agent']);
         // get use ip address
@@ -1796,12 +1798,8 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/user/map', auth, pageAuthority, function (req, res, next) {
-        //updateMajorData();  //这个应该放在编辑页面里面
-
         var pathname = URL.parse(req.url).pathname.replace("/user/", "");
         pathname = "/user/" + pathname;
-        //console.log(pathname)
-
         res.render('./application/map', {
             title: '山西-吉兆 -- 地图主页',
             udata: req.session.user,

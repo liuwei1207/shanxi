@@ -14,6 +14,7 @@
 
     <!-- page specific plugin styles -->
     <link rel="stylesheet" href="/bower_components/leafletjs/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/bower_components/jPlayer/dist/skin/blue.monday/css/jplayer.blue.monday.min.css"/>
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/bower_components/leafletjs/dist/leaflet-ie.css"/>
     <link rel="stylesheet" href="/bower_components/leafletjs/dist/locate-ie.css"/>
@@ -53,7 +54,7 @@
 </head>
 
 <body class="skin-hn">
-<% include ../includes/topNav.html %>
+<% include ../includes/topNav-player.html %>
 
 
 <div id="baiduMap" class="m-hunanMap"></div>
@@ -74,6 +75,11 @@
             <div class="widget-main" id="siteInfoWindow">
                 <table class="table table-bordered no-margin-bottom Js_realTimeDataTabel"></table>
             </div>
+            <button class="btn btn-block btn-info btn-sm Js_player_realTime"
+                    title="实时音频监听"
+                    data-mp3="">
+                <i class="fa fa-play" aria-hidden="true"></i> 轮询监听
+            </button>
         </div>
     </div>
 </div>
@@ -153,6 +159,7 @@
 <script src="/javascripts/Ace_template_js/jquery-ui.custom.min.js"></script>
 <script src="/javascripts/Ace_template_js/jquery.ui.touch-punch.min.js"></script>
 <script src="/bower_components/socket.io/socket.io-1.4.5.js"></script>
+<script src="/bower_components/jPlayer/dist/jplayer/jquery.jplayer.min.js"></script>
 
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>

@@ -12,6 +12,13 @@ var fileJsonTemp = {
     "time": ""
 };
 
+//存放前一次的文件目录， 以便比较获得改动过的文件目录！
+var temp = {
+    _temp1: [],
+    _temp2: [],
+    timer: null
+};
+
 /**
  * Created by Liuwei on 2016/9/26.
  * //监听历史音频文件的变化， 并生成相应的MP3文件列表以供页面使用
@@ -45,10 +52,10 @@ watcher
     });
 
 var lazyRunout = _.debounce(function () {
-    HM.clearMP3Souce(function(err, result) {
-        if(err) {
+    HM.clearMP3Souce(function (err, result) {
+        if (err) {
             console.log(err)
-        }else {
+        } else {
             explorer(mp3File);
         }
     });
@@ -79,13 +86,27 @@ function explorer(path) {
                         // 如果是文件夹遍历
                         explorer(path + '/' + file);
                     } else {
+                        if (temp.timer) {
+                            clearTimeout(temp.timer);
+                        }
                         // 读出所有的文件
                         var allPath = path + '/' + file;
-                        var RegisterTagID = allPath.match(/\w{32}/)[0];
-                        var mp3Path = allPath.match(/\/\w{32}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
-                        var date = allPath.match(/\/\d{8}\//)[0].substring(1, 9);
-                        var mp3Name = allPath.match(/\/\d{2}_\d{2}_\w{8}.mp3$/)[0].substring(1);
-                        HM.updateMp3List(RegisterTagID, date, mp3Path, mp3Name);
+                        temp._temp1.push(allPath);
+                        //只获得新增文件列表
+                        temp.timer = setTimeout(function () {
+                            var differences = _.difference(temp._temp1, temp._temp2);
+                            temp._temp2 = [].concat(temp._temp1);
+                            _.each(differences, function(everyNew) {
+                                console.log(everyNew);
+                               if(everyNew){
+                                   var RegisterTagID = everyNew.match(/\w{32}/)[0];
+                                   var mp3Path = everyNew.match(/\/\w{32}\/\d{8}\/\d{2}_\d{2}_\w{8}.mp3$/)[0];
+                                   var date = everyNew.match(/\/\d{8}\//)[0].substring(1, 9);
+                                   var mp3Name = everyNew.match(/\/\d{2}_\d{2}_\w{8}.mp3$/)[0].substring(1);
+                                   HM.updateMp3List(RegisterTagID, date, mp3Path, mp3Name);
+                               }
+                            });
+                        }, 3000);    //3s 没有新文件产生， 则执行后续操作。
                     }
                 });
             } catch (err) {

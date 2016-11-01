@@ -34,6 +34,12 @@ $(document).ready(function () {
             },
             OHNotes: {
                 required: false
+            },
+            CoordinateOffset_X: {
+                required: false
+            },
+            CoordinateOffset_Y: {
+                required: false
             }
         },
         messages: {

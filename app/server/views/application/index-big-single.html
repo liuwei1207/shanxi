@@ -128,6 +128,65 @@
             </ul>
             <% } %>
         </div>
+
+        <div class="navbar-header pull-right">
+            <!-- MP3 Player -->
+            <div class="m-MP3player player-music draggable">
+                <div class="subtitles-box">
+                    <div class="subtitles Js_Mp3Info">
+                        <div class="deviceName">[播放状态：暂停]</div>
+                        <div class="deviceType">[数据来源：未知]</div>
+                    </div>
+                </div>
+
+                <div class="">
+                    <div id="monitorJplayer" class="jp-jplayer"></div>
+                    <div id="jp_container_1" class="jp-audio" role="application"
+                         aria-label="media player">
+                        <div class="jp-type-single">
+                            <div class="jp-gui jp-interface">
+                                <div class="jp-controls">
+                                    <button class="jp-play" role="button" tabindex="0">play</button>
+                                    <button class="jp-stop" role="button" tabindex="0">stop</button>
+                                </div>
+                                <div class="jp-progress">
+                                    <div class="jp-seek-bar">
+                                        <div class="jp-play-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-volume-controls">
+                                    <button class="jp-mute" role="button" tabindex="0">mute</button>
+                                    <button class="jp-volume-max" role="button" tabindex="0">max volume
+                                    </button>
+                                    <div class="jp-volume-bar">
+                                        <div class="jp-volume-bar-value"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-time-holder">
+                                    <div class="jp-current-time" role="timer" aria-label="time">
+                                        &nbsp;</div>
+                                    <div class="jp-duration" role="timer" aria-label="duration">
+                                        &nbsp;</div>
+                                    <div class="jp-toggles">
+                                        <button class="jp-repeat" role="button" tabindex="0">repeat
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="jp-no-solution">
+                                <span>Update Required</span>
+                                To play the media you will need to either update your browser to a
+                                recent
+                                version or update your <a href="http://get.adobe.com/flashplayer/"
+                                                          target="_blank">Flash plugin</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /MP3 Player -->
+        </div>
+
     </div><!-- /template topNav -->
 </div><!-- /template topNav -->
 
@@ -147,61 +206,6 @@
             <div class="page-content">
                 <% include ../includes/ace-settings-container.html %>
 
-                <!-- MP3 Player -->
-                <div class="m-MP3player player-music draggable">
-                    <div class="subtitles-box">
-                        <div class="subtitles Js_Mp3Info">
-                            <div class="deviceName">[播放状态：暂停]</div>
-                            <div class="deviceType">[数据来源：未知]</div>
-                        </div>
-                    </div>
-
-                    <div class="">
-                        <div id="monitorJplayer" class="jp-jplayer"></div>
-                        <div id="jp_container_1" class="jp-audio" role="application"
-                             aria-label="media player">
-                            <div class="jp-type-single">
-                                <div class="jp-gui jp-interface">
-                                    <div class="jp-controls">
-                                        <button class="jp-play" role="button" tabindex="0">play</button>
-                                        <button class="jp-stop" role="button" tabindex="0">stop</button>
-                                    </div>
-                                    <div class="jp-progress">
-                                        <div class="jp-seek-bar">
-                                            <div class="jp-play-bar"></div>
-                                        </div>
-                                    </div>
-                                    <div class="jp-volume-controls">
-                                        <button class="jp-mute" role="button" tabindex="0">mute</button>
-                                        <button class="jp-volume-max" role="button" tabindex="0">max volume
-                                        </button>
-                                        <div class="jp-volume-bar">
-                                            <div class="jp-volume-bar-value"></div>
-                                        </div>
-                                    </div>
-                                    <div class="jp-time-holder">
-                                        <div class="jp-current-time" role="timer" aria-label="time">
-                                            &nbsp;</div>
-                                        <div class="jp-duration" role="timer" aria-label="duration">
-                                            &nbsp;</div>
-                                        <div class="jp-toggles">
-                                            <button class="jp-repeat" role="button" tabindex="0">repeat
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="jp-no-solution">
-                                    <span>Update Required</span>
-                                    To play the media you will need to either update your browser to a
-                                    recent
-                                    version or update your <a href="http://get.adobe.com/flashplayer/"
-                                                              target="_blank">Flash plugin</a>.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- /MP3 Player -->
 
                 <div class="row">
 
@@ -220,6 +224,13 @@
                                     <i class="ace-icon fa fa-expand"></i>
                                 </a>
                             </div>
+
+                            <div class="widget-toolbar no-border">
+                                <button class="btn btn-block btn-info btn-minier Js_player_realTime" title="轮询监听音频">
+                                    <i class="fa fa-play-circle" aria-hidden="true"></i> 轮询监听
+                                </button>
+                            </div>
+
                         </div>
 
                         <div class="widget-body">
@@ -1479,7 +1490,7 @@
 
         function setMp3LoadEvent() {
             $(".Js_pagination").on("click", "a", function () {
-                var RegisterTagID = $(this).closest(".widget-box-audioMonitoring").find("a[name='历史音频监听']").data("registertagid");
+                var RegisterTagID = $(".Js_RegisterTagID").data("tag");
                 var selectNum = $(this).attr("href").replace(/^\/index\//, "");
                 AJAX_LOAD_Mp3List(query[RegisterTagID].deviceID, RegisterTagID, query[RegisterTagID].date, selectNum);
             })

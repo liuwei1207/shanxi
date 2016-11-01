@@ -52,6 +52,7 @@ $(document).ready(function () {
     var strokeWeight = 5;   // 行政边界线段粗细
     var polygonFillOpacity = .15;   // 行政边界线段粗细
     var polygonFillOpacityAfterSelected = .75;   // 行政边界线段粗细
+    var ProjTemp = {};  //存放项目坐标的缓存
 
 
 //地图数据缓存
@@ -118,7 +119,7 @@ $(document).ready(function () {
             ajax_load_ctrlBox();
             ajax_load_siteInfoWindow(allSiteDataCache[0]);
             //ajax_load_deviceInfoBox(allSiteDataCache[0]);
-            addSiteSelected(polygonCache[0], polygonCache);
+            //addSiteSelected(polygonCache[0], polygonCache);
             //map.setViewport(markerPointCache);
             //panTo_currentMarkerPoint(allSiteDataCache[0]);
         });
@@ -157,7 +158,7 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (Data) {
                     // 清除所有地图覆盖物（不包括行政区域）
-
+                    ProjTemp = {};//清除页面项目节点缓存！
                     remove_overlay_markers();
                     var len = Data.length;
                     //console.log(len)
@@ -168,7 +169,7 @@ $(document).ready(function () {
                     }
                     ajax_load_siteInfoWindow2(allSiteDataCache[0]);
                     //ajax_load_deviceInfoBox(allSiteDataCache[0]);
-                    addSiteSelected(polygonCache[0], polygonCache);
+                    //addSiteSelected(polygonCache[0], polygonCache);
                     panTo_currentMarkerPoint(allSiteDataCache[0]);
                 },
                 error: function (e) {
@@ -816,7 +817,7 @@ $(document).ready(function () {
     function addCovering(_data, Cindex) {
         addMarker(_data, Cindex);   // 添加站点图标
         addLabel(_data, Cindex);    // 添加站点文字标签
-        addPolygon(_data, Cindex);       // 添加覆盖范围
+        //addPolygon(_data, Cindex);       // 添加覆盖范围
     }
 
     /**
@@ -824,16 +825,34 @@ $(document).ready(function () {
      * 参数说明: [_data: 某个站点的全部数据]
      */
     function addMarker(_data, Cindex) {
+
+        var WhetherToSetTheSiteIcon = false;    //地图若已经存在该项目， 则该项目后续的站点不会绘制站点图标！
+
+        var ProjID = _data.ProjectID;
+        if (!ProjTemp[ProjID]) {
+            ProjTemp[ProjID] = ProjID;
+            WhetherToSetTheSiteIcon = true;
+        } else {
+            WhetherToSetTheSiteIcon = false;
+        }
+
+
         // 添加站点
         var OHLongitude = _data.OHLongitude;
         var OHLatitude = _data.OHLatitude;
         if (notNull(OHLongitude) && notNull(OHLatitude)) {
             var point = new BMap.Point(OHLongitude, OHLatitude);
             // 添加文字标签
-            //自定义图标
-            var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(40, 40));
-            var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
-            //var marker = new BMap.Marker(point);  // 创建标注
+            if (WhetherToSetTheSiteIcon) {
+                //自定义图标
+                var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(40, 40));
+                var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+                //var marker = new BMap.Marker(point);  // 创建标注
+            } else {
+                //自定义图标
+                var myIcon = new BMap.Icon("/images/customs/application/site.png", new BMap.Size(0, 0));
+                var marker = new BMap.Marker(point, {icon: myIcon});  // 创建标注
+            }
 
 
             marker.addEventListener('click', function (e) {
@@ -843,7 +862,7 @@ $(document).ready(function () {
                 currentPolygonCache = polygonCache[Crtindex];
                 currentMarkerCache = markerCache[Crtindex];
                 reloadCurrentSiteInfo(currentSiteDataCache);
-                addSiteSelected(currentPolygonCache, polygonCache);
+                //addSiteSelected(currentPolygonCache, polygonCache);
                 panTo_currentMarkerPoint(currentSiteDataCache);
             });
 
@@ -852,6 +871,7 @@ $(document).ready(function () {
             markerCache.push(marker);
             map.addOverlay(marker);              // 将标注添加到地图中
         }
+
     }
 
 
@@ -883,7 +903,7 @@ $(document).ready(function () {
                 currentPolygonCache = this;
                 currentMarkerCache = markerCache[Crtindex];
                 reloadCurrentSiteInfo(currentSiteDataCache);
-                addSiteSelected(currentPolygonCache, polygonCache);
+                //addSiteSelected(currentPolygonCache, polygonCache);
                 panTo_currentMarkerPoint(currentSiteDataCache);
             });
             map.addOverlay(polygon);   //增加多边形到地图
@@ -894,16 +914,20 @@ $(document).ready(function () {
      * 功能说明： 创建标label标签
      * 参数说明: [_data: 某个站点的全部数据]
      */
+
     function addLabel(_data, Cindex) {
         var OHLongitude = _data.OHLongitude;
         var OHLatitude = _data.OHLatitude;
+        var CoordinateOffset_X = parseFloat(_data.CoordinateOffset_X);
+        var CoordinateOffset_Y = parseFloat(_data.CoordinateOffset_Y);
+
         if (notNull(OHLongitude) && notNull(OHLatitude)) {
             var SiteName = _data.SiteName;
             var deviceID = _data.deviceID;
             var point = new BMap.Point(OHLongitude, OHLatitude);
             var opts = {
                 position: point,    // 指定文本标注所在的地理位置
-                offset: new BMap.Size(15, -30)    //设置文本偏移量
+                offset: new BMap.Size(CoordinateOffset_X, CoordinateOffset_Y)    //设置文本偏移量
             };
             var label = new BMap.Label('<a class="m-mapLabel state_' + deviceID + '" data-state="1">' + SiteName + '</a>', opts);  // 创建文本标注对象
             label.setStyle({
@@ -923,7 +947,7 @@ $(document).ready(function () {
                 currentPolygonCache = polygonCache[Crtindex];
                 currentMarkerCache = markerCache[Crtindex];
                 reloadCurrentSiteInfo(currentSiteDataCache);
-                addSiteSelected(currentPolygonCache, polygonCache);
+                //addSiteSelected(currentPolygonCache, polygonCache);
                 panTo_currentMarkerPoint(currentSiteDataCache);
             });
 

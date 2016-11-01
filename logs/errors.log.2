@@ -1,20 +1,25 @@
-[2016-10-31 15:15:27.699] [INFO] console - levels connect to: 123.57.215.156:8905
-[2016-10-31 15:15:27.701] [INFO] console - CONNECTED TO: 123.57.215.156:8904
-[2016-10-31 15:15:29.205] [INFO] console - mongo :: authenticated and connected to database - AM :: "shanxi"
-[2016-10-31 15:15:29.206] [INFO] console - mongo :: authenticated and connected to database - RP :: "shanxi"
-[2016-10-31 15:15:29.207] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
-[2016-10-31 15:15:29.210] [INFO] console - mongo :: authenticated and connected to database - LM :: "shanxi"
-[2016-10-31 15:15:29.211] [INFO] console - mongo :: authenticated and connected to database - SM :: "shanxi"
-[2016-10-31 15:15:29.213] [INFO] console - mongo :: authenticated and connected to database - ARM :: "shanxi"
-[2016-10-31 15:15:29.599] [INFO] console - 已经监听 historicalAudioData 目录下的文件变化！
-[2016-10-31 15:32:03.989] [ERROR] console - Error: Failed to lookup view "./application/index-big-single.html" in views directory "./app/server/views"
-    at EventEmitter.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\application.js:579:17)
-    at ServerResponse.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express\lib\response.js:960:7)
-    at ServerResponse.res.render (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\express-flash\lib\express-flash.js:29:16)
-    at C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\routes.js:1739:29
-    at C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\modules\site-manager.js:289:17
-    at handleCallback (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\mongodb\lib\utils.js:96:12)
-    at C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\mongodb\lib\cursor.js:814:16
-    at handleCallback (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\mongodb\node_modules\mongodb-core\lib\cursor.js:244:5)
-    at setCursorDeadAndNotified (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\mongodb\node_modules\mongodb-core\lib\cursor.js:548:3)
-    at nextFunction (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\mongodb\node_modules\mongodb-core\lib\cursor.js:722:7)
+[2016-11-01 16:05:03.567] [INFO] console - 处理程序异常 ：
+[2016-11-01 16:05:03.572] [INFO] console - [SyntaxError: Unexpected token []
+SyntaxError: Unexpected token [
+    at Object.parse (native)
+    at testDataType (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:203:36)
+    at testDataLength (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:193:13)
+    at splicingRealDataPackage (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:157:9)
+    at Socket.<anonymous> (C:\Users\Liuwei\Desktop\脚手架\shanxi\config\socket.js:44:9)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at readableAddChunk (_stream_readable.js:153:18)
+    at Socket.Readable.push (_stream_readable.js:111:10)
+    at TCP.onread (net.js:536:20)
+[2016-11-01 16:05:03.576] [INFO] console - <Buffer 0a 20 20 20 20 20 20 7d 2c 0a 20 20 20 20 20 20 22 46 4d 52 65 76 69 63 65 4d 6f 64 65 22 20 3a 20 7b 0a 20 20 20 20 20 20 20 20 20 22 61 6c 61 72 6d ... >
+[2016-11-01 16:28:17.040] [ERROR] console - Error: ENOENT: no such file or directory, open 'C:\Users\Liuwei\Desktop\脚手架\shanxi\app\server\views\includes\topNav-player.html'
+    at Error (native)
+    at Object.fs.openSync (fs.js:549:18)
+    at Object.fs.readFileSync (fs.js:397:15)
+    at includeSource (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:210:17)
+    at C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:573:26
+    at Array.forEach (native)
+    at Object.Template.generateSource (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:549:15)
+    at Object.Template.compile (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:454:12)
+    at Object.compile (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:306:16)
+    at handleCache (C:\Users\Liuwei\Desktop\脚手架\shanxi\node_modules\ejs\lib\ejs.js:169:18)
