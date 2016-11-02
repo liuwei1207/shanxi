@@ -43,12 +43,6 @@ watcher
             "time": ""
         };
         lazyRunout();
-    })
-    .on('unlink', function () {
-        fileJsonTemp = {
-            "time": ""
-        };
-        lazyRunout();
     });
 
 var lazyRunout = _.debounce(function () {

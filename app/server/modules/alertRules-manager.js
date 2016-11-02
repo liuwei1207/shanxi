@@ -95,7 +95,7 @@ exports.addDataToHistoricalDatabase = function (data) {
                                 console.log(err)
                             } else {
                                 var ProjName = oProj[0].ProjName;
-
+                                //若参数报警， 则添加报警信息， 并设置12小时过期时间
                                 if (FMReviceRSSI_Status == danger) {
 
 
@@ -120,12 +120,15 @@ exports.addDataToHistoricalDatabase = function (data) {
                                                 "HandleTime": "",
                                                 "HandleUserID": "",
                                                 "HandleMark": "",
-                                                "remove": "0"
-                                            }
-                                        },
-                                        {
-                                            upsert: true
-                                        });
+                                                "remove": "0",
+                                                "createdAt": new Date()
+                                }
+                                },
+                                    {
+                                        upsert: true
+                                    }
+                                )
+                                    ;
                                 }
                                 if (FMReviceSNR_Status == danger) {
                                     alertData.update(
@@ -149,7 +152,8 @@ exports.addDataToHistoricalDatabase = function (data) {
                                                 "HandleTime": "",
                                                 "HandleUserID": "",
                                                 "HandleMark": "",
-                                                "remove": "0"
+                                                "remove": "0",
+                                                "createdAt": new Date()
                                             }
                                         },
                                         {
@@ -178,7 +182,8 @@ exports.addDataToHistoricalDatabase = function (data) {
                                                 "HandleTime": "",
                                                 "HandleUserID": "",
                                                 "HandleMark": "",
-                                                "remove": "0"
+                                                "remove": "0",
+                                                "createdAt": new Date()
                                             }
                                         },
                                         {
@@ -207,14 +212,15 @@ exports.addDataToHistoricalDatabase = function (data) {
                                                 "HandleTime": "",
                                                 "HandleUserID": "",
                                                 "HandleMark": "",
-                                                "remove": "0"
+                                                "remove": "0",
+                                                "createdAt": new Date()
                                             }
                                         },
                                         {
                                             upsert: true
                                         });
                                 }
-
+                                //若参数由报警变为正常， 则删除报警信息
                                 if (FMReviceRSSI_Status == normal) {
                                     alertData.remove({
                                         "deviceID": deviceID,
@@ -249,7 +255,7 @@ exports.addDataToHistoricalDatabase = function (data) {
                 });
             }
         } catch (err) {
-
+            //who care?
         }
     });
 };

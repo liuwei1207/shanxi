@@ -75,10 +75,9 @@
             <div class="widget-main" id="siteInfoWindow">
                 <table class="table table-bordered no-margin-bottom Js_realTimeDataTabel"></table>
             </div>
-            <button class="btn btn-block btn-info btn-sm Js_player_realTime"
-                    title="实时音频监听"
-                    data-mp3="">
-                <i class="fa fa-play" aria-hidden="true"></i> 轮询监听
+            <button id="loadURL" class="btn btn-block btn-info btn-sm" type="button">
+                <i class="ace-icon fa fa-play-circle bigger-110"></i>
+                轮询监听
             </button>
         </div>
     </div>
@@ -170,7 +169,7 @@
 <script src="/javascripts/customs/pages/application/baiduMap.js"></script>
 <script type="text/javascript">
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         var launch_bnt = $('[data-change=launch]');
         var launch = $("#launch");
@@ -182,10 +181,42 @@
             }
         });
 
-        $(function() {
-            $( ".draggable" ).draggable();
-        })
+        $(function () {
+            $(".draggable").draggable();
+        });
+
+        var playMp3Str = '<%-RegisterTagIDStr%>';
+        var loadURL = $("#loadURL");
+        var url = playMp3Str;
+
+        $("#monitorJplayer").jPlayer({
+            ready: function () {
+                $(this).jPlayer("setMedia", {
+                    title: "Bubble",
+                    mp3: url
+                });
+            },
+            swfPath: "../../dist/jplayer",
+            supplied: "mp3",
+            wmode: "window",
+            useStateClassSkin: true,
+            autoBlur: false,
+            smoothPlayBar: true,
+            preload: "auto",
+            keyEnabled: true,
+            remainingDuration: true,
+            toggleDuration: true
+        });
+
+        loadURL.click(function () {
+            url = playMp3Str;
+            $("#monitorJplayer").jPlayer("setMedia", {
+                mp3: url
+            });
+            $("#monitorJplayer").jPlayer("play");
+        });
     });
+
 
 </script>
 </body>

@@ -28,14 +28,6 @@ var topNavData = [
         "NavName": "地图主页",
         "link": "/user/map"
     },
-    //{
-    //    "NavName": "报警列表",
-    //    "link": "/user/alert"
-    //},
-    {
-        "NavName": "音频测试",
-        "link": "/user/audioTest"
-    },
     {
         "NavName": "台站管理",
         "link": "/user/configuration"
@@ -1684,19 +1676,28 @@ module.exports = function (app) {
             var currentSiteID = req.params.SiteID;
             SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (mainDatas) {
                 SM.getAllDeviceInfoByProjIDandSiteID(currentProjectID, currentSiteID, function (deviceData) {
-                    res.render('./application/index.html', {
-                        title: '山西-吉兆 -- 监控主页',
-                        currentProjectID: currentProjectID,
-                        currentSiteID: currentSiteID,
-                        leftNavDatas: leftNavDatas,
-                        topNavSelected: pathname,
-                        mainDatas: mainDatas,
-                        topNavData: topNavData,
-                        deviceData: {
+                    SM.getAllDevicesTagRecords(function (err, TagRecords) {
+                        var RegisterTagIDStr = "";
+                        var RegisterTagIDarry = TagRecords[0].RegisterTagID;
+                        for (var i = 0; i < RegisterTagIDarry.length; i++) {
+                            RegisterTagIDStr = RegisterTagIDStr + RegisterTagIDarry[i];
+                        }
+
+                        res.render('./application/index.html', {
+                            title: '山西-吉兆 -- 监控主页',
                             currentProjectID: currentProjectID,
-                            deviceData: deviceData
-                        },
-                        udata: req.session.user
+                            currentSiteID: currentSiteID,
+                            leftNavDatas: leftNavDatas,
+                            topNavSelected: pathname,
+                            mainDatas: mainDatas,
+                            topNavData: topNavData,
+                            deviceData: {
+                                currentProjectID: currentProjectID,
+                                deviceData: deviceData
+                            },
+                            RegisterTagIDStr: RegisterTagIDStr,
+                            udata: req.session.user
+                        });
                     });
                 })
             });
@@ -1715,42 +1716,57 @@ module.exports = function (app) {
         SM.findLeftNavDatas(function (leftNavDatas) {
             var currentProjectID = req.params.ProjectID;
             var currentSiteID = req.params.SiteID;
-
             if (currentSiteID === 'all') {
                 SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (mainDatas) {
                     SM.getAllDeviceInfoByProjIDandSiteID(currentProjectID, currentSiteID, function (deviceData) {
-                        res.render('./application/index-big.html', {
-                            title: '山西-吉兆 -- 监控主页',
-                            currentProjectID: currentProjectID,
-                            currentSiteID: currentSiteID,
-                            leftNavDatas: leftNavDatas,
-                            topNavSelected: pathname,
-                            mainDatas: mainDatas,
-                            topNavData: topNavData,
-                            deviceData: {
+                        SM.getAllDevicesTagRecords(function (err, TagRecords) {
+                            var RegisterTagIDStr = "";
+                            var RegisterTagIDarry = TagRecords[0].RegisterTagID;
+                            for (var i = 0; i < RegisterTagIDarry.length; i++) {
+                                RegisterTagIDStr = RegisterTagIDStr + RegisterTagIDarry[i];
+                            }
+                            res.render('./application/index-big.html', {
+                                title: '山西-吉兆 -- 监控主页',
                                 currentProjectID: currentProjectID,
-                                deviceData: deviceData
-                            },
-                            udata: req.session.user
+                                currentSiteID: currentSiteID,
+                                leftNavDatas: leftNavDatas,
+                                topNavSelected: pathname,
+                                mainDatas: mainDatas,
+                                topNavData: topNavData,
+                                deviceData: {
+                                    currentProjectID: currentProjectID,
+                                    deviceData: deviceData
+                                },
+                                RegisterTagIDStr: RegisterTagIDStr,
+                                udata: req.session.user
+                            });
                         });
                     })
                 });
             } else {
                 SM.findDataByProIdAndSiteId(currentProjectID, currentSiteID, function (mainDatas) {
                     SM.getAllDeviceInfoByProjIDandSiteID(currentProjectID, currentSiteID, function (deviceData) {
-                        res.render('./application/index-big-single.html', {
-                            title: '山西-吉兆 -- 监控主页',
-                            currentProjectID: currentProjectID,
-                            currentSiteID: currentSiteID,
-                            leftNavDatas: leftNavDatas,
-                            topNavSelected: pathname,
-                            mainDatas: mainDatas,
-                            topNavData: topNavData,
-                            deviceData: {
+                        SM.getAllDevicesTagRecords(function (err, TagRecords) {
+                            var RegisterTagIDStr = "";
+                            var RegisterTagIDarry = TagRecords[0].RegisterTagID;
+                            for (var i = 0; i < RegisterTagIDarry.length; i++) {
+                                RegisterTagIDStr = RegisterTagIDStr + RegisterTagIDarry[i];
+                            }
+                            res.render('./application/index-big-single.html', {
+                                title: '山西-吉兆 -- 监控主页',
                                 currentProjectID: currentProjectID,
-                                deviceData: deviceData
-                            },
-                            udata: req.session.user
+                                currentSiteID: currentSiteID,
+                                leftNavDatas: leftNavDatas,
+                                topNavSelected: pathname,
+                                mainDatas: mainDatas,
+                                topNavData: topNavData,
+                                deviceData: {
+                                    currentProjectID: currentProjectID,
+                                    deviceData: deviceData
+                                },
+                                RegisterTagIDStr: RegisterTagIDStr,
+                                udata: req.session.user
+                            });
                         });
                     })
                 });
@@ -1800,11 +1816,19 @@ module.exports = function (app) {
     app.get('/user/map', auth, pageAuthority, function (req, res, next) {
         var pathname = URL.parse(req.url).pathname.replace("/user/", "");
         pathname = "/user/" + pathname;
-        res.render('./application/map', {
-            title: '山西-吉兆 -- 地图主页',
-            udata: req.session.user,
-            topNavData: topNavData,
-            topNavSelected: pathname
+        SM.getAllDevicesTagRecords(function (err, TagRecords) {
+            var RegisterTagIDStr = "";
+            var RegisterTagIDarry = TagRecords[0].RegisterTagID;
+            for (var i = 0; i < RegisterTagIDarry.length; i++) {
+                RegisterTagIDStr = RegisterTagIDStr + RegisterTagIDarry[i];
+            }
+            res.render('./application/map', {
+                title: '山西-吉兆 -- 地图主页',
+                udata: req.session.user,
+                topNavData: topNavData,
+                topNavSelected: pathname,
+                RegisterTagIDStr: RegisterTagIDStr
+            });
         });
     });
 

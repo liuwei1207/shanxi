@@ -273,7 +273,7 @@ exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) 
                 if (err) {
                     callback(err)
                 } else {
-                    NsOHBasicDevice.find({"$or": sitesNumArry}).sort({"DeviceIndex": 1}).toArray(function (err, deviceInfo) {
+                    NsOHBasicDevice.find({"$or": sitesNumArry}).sort({"SiteName": 1}).toArray(function (err, deviceInfo) {
                         if (err) {
                             callback(err)
                         }
@@ -282,7 +282,7 @@ exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) 
                 }
             })
         } else {
-            NsOHBasicDevice.find({"SiteID": siteID}, {"_id": 0}).sort({"DeviceIndex": 1}).toArray(function (err, deviceInfo) {
+            NsOHBasicDevice.find({"SiteID": siteID}, {"_id": 0}).sort({"SiteName": 1}).toArray(function (err, deviceInfo) {
                 if (err) {
                     callback(err)
                 }
@@ -298,7 +298,7 @@ exports.getAllDeviceInfoByProjIDandSiteID = function (ProjID, siteID, callback) 
             if (err) {
                 callback(err)
             } else {
-                NsOHBasicDevice.find({"$or": sitesNumArry}).sort({"DeviceIndex": 1}).toArray(function (err, deviceInfo) {
+                NsOHBasicDevice.find({"$or": sitesNumArry}).sort({"SiteName": 1}).toArray(function (err, deviceInfo) {
                     if (err) {
                         callback(err)
                     }

@@ -69,9 +69,10 @@
                 <div class="page-header">
                     <h1>报警列表 </h1>
                 </div><!-- /.page-header -->
-                <div style="height:110px"></div>
                 <div class="row">
                     <div class="col-xs-12">
+
+                        <div class="space-16"></div>
 
                         <!-- 用户列表 -->
                         <table id="grid-table"></table>
@@ -92,12 +93,6 @@
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
     </a>
 </div><!-- /.main-container -->
-
-<div id="dialog-message" class="hide">
-    <p>
-        是否执行选中项
-    </p>
-</div>
 
 <!--[if !IE]> -->
 <script src="/javascripts/Ace_template_js/jquery-2.1.4.min.js"></script>
@@ -190,37 +185,32 @@
 
             return temp
         }
+        function highlight2(cellvalue, options, rowObject) {
 
+            temp = '<span class="label label-sm label-info">' + cellvalue + '</span>';
+
+            return temp
+        }
 
         jQuery(grid_selector).jqGrid({
             datatype: "json",
             url: "/api/user/alert/getAllRecords",
-            height: 500,
+            height: 510,
             mtype: 'POST',
-            colNames: ['项目名称', '站点名称', '设备ID', '报警时间', '报警内容', '是否消警','消警方式', '消警时间', '是否处理', '处理时间', '处理人员', '处理记录', '消警', '处理'],
+            colNames: ['项目名称', '站点名称', '报警时间', '报警内容'],
             colModel: [
-                {name: 'ProjName', index: 'ProjName', width: 70, sorttype: "text"},
-                {name: 'SiteName', index: 'SiteName', width: 70, sorttype: "text"},
-                {name: 'deviceID', index: 'deviceID', width: 160, sorttype: "text"},
-                {name: 'AlarmTime', index: 'AlarmTime', width: 80, align: "center", sorttype: "date", datefmt: "MMMM Do YYYY, h:mm:ss a"},
-                {name: 'AlarmContent', index: 'AlarmContent', width: 130, align: "center", sorttype: "text",formatter:highlight},
-                {name: 'IsRemove', index: 'IsRemove', width: 40, align: "center", sorttype: "text",formatter:remove},
-                {name: 'RemovedWays', index: 'RemovedWays', width: 60, sorttype: "text"},
-                {name: 'RemovedTime', index: 'RemovedTime', width: 80, align: "center", sorttype: "date"},
-                {name: 'IsHandle', index: 'IsHandle', width: 40, align: "center", sorttype: "text",formatter:handle},
-                {name: 'HandleTime', index: 'HandleTime', width: 80, sortable: "date"},
-                {name: 'HandleUserID', index: 'HandleUserID', width: 50, sorttype: "text"},
-                {name: 'HandleMark', index: 'HandleMark', width: 140, sorttype: "text"},
-                {name: 'IsRemove', index: 'IsRemove', width: 35,editable: false,formatter:removeAlarm},
-                {name: 'IsHandle', index: 'IsHandle', width: 35,editable: false,formatter:handleAlarm}
+                {name: 'ProjName', index: 'ProjName', width: 60, sorttype: "text"},
+                {name: 'SiteName', index: 'SiteName', width: 60, sorttype: "text",formatter:highlight2},
+                {name: 'AlarmTime', index: 'AlarmTime', width: 120, align: "center", sorttype: "date", datefmt: "MMMM Do YYYY, h:mm:ss a"},
+                {name: 'AlarmContent', index: 'AlarmContent', width: 240, align: "center", sorttype: "text",formatter:highlight}
             ],
             viewrecords: true,
-            rowNum: 50,
-            rowList: [50, 100, 200, 500],
+            rowNum: 15,
+            rowList: [15, 50, 100],
             pager: pager_selector,
             emptyrecords: "Nothing to display",
-            sortname : 'AlarmTime',
-            sortorder: 'desc',
+            sortname : 'SiteName',
+            sortorder: 'asc',
             altRows: true,
             //toppager: true,
             autowidth:true,
@@ -239,7 +229,7 @@
             },
 
             editurl: "",
-            caption: "",
+            caption: "平台实时报警信息汇总表",
             reloadAfterSubmit: true,
             checkOnSubmit: true
 

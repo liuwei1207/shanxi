@@ -227,7 +227,7 @@
                             </div>
 
                             <div class="widget-toolbar no-border">
-                                <button class="btn btn-block btn-info btn-minier Js_player_realTime" title="轮询监听音频">
+                                <button class="btn btn-block btn-info btn-minier Js_player_realTime" title="轮询监听音频" data-mp3="http://123.57.215.156:10011/<%=RegisterTagIDStr%>.mp3">
                                     <i class="fa fa-play-circle" aria-hidden="true"></i> 轮询监听
                                 </button>
                             </div>
@@ -255,13 +255,9 @@
                                                 <div class="widget-header">
                                                     <h5 class="widget-title"><%=a.SiteName%></h5>
                                                     <div class="widget-toolbar">
-                                                        <% if(currentProjectID!=='all') { %>
-                                                        <a href="/user/monitor2/<%= mainDatas[0].ProjNum %>/<%=a.SiteNum%>" target="_blank" data-rel="tooltip" title="详细参数页面">
+                                                        <a href="/user/monitor2/<%= deviceData.currentProjectID %>/<%=a.SiteNum%>" target="_blank" data-rel="tooltip" title="详细参数页面">
                                                             <i class="ace-icon fa fa-table"></i>
                                                         </a>
-                                                        <% } else { %>
-
-                                                        <% } %>
                                                     </div>
                                                 </div>
                                                 <div class="widget-body">

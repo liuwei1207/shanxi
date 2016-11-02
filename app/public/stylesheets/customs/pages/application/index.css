@@ -47,10 +47,11 @@
 .widget-main .tab-content .strapping{
     background: #A5A5A5;
     position: absolute;
-    top:37px;
+    top:29px;
     left: 2px;
     width: 80px;
-    height: 240px;
+    height: 244px;
+    z-index: 1024;
 }
 .widget-main  .real-time-data{
     position: relative;
@@ -129,7 +130,10 @@
     right: 5px;
     font-size: 12px;
 }
-
+.fw-left>img{
+    z-index: 1025;
+    position: absolute;
+}
 .site-states[data-state='0']::after{
     content: "通信正常";
 }
