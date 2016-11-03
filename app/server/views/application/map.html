@@ -54,7 +54,141 @@
 </head>
 
 <body class="skin-hn">
-<% include ../includes/topNav-player.html %>
+<!-- template topNav -->
+<div id="navbar" class="navbar navbar-default ace-save-state">
+    <div class="navbar-container ace-save-state" id="navbar-container">
+        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+
+        <div class="navbar-header pull-left">
+            <a href="/menu" class="navbar-brand">
+                <!--<small>-->
+                <!--<i class="fa fa-cloud"></i>-->
+                <!--山西-吉兆 FM监听系统-->
+                <!--</small>-->
+                <img src="/images/customs/application/logo.png" alt=""/>
+            </a>
+        </div>
+
+        <div class="navbar-header pull-left">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a><%= title %></a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+
+            <% if (udata) { %>
+            <ul class="nav ace-nav">
+                <li class="dropdown-modal">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<span class="user-info">
+									<small>你好,</small>
+									<%= udata.name %>
+								</span>
+
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+
+                    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a href="#">
+                                <i class="ace-icon fa fa-cog"></i>
+                                设置
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="">
+                                <i class="ace-icon fa fa-user"></i>
+                                个人信息
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="/logout">
+                                <i class="ace-icon fa fa-power-off"></i>
+                                注销
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <% } %>
+        </div>
+
+        <div class="navbar-header pull-right">
+            <!-- MP3 Player -->
+            <div class="m-MP3player player-music draggable" id="step10">
+                <div class="subtitles-box">
+                    <div class="subtitles Js_Mp3Info">
+                        <div class="deviceName">[播放状态：暂停]</div>
+                        <div class="deviceType">[数据来源：未知]</div>
+                    </div>
+                </div>
+
+                <div class="">
+                    <div id="monitorJplayer" class="jp-jplayer"></div>
+                    <div id="jp_container_1" class="jp-audio" role="application"
+                         aria-label="media player">
+                        <div class="jp-type-single">
+                            <div class="jp-gui jp-interface">
+                                <div class="jp-controls">
+                                    <button class="jp-play" role="button" tabindex="0">play</button>
+                                    <button class="jp-stop" role="button" tabindex="0">stop</button>
+                                </div>
+                                <div class="jp-progress">
+                                    <div class="jp-seek-bar">
+                                        <div class="jp-play-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-volume-controls">
+                                    <button class="jp-mute" role="button" tabindex="0">mute</button>
+                                    <button class="jp-volume-max" role="button" tabindex="0">max volume
+                                    </button>
+                                    <div class="jp-volume-bar">
+                                        <div class="jp-volume-bar-value"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-time-holder">
+                                    <div class="jp-current-time" role="timer" aria-label="time">
+                                        &nbsp;</div>
+                                    <div class="jp-duration" role="timer" aria-label="duration">
+                                        &nbsp;</div>
+                                    <div class="jp-toggles">
+                                        <button class="jp-repeat" role="button" tabindex="0">repeat
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="jp-no-solution">
+                                <span>Update Required</span>
+                                To play the media you will need to either update your browser to a
+                                recent
+                                version or update your <a href="http://get.adobe.com/flashplayer/"
+                                                          target="_blank">Flash plugin</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /MP3 Player -->
+        </div>
+
+    </div><!-- /template topNav -->
+</div><!-- /template topNav -->
 
 
 <div id="baiduMap" class="m-hunanMap"></div>
