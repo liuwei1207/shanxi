@@ -1602,7 +1602,7 @@ module.exports = function (app) {
      * method: GET
      */
     app.get('/', auth, function (req, res) {
-        res.redirect('/user/monitor/');
+        res.redirect('/user/monitor2/');
     });
 
     /**

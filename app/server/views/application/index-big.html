@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="/bower_components/Messenger/css/messenger-theme-future.css"/>
     <link rel="stylesheet" href="/bower_components/pickadate/css/classic.css"/>
     <link rel="stylesheet" href="/bower_components/pickadate/css/classic.date.css"/>
+    <link rel="stylesheet" href="/bower_components/intro.js-master/introjs.css"/>
+    <link rel="stylesheet" href="/stylesheets/customs/pages/application/index-big.css"/>
 
     <!-- text fonts -->
     <link rel="stylesheet" href="/stylesheets/Ace_template_css/fonts.googleapis.com.css"/>
@@ -132,7 +134,7 @@
 
         <div class="navbar-header pull-right">
             <!-- MP3 Player -->
-            <div class="m-MP3player player-music draggable">
+            <div class="m-MP3player player-music draggable" id="step10">
                 <div class="subtitles-box">
                     <div class="subtitles Js_Mp3Info">
                         <div class="deviceName">[播放状态：暂停]</div>
@@ -221,13 +223,15 @@
                             </h5>
 
                             <div class="widget-toolbar">
-                                <a href="#" data-action="fullscreen" class="blue" data-rel="tooltip" title="全屏监听">
+                                <a href="#" data-action="fullscreen" class="blue" data-rel="tooltip" id="step9"
+                                   title="全屏监听">
                                     <i class="ace-icon fa fa-expand"></i>
                                 </a>
                             </div>
 
                             <div class="widget-toolbar no-border">
-                                <button class="btn btn-block btn-info btn-minier Js_player_realTime" title="轮询监听音频" data-mp3="http://123.57.215.156:10011/<%=RegisterTagIDStr%>.mp3">
+                                <button class="btn btn-block btn-info btn-minier Js_player_realTime" id="step8"
+                                        title="轮询监听音频" data-mp3="http://123.57.215.156:10011/<%=RegisterTagIDStr%>.mp3">
                                     <i class="fa fa-play-circle" aria-hidden="true"></i> 轮询监听
                                 </button>
                             </div>
@@ -251,13 +255,17 @@
                                         <!-- real-time: 实时数据 --> <!-- historical: 实时数据 -->
 
                                         <div class="widget-container-col" id="WC_<%=a.DeviceID%>">
-                                            <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>" data-RegisterTagID="<%=a.RegisterTagID%>">
+                                            <div class="widget-box widget-box-audioMonitoring" id="WB_<%=a.DeviceID%>"
+                                                 data-RegisterTagID="<%=a.RegisterTagID%>">
                                                 <div class="widget-header">
                                                     <h5 class="widget-title"><%=a.SiteName%></h5>
                                                     <div class="widget-toolbar">
-                                                        <a href="/user/monitor2/<%= deviceData.currentProjectID %>/<%=a.SiteNum%>" target="_blank" data-rel="tooltip" title="详细参数页面">
-                                                            <i class="ace-icon fa fa-table"></i>
-                                                        </a>
+                                                        <label>
+                                                            <input type="checkbox"
+                                                                   class="ace ace-checkbox-2 input-lg Js_polling"
+                                                                   name="polling" value="<%=a.RegisterTagID%>" checked>
+                                                            <span class="lbl middle padding-4"></span>
+                                                        </label>
                                                     </div>
                                                 </div>
                                                 <div class="widget-body">
@@ -274,12 +282,13 @@
 
                                                         <div class="clearfix form-actions">
                                                             <div class="col-xs-12">
-                                                                <a href="/user/chart/<%=a.DeviceID%>"
+                                                                <a href="/user/monitor2/<%= deviceData.currentProjectID %>/<%=a.SiteNum%>"
                                                                    target="_blank" data-action="chart"
                                                                    class="Js_chartLink btn btn-minier btn-primary"
                                                                    data-rel="tooltip"
                                                                    title="查看历史趋势图">
-                                                                    <span class="bigger-110">历史趋势图</span> <i class="ace-icon fa fa-area-chart"></i>
+                                                                    <span class="bigger-110">详细参数页面</span> <i
+                                                                        class="ace-icon fa fa-file"></i>
                                                                 </a>
                                                             </div>
                                                             <div class="space-12"></div>
@@ -437,6 +446,7 @@
 <script src="/bower_components/pickadate/js/legacy.js"></script>
 <script src="/bower_components/pickadate/js/picker.js"></script>
 <script src="/bower_components/pickadate/js/picker.date.js"></script>
+<script src="/bower_components/intro.js-master/intro.js"></script>
 
 <!-- ace scripts -->
 <script src="/javascripts/Ace_template_js/ace-elements.min.js"></script>
@@ -466,6 +476,85 @@
             td_padding.css("padding", "2px")
         }
     }
+
+
+    //    系统使用帮助
+    $(document).ready(function(){
+        startIntro();
+        $("#help").on("click",function(){
+            startIntro();
+        });
+        function startIntro(){
+            var intro = introJs();
+            intro.setOptions({
+                steps: [
+
+                    {
+                        element: document.querySelector('.navbar-brand>img'),
+                        intro: "点击该LOGO,即可返回<strong>导航菜单</strong>",
+                        overlayOpacity:0.2
+                    },
+                    {
+                        element: document.querySelector('#sidebar>.nav-list'),
+                        intro: "点击<strong>显示全部</strong>切换显示<strong>音频监控</strong>页面， 点击下面的站点， 切换显示<strong>站点详情</strong>页面",
+                        position: 'right'
+                    },
+                    {
+                        element: '#sidebar .submenu .arrow',
+                        intro: '此处为站点状态灯。<br><strong class="text-danger">红色</strong>表示<strong class="text-danger">【站点异常】</strong>;<br><strong class="text-normal">绿色</strong>表示<strong class="text-normal">【站点正常】</strong>;',
+                        position: 'right'
+                    },
+                    {
+                        element: '#sidebar .sidebar-legend',
+                        intro: "平台颜色状态图例",
+                        position: 'bottom'
+                    },
+                    {
+                        element: '#main-widget-container .widget-container-col ',
+                        intro: '此处展示所有站点的音频状态',
+                        position: 'right'
+                    },
+                    {
+                        element: '#main-widget-container .widget-header .widget-toolbar>a',
+                        intro: '点击此处可进入详细站点页面',
+                        position: 'right'
+                    },
+                    {
+                        element: '#main-widget-container .widget-body .form-actions',
+                        intro: '分别点击此处的两个按钮，点击“历史趋势图”可查看场强，信噪比，湿度，温度数据。点击“报警设置规则”可设置接收频率，场强，信噪比，湿度，温度数据。',
+                        position: 'top'
+                    },
+                    {
+                        element: '#step8',
+                        intro: '点击此处即可轮询播放声音',
+                        position: 'left'
+                    },
+                    {
+                        element: '#step9',
+                        intro: '点击此处可放大音频页面',
+                        position: 'left'
+                    },
+                    {
+                        element: '#step10',
+                        intro: '此播放器可以控制所有音频',
+                        position: 'bottom'
+                    }
+                ],
+                nextLabel: "下一步",
+                prevLabel: "上一步",
+                skipLabel: "退出",
+                doneLabel:"关闭",
+                tooltipClass:"intro-style"
+
+            });
+
+            intro.start();
+        }
+
+
+    });
+
+
 
     $(document).ready(function () {
 
@@ -1359,7 +1448,18 @@
 
         //点击播放按钮 播放实时音频监听数据
         $(".Js_player_realTime").on("click", function () {
-            var url = $(this).data("mp3");
+
+
+            var idsstr = "";
+            var isc = "";
+            $("input[name=polling]").each(function () { //遍历table里的全部checkbox
+                idsstr += $(this).val(); //获取所有checkbox的值
+                if ($(this).prop('checked')) //如果被选中
+                    isc += $(this).val(); //获取被选中的值
+            });
+
+            var url = "http://123.57.215.156:10011/" + isc + ".mp3";
+            console.log(url);
             playMP3(url);
             $(".Js_Mp3Info .deviceName").html("[播放状态：正在监听]");
             $(".Js_Mp3Info .deviceType").html("[数据来源：实时数据]");
